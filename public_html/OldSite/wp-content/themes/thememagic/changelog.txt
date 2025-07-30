@@ -1,0 +1,35 @@
+*** thememagic Changelog ***
+
+
+
+31-10-2012 - version 1.4.7
+
+* Style Settings added in theme options panel to add custom css to the theme. 
+
+
+
+23-10-2012 - version 1.4.6
+
+* Blog Settings added in theme options panel to exclude categories from displaying on the "Blog" page template. 
+
+
+
+10-15-2012 - version 1.4.5
+
+ * New option added to add Fav Icon.
+
+
+
+10-7-2012 - version 1.4.1
+
+ * Options panel updated.
+
+ * template-blog.php file added.
+
+ * front-page.php file added.
+
+ * Other small style css bug changes.
+
+ * read-me file adeded.
+
+ * languages folder added.
