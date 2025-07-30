@@ -1,109 +1,87 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Marketplace | Allegiance List Marketing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #0A3D62; --accent: #E67E22; --dark: #1A202C; --light: #F4F7F9; --gray: #A0AEC0; --white: #ffffff; }
+        body { margin: 0; font-family: 'Roboto', sans-serif; line-height: 1.6; color: var(--dark); background-color: var(--light); }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--primary); }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .header { background: var(--white); border-bottom: 1px solid rgba(10, 61, 98, 0.1); }
+        .nav { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 3rem; }
+        .nav-links a { color: var(--dark); text-decoration: none; font-weight: 500; }
+        main { padding: 60px 0; }
+        .marketplace-interface { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; }
+        .filter-panel { background: var(--white); padding: 2rem; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); height: fit-content; }
+        .data-table-container { background: var(--white); border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); padding: 2rem; overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .data-table th { font-family: 'Montserrat', sans-serif; }
+        .details-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; display:inline-block; }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Data Marketplace | Allegiance List Marketing&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>:root { --primary: #0A3D62; --accent: #E67E22; --dark: #1A202C; --light: #F4F7F9; --gray: #A0AEC0; --white: #ffffff; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: 'Roboto', sans-serif; line-height: 1.6; color: var(--dark); background-color: var(--light); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--primary); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.header { background: var(--white); border-bottom: 1px solid rgba(10, 61, 98, 0.1); }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.nav { display: flex; justify-content: space-between; align-items: center; height: 80px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.logo { font-size: 24px; font-weight: 800; color: var(--primary); text-decoration: none; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.nav-links { display: flex; list-style: none; gap: 3rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.nav-links a { color: var(--dark); text-decoration: none; font-weight: 500; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>main { padding: 60px 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.marketplace-interface { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.filter-panel { background: var(--white); padding: 2rem; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); height: fit-content; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.data-table-container { background: var(--white); border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); padding: 2rem; overflow-x: auto; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.data-table { width: 100%; border-collapse: collapse; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.data-table th { font-family: 'Montserrat', sans-serif; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.details-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; display:inline-block; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;header class="header"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;nav class="nav container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;a href="index.html" class="logo"&gt;🇺🇸 Allegiance&lt;/a&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;ul class="nav-links"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;a href="index.html#services"&gt;Services&lt;/a&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;a href="marketplace.html"&gt;&lt;b&gt;Data Marketplace&lt;/b&gt;&lt;/a&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;a href="index.html#about"&gt;Team&lt;/a&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;li&gt;&lt;a href="index.html#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/ul&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/nav&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;main&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="section-header" style="margin-bottom: 3rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2&gt;Data Card Marketplace&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;p&gt;Discover the perfect audience for your next campaign.&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="marketplace-interface"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;aside class="filter-panel"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3&gt;Filter Lists&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/aside&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;main class="data-table-container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;table class="data-table" id="data-card-table"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Title&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Universe Size&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;Base Rate ($/M)&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th&gt;&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/main&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/main&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const dataCards = [</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{ card_id: 101, title: "Build The Wall Donors", universe_size: 152340, base_rate_per_thousand: 120.00 },</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{ card_id: 102, title: "Catholic Action Donors", universe_size: 88930, base_rate_per_thousand: 110.00 },</p>
-<p class="p1"><span class="Apple-converted-space">        </span>{ card_id: 103, title: "Veterans Support Fund Contributors", universe_size: 245100, base_rate_per_thousand: 115.00 },</p>
-<p class="p1"><span class="Apple-converted-space">    </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.addEventListener('DOMContentLoaded', () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const tableBody = document.querySelector('#data-card-table tbody');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>dataCards.forEach(card =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const row = document.createElement('tr');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>row.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${card.title}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;${card.universe_size.toLocaleString()}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;$${card.base_rate_per_thousand.toFixed(2)}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;td&gt;&lt;a href="datacard.html?id=${card.card_id}" class="details-btn"&gt;View Details&lt;/a&gt;&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>tableBody.appendChild(row);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">🇺🇸 Allegiance</a>
+            <ul class="nav-links">
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="marketplace.html"><b>Data Marketplace</b></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <div class="section-header" style="margin-bottom: 3rem;">
+                <h2>Data Card Marketplace</h2>
+                <p>Discover the perfect audience for your next campaign.</p>
+            </div>
+            <div class="marketplace-interface">
+                <aside class="filter-panel">
+                    <h3>Filter Lists</h3>
+                </aside>
+                <div class="data-table-container">
+                    <table class="data-table" id="data-card-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Universe Size</th>
+                                <th>Base Rate ($/M)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const dataCards = [
+            { card_id: 101, title: "Build The Wall Donors", universe_size: 152340, base_rate_per_thousand: 120.00 },
+            { card_id: 102, title: "Catholic Action Donors", universe_size: 88930, base_rate_per_thousand: 110.00 },
+            { card_id: 103, title: "Veterans Support Fund Contributors", universe_size: 245100, base_rate_per_thousand: 115.00 },
+        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.querySelector('#data-card-table tbody');
+            dataCards.forEach(card => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${card.title}</td>
+                    <td>${card.universe_size.toLocaleString()}</td>
+                    <td>$${card.base_rate_per_thousand.toFixed(2)}</td>
+                    <td><a href="datacard.html?id=${card.card_id}" class="details-btn">View Details</a></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        });
+    </script>
 </body>
 </html>
