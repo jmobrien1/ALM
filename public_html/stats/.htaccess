@@ -1,5 +1,0 @@
-AuthType Basic
-AuthName "sharepointmarketinglist.com Statistics"
-AuthUserFile /var/chroot/home/content/86/9140186/html/stats/.statspwd
-Require valid-user
-DirectoryIndex index.html
