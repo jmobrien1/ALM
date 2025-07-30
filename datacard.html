@@ -14,7 +14,7 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
         .header { background: var(--white); border-bottom: 1px solid var(--border-color); }
         .nav { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); text-decoration: none; white-space: nowrap; }
         .nav-links { display: flex; list-style: none; gap: 3rem; }
         .nav-links a { color: var(--dark); text-decoration: none; font-weight: 500; }
         main { padding: 40px 0; }
@@ -36,8 +36,6 @@
         .key-value-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
         .kv-item .key { font-weight: 700; color: var(--gray); font-size: 0.9rem; display: block; }
         .kv-item .value { font-size: 1.1rem; }
-        .accordion-header { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .accordion-content { display: none; padding-top: 1rem; }
         .cta-form .form-group { margin-bottom: 1rem; }
         .cta-form label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .cta-form input, .cta-form textarea { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; }
@@ -47,7 +45,7 @@
 <body>
     <header class="header">
         <nav class="nav container">
-            <a href="index.html" class="logo">🇺🇸 Allegiance</a>
+            <a href="index.html" class="logo">🇺🇸 Allegiance List Marketing</a>
             <ul class="nav-links">
                 <li><a href="index.html#services">Services</a></li>
                 <li><a href="marketplace.html">Data Marketplace</a></li>
@@ -60,13 +58,7 @@
             <h1 id="card-title">Loading...</h1>
             <div class="datacard-layout">
                 <div class="main-content">
-                    <div class="data-card" id="key-stats-card">
-                        <div class="stat-block">
-                            <div class="stat-item"><div id="card-universe" class="value">-</div><div class="label">Universe</div></div>
-                            <div class="stat-item"><div id="card-rate" class="value">-</div><div class="label">Base Rate</div></div>
-                            <div class="stat-item"><div id="card-updated" class="value">-</div><div class="label">Last Updated</div></div>
-                        </div>
-                    </div>
+                    <div class="data-card" id="key-stats-card"><div class="stat-block"><div class="stat-item"><div id="card-universe" class="value">-</div><div class="label">Universe</div></div><div class="stat-item"><div id="card-rate" class="value">-</div><div class="label">Base Rate</div></div><div class="stat-item"><div id="card-updated" class="value">-</div><div class="label">Last Updated</div></div></div></div>
                     <div class="data-card"><h3>Description</h3><p id="card-description"></p></div>
                     <div class="data-card" id="pricing-card"><h3>Pricing</h3><table class="data-table" id="pricing-table"><thead><tr><th>Segment</th><th>Count</th><th style="text-align: right;">Price per Thousand</th></tr></thead><tbody></tbody></table></div>
                     <div class="data-card" id="selects-card"><h3>Optional Selects</h3><table class="data-table" id="selects-table"><thead><tr><th>Select</th><th style="text-align: right;">Price per Thousand</th></tr></thead><tbody></tbody></table></div>
@@ -85,29 +77,50 @@
     <script>
         const cardDataStore = {
             '282876': {
-                id: 282876, title: "Allegiant Pro-Life Conservative Donors", description: "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom...", universe: 161746, baseRate: 75.00, lastUpdate: "2018-10-02", source: "Direct response", geography: "USA", gender: { male: '60%', female: '40%' },
+                id: 282876, title: "Allegiant Pro-Life Conservative Donors", description: "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom. This group works to support candidates who steadfastly believe that life begins at conception.", universe: 161746, baseRate: 75.00, lastUpdate: "2018-10-02", source: "Direct response", geography: "USA", gender: { male: '60%', female: '40%' },
                 pricing: [ { segment: "TOTAL UNIVERSE", count: 161746, price: 75.00 }, { segment: "$5+ Donors", count: 120804, price: 75.00 } ],
                 selects: [ { name: "12 Month Hotline", price: 5.00 }, { name: "Bible Lifestyle", price: 10.00 } ]
             },
             '479597': {
-                id: 479597, title: "Real America Donors", description: "The Real America Donor audience is made up of patriotic Americans who are boldly in the fight to not only stop the progressive agenda of the Biden/Harris Administration, but to see a truly America First administration in the White House.", universe: 397542, baseRate: 100.00, lastUpdate: "2023-10-24", source: "Direct response", geography: "USA", gender: { male: '60%', female: '40%' },
-                pricing: [
-                    { segment: "TOTAL UNIVERSE / BASE RATE", count: 397542, price: 100.00 },
-                    { segment: "Charitable Base Rate", count: 397542, price: 85.00 },
-                    { segment: "Last 12 month donors", count: 63880, price: 100.00 },
-                    { segment: "$100+ Donors", count: 76156, price: 120.00 },
-                    { segment: "Lifestyle - Donors to Veteran Causes", count: 28008, price: 85.00 },
-                    { segment: "Lifestyle - Gun Enthusiasts", count: 44528, price: 110.00 },
-                ],
-                selects: [
-                    { name: "Age", price: 5.00 },
-                    { name: "Dollar Amount", price: 5.00 },
-                    { name: "Gender", price: 5.00 },
-                    { name: "Lifestyle Select", price: 10.00 },
-                    { name: "Phone Numbers", price: 20.00 }
-                ]
+                id: 479597, title: "Real America Donors", description: "The Real America Donor audience is made up of patriotic Americans who are boldly in the fight to not only stop the progressive agenda of the Biden/Harris Administration, but to see a truly America First administration in the White House. They support Constitutional issues including Second Amendment Rights, Freedom of Speech and Religion and limited government.", universe: 397542, baseRate: 100.00, lastUpdate: "2023-10-24", source: "Direct response", geography: "USA", gender: { male: '60%', female: '40%' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 397542, price: 100.00 }, { segment: "Charitable Base Rate", count: 397542, price: 85.00 }, { segment: "$100+ Donors", count: 76156, price: 120.00 } ],
+                selects: [ { name: "Age/Gender/Dollar", price: 5.00 }, { name: "Lifestyle Select", price: 10.00 }, { name: "Phone Numbers", price: 20.00 } ]
+            },
+            '486336': {
+                id: 486336, title: "Build The Wall Donors", description: "Reach this active and engaged audience of American citizens who support efforts to reign in out-of-control illegal immigration. These donors support Trump and his promises to strengthen our nation's borders, including the construction of a border wall.", universe: 53587, baseRate: 100.00, lastUpdate: "2019-05-17", source: "Direct response", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 53587, price: 100.00 }, { segment: "$5+, last 12 month donors", count: 42930, price: 100.00 }, { segment: "Charitable Rate", count: 53587, price: 85.00 } ],
+                selects: [ { name: "Dollar Amount", price: 5.00 }, { name: "SCF/Zip Code/State", price: 5.00 } ]
+            },
+            '424915': {
+                id: 424915, title: "Catholic Action Donors", description: "An ideal list for those looking to reach a nationwide audience of Catholic Americans. These highly active donors are incredibly passionate about advancing the Roman Catholic way of life, sharing the Gospel and ending abortion.", universe: 16411, baseRate: 75.00, lastUpdate: "2018-07-10", source: "Direct mail sold", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 16411, price: 75.00 }, { segment: "$5+ Donors", count: 12390, price: 75.00 } ],
+                selects: [ { name: "$25+", price: 10.00 }, { name: "Telemarketing", price: 25.00 } ]
+            },
+            '481240': {
+                id: 481240, title: "Donors to Veteran Causes", description: "Target a donor audience of patriotic Americans who support organizations and missions invested in helping our Veterans. These generous individuals respect and honor the sacrifice that the men and women who served our great country made.", universe: 27354, baseRate: 100.00, lastUpdate: "2018-05-29", source: "Direct response", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 27354, price: 100.00 }, { segment: "Charitable rate", count: 27354, price: 85.00 } ],
+                selects: [ { name: "Phone numbers", price: 15.00 }, { name: "SCF/Zip Code/State", price: 5.00 } ]
+            },
+            '580140': {
+                id: 580140, title: "America First Patriot Donors", description: "Reach an audience of freedom-loving America First donors! These patriotic Americans love their country and are unwilling to stand on the sidelines and watch it be destroyed by the socialist policies of the Biden Harris Administration.", universe: 13394, baseRate: 125.00, lastUpdate: "2021-08-26", source: "Direct mail sold", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 13394, price: 125.00 }, { segment: "Last 12 month donors", count: 8843, price: 125.00 } ],
+                selects: []
+            },
+            '305791': {
+                id: 305791, title: "Pro-Life America", description: "These staunch pro-life donors are committed to supporting policy that advances the pro-life movement and electing officials who will always work to protect and defend the unborn.", universe: 73761, baseRate: 100.00, lastUpdate: "2019-05-28", source: "Direct response", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 73761, price: 100.00 }, { segment: "Last 12 month donors", count: 27190, price: 100.00 } ],
+                selects: [ { name: "Dollar Amount", price: 5.00 }, { name: "Phone Buyers", price: 20.00 } ]
+            },
+            '401792': {
+                id: 401792, title: "College Republican National Committee", description: "The College Republican National Committee is the largest, oldest and most active Republican youth organization in the country today. Donors on this list are dedicated to CRNC's mission to engage young voters on campuses across our nation.", universe: 110317, baseRate: 135.00, lastUpdate: "2022-03-30", source: "Direct mail sold, Direct response", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 110317, price: 135.00 }, { segment: "$5+ L12", count: 12850, price: 135.00 } ],
+                selects: [ { name: "Dollar Amount", price: 5.00 }, { name: "Telemarketing", price: 25.00 } ]
+            },
+            '586316': {
+                id: 586316, title: "Americans Against the Biden Agenda", description: "Compounded of patriotic Americans who stand against bureaucracy and progressive doctrine. These donors are averse to tax hikes, federal mandates, reckless federal spending, gun control, abortion, and other progressive policy pushed by the Biden administration.", universe: 82949, baseRate: 100.00, lastUpdate: "2021-09-17", source: "Direct response", geography: "USA", gender: { male: 'N/A', female: 'N/A' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 82949, price: 100.00 }, { segment: "Religious Donors", count: 18211, price: 100.00 } ],
+                selects: [ { name: "Dollar Amount", price: 5.00 }, { name: "Lifestyle select", price: 10.00 } ]
             }
-            // Other card data would go here
         };
 
         document.addEventListener('DOMContentLoaded', () => {
