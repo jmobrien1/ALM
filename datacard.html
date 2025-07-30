@@ -21,42 +21,23 @@
         .breadcrumb { font-size: 0.9rem; color: var(--gray); margin-bottom: 1rem; }
         .breadcrumb a { color: var(--primary); text-decoration: none; }
         #card-title { font-size: 2.8rem; margin-bottom: 1.5rem; }
-        
-        .datacard-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            align-items: flex-start;
-        }
-
+        .datacard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: flex-start; }
         .main-content { display: flex; flex-direction: column; gap: 1.5rem; }
         .sidebar { position: sticky; top: 100px; }
-
-        .data-card {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-        }
+        .data-card { background: var(--white); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
         .data-card h3 { font-size: 1.5rem; margin-top: 0; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
         .stat-block { display: flex; text-align: center; justify-content: space-around; }
         .stat-item .value { font-size: 2.2rem; font-weight: 700; color: var(--primary); }
         .stat-item .label { font-size: 0.9rem; color: var(--gray); text-transform: uppercase; }
-
         .data-table { width: 100%; border-collapse: collapse; }
         .data-table th, .data-table td { padding: 0.8rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
         .data-table th { color: var(--gray); font-weight: 500; }
         .data-table td.price, .data-table td.count { text-align: right; font-variant-numeric: tabular-nums; }
-        
         .key-value-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
         .kv-item .key { font-weight: 700; color: var(--gray); font-size: 0.9rem; display: block; }
         .kv-item .value { font-size: 1.1rem; }
-
         .accordion-header { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .accordion-content { display: none; padding-top: 1rem; }
-
         .cta-form .form-group { margin-bottom: 1rem; }
         .cta-form label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .cta-form input, .cta-form textarea { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; }
@@ -73,12 +54,10 @@
             </ul>
         </nav>
     </header>
-
     <main>
         <div class="container">
             <p class="breadcrumb"><a href="marketplace.html">Data Marketplace</a> / <span id="breadcrumb-title">...</span></p>
             <h1 id="card-title">Loading...</h1>
-            
             <div class="datacard-layout">
                 <div class="main-content">
                     <div class="data-card" id="key-stats-card">
@@ -88,175 +67,75 @@
                             <div class="stat-item"><div id="card-updated" class="value">-</div><div class="label">Last Updated</div></div>
                         </div>
                     </div>
-
-                    <div class="data-card">
-                        <h3>Description</h3>
-                        <p id="card-description"></p>
-                    </div>
-
-                    <div class="data-card" id="pricing-card">
-                        <h3>Pricing</h3>
-                        <table class="data-table" id="pricing-table">
-                            <thead><tr><th>Segment</th><th>Count</th><th style="text-align: right;">Price per Thousand</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-
-                    <div class="data-card" id="selects-card">
-                        <h3>Optional Selects</h3>
-                        <table class="data-table" id="selects-table">
-                             <thead><tr><th>Select</th><th style="text-align: right;">Price per Thousand</th></tr></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-
-                    <div class="data-card">
-                        <h3>Audience Profile</h3>
-                        <div class="key-value-grid">
-                            <div class="kv-item"><span class="key">Source</span><span id="profile-source" class="value"></span></div>
-                            <div class="kv-item"><span class="key">Geography</span><span id="profile-geo" class="value"></span></div>
-                            <div class="kv-item"><span class="key">Male</span><span id="profile-male" class="value"></span></div>
-                            <div class="kv-item"><span class="key">Female</span><span id="profile-female" class="value"></span></div>
-                        </div>
-                    </div>
-
-                    <div class="data-card">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            <h3>Addressing & Production</h3>
-                            <span>+</span>
-                        </div>
-                        <div class="accordion-content">
-                             <table class="data-table" id="addressing-table">
-                                <thead><tr><th>Service</th><th style="text-align: right;">Price</th></tr></thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div class="data-card"><h3>Description</h3><p id="card-description"></p></div>
+                    <div class="data-card" id="pricing-card"><h3>Pricing</h3><table class="data-table" id="pricing-table"><thead><tr><th>Segment</th><th>Count</th><th style="text-align: right;">Price per Thousand</th></tr></thead><tbody></tbody></table></div>
+                    <div class="data-card" id="selects-card"><h3>Optional Selects</h3><table class="data-table" id="selects-table"><thead><tr><th>Select</th><th style="text-align: right;">Price per Thousand</th></tr></thead><tbody></tbody></table></div>
+                    <div class="data-card"><h3>Audience Profile</h3><div class="key-value-grid"><div class="kv-item"><span class="key">Source</span><span id="profile-source" class="value"></span></div><div class="kv-item"><span class="key">Geography</span><span id="profile-geo" class="value"></span></div><div class="kv-item"><span class="key">Male</span><span id="profile-male" class="value"></span></div><div class="kv-item"><span class="key">Female</span><span id="profile-female" class="value"></span></div></div></div>
                 </div>
-
                 <aside class="sidebar">
                     <div class="data-card cta-form">
                         <h3>Request Information</h3>
                         <p style="font-size: 0.9rem; color: var(--gray); margin-top: -1rem; margin-bottom: 1.5rem;">For counts, questions, or to place an order.</p>
-                        <form id="request-info-form">
-                            <input type="hidden" id="form-card-title" name="card_title">
-                            <div class="form-group">
-                                <label for="form-name">Full Name</label>
-                                <input type="text" id="form-name" name="name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="form-email">Email</label>
-                                <input type="email" id="form-email" name="email" required>
-                            </div>
-                             <div class="form-group">
-                                <label for="form-message">Message (Optional)</label>
-                                <textarea id="form-message" name="message" rows="4"></textarea>
-                            </div>
-                            <button type="submit" class="submit-btn">Send Request</button>
-                        </form>
+                        <form id="request-info-form"><input type="hidden" id="form-card-title" name="card_title"><div class="form-group"><label for="form-name">Full Name</label><input type="text" id="form-name" name="name" required></div><div class="form-group"><label for="form-email">Email</label><input type="email" id="form-email" name="email" required></div><div class="form-group"><label for="form-message">Message (Optional)</label><textarea id="form-message" name="message" rows="4"></textarea></div><button type="submit" class="submit-btn">Send Request</button></form>
                     </div>
                 </aside>
             </div>
         </div>
     </main>
-
     <script>
-    // --- Data for this specific card ---
-    const cardDataStore = {
-        '282876': {
-            id: 282876,
-            title: "Allegiant Pro-Life Conservative Donors",
-            description: "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom. This group works to support candidates who steadfastly believe that life begins at conception. These generous donors oppose government funding of abortion as well as a government-run health care system that will offer public funding for abortions. Their passion for the sanctity of life makes them responsive targets for Christian humanitarian and charitable offers as well. They are responsive both via telephone and direct mail.",
-            universe: 161746,
-            baseRate: 75.00,
-            lastUpdate: "2018-10-02",
-            source: "Direct response",
-            geography: "USA",
-            gender: { male: '60%', female: '40%' },
-            minimums: { quantity: 5000, dollar: 300 },
-            pricing: [
-                { segment: "TOTAL UNIVERSE", count: 161746, price: 75.00 },
-                { segment: "$5+ Donors", count: 120804, price: 75.00 },
-                { segment: "$5+ Telemarketing Donors", count: 161746, price: 75.00 }
-            ],
-            selects: [
-                { name: "12 Month Hotline", price: 5.00 },
-                { name: "Bible Lifestyle", price: 10.00 },
-                { name: "Congressional District", price: 5.00 },
-                { name: "Phone Number", price: 10.00 },
-                { name: "State/SCF/Zip", price: 5.00 },
-            ],
-            addressing: [
-                { name: "Email Delivery", price: 50.00 },
-                { name: "CASS CERT/BAR CODING", price: 0.00 },
-                { name: "HOME ADDRESS", price: 0.00 },
-            ]
-        }
-    };
+        const cardDataStore = {
+            '282876': {
+                id: 282876, title: "Allegiant Pro-Life Conservative Donors", description: "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom...", universe: 161746, baseRate: 75.00, lastUpdate: "2018-10-02", source: "Direct response", geography: "USA", gender: { male: '60%', female: '40%' },
+                pricing: [ { segment: "TOTAL UNIVERSE", count: 161746, price: 75.00 }, { segment: "$5+ Donors", count: 120804, price: 75.00 } ],
+                selects: [ { name: "12 Month Hotline", price: 5.00 }, { name: "Bible Lifestyle", price: 10.00 } ]
+            },
+            '479597': {
+                id: 479597, title: "Real America Donors", description: "The Real America Donor audience is made up of patriotic Americans who are boldly in the fight to not only stop the progressive agenda of the Biden/Harris Administration, but to see a truly America First administration in the White House.", universe: 397542, baseRate: 100.00, lastUpdate: "2023-10-24", source: "Direct response", geography: "USA", gender: { male: '60%', female: '40%' },
+                pricing: [
+                    { segment: "TOTAL UNIVERSE / BASE RATE", count: 397542, price: 100.00 },
+                    { segment: "Charitable Base Rate", count: 397542, price: 85.00 },
+                    { segment: "Last 12 month donors", count: 63880, price: 100.00 },
+                    { segment: "$100+ Donors", count: 76156, price: 120.00 },
+                    { segment: "Lifestyle - Donors to Veteran Causes", count: 28008, price: 85.00 },
+                    { segment: "Lifestyle - Gun Enthusiasts", count: 44528, price: 110.00 },
+                ],
+                selects: [
+                    { name: "Age", price: 5.00 },
+                    { name: "Dollar Amount", price: 5.00 },
+                    { name: "Gender", price: 5.00 },
+                    { name: "Lifestyle Select", price: 10.00 },
+                    { name: "Phone Numbers", price: 20.00 }
+                ]
+            }
+            // Other card data would go here
+        };
 
-    // --- Page Population Logic ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // In a real app, the ID would come from the URL, but we'll hardcode it for this template.
-        // const params = new URLSearchParams(window.location.search);
-        // const cardId = params.get('id');
-        const cardId = '282876'; // Using the ID from the sample PDF
-        const cardData = cardDataStore[cardId];
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const cardId = params.get('id');
+            const cardData = cardDataStore[cardId];
 
-        if (cardData) {
-            // Set Titles
-            document.title = `${cardData.title} | Allegiance List Marketing`;
-            document.getElementById('breadcrumb-title').textContent = cardData.title;
-            document.getElementById('card-title').textContent = cardData.title;
-            document.getElementById('form-card-title').value = cardData.title;
-            
-            // Populate Key Stats
-            document.getElementById('card-universe').textContent = cardData.universe.toLocaleString();
-            document.getElementById('card-rate').textContent = `$${cardData.baseRate.toFixed(2)}`;
-            document.getElementById('card-updated').textContent = new Date(cardData.lastUpdate).toLocaleDateString();
-            
-            // Populate Description
-            document.getElementById('card-description').textContent = cardData.description;
-            
-            // Populate Pricing Table
-            const pricingBody = document.querySelector('#pricing-table tbody');
-            cardData.pricing.forEach(item => {
-                pricingBody.innerHTML += `<tr><td>${item.segment}</td><td class="count">${item.count.toLocaleString()}</td><td class="price">$${item.price.toFixed(2)}</td></tr>`;
-            });
-
-            // Populate Selects Table
-            const selectsBody = document.querySelector('#selects-table tbody');
-            cardData.selects.forEach(item => {
-                selectsBody.innerHTML += `<tr><td>${item.name}</td><td class="price">+$${item.price.toFixed(2)}</td></tr>`;
-            });
-            
-            // Populate Audience Profile
-            document.getElementById('profile-source').textContent = cardData.source;
-            document.getElementById('profile-geo').textContent = cardData.geography;
-            document.getElementById('profile-male').textContent = cardData.gender.male;
-            document.getElementById('profile-female').textContent = cardData.gender.female;
-            
-             // Populate Addressing Table
-            const addressingBody = document.querySelector('#addressing-table tbody');
-            cardData.addressing.forEach(item => {
-                 addressingBody.innerHTML += `<tr><td>${item.name}</td><td class="price">${item.price > 0 ? '$' + item.price.toFixed(2) + '/M' : 'NO CHARGE'}</td></tr>`;
-            });
-
-        } else {
-            document.getElementById('card-title').textContent = "Data Card Not Found";
-        }
-    });
-
-    function toggleAccordion(header) {
-        const content = header.nextElementSibling;
-        const icon = header.querySelector('span');
-        if (content.style.display === "block") {
-            content.style.display = "none";
-            icon.textContent = '+';
-        } else {
-            content.style.display = "block";
-            icon.textContent = '-';
-        }
-    }
+            if (cardData) {
+                document.title = `${cardData.title} | Allegiance List Marketing`;
+                document.getElementById('breadcrumb-title').textContent = cardData.title;
+                document.getElementById('card-title').textContent = cardData.title;
+                document.getElementById('form-card-title').value = cardData.title;
+                document.getElementById('card-universe').textContent = cardData.universe.toLocaleString();
+                document.getElementById('card-rate').textContent = `$${cardData.baseRate.toFixed(2)}`;
+                document.getElementById('card-updated').textContent = new Date(cardData.lastUpdate).toLocaleDateString();
+                document.getElementById('card-description').textContent = cardData.description;
+                const pricingBody = document.querySelector('#pricing-table tbody');
+                cardData.pricing.forEach(item => { pricingBody.innerHTML += `<tr><td>${item.segment}</td><td class="count">${item.count.toLocaleString()}</td><td class="price">$${item.price.toFixed(2)}</td></tr>`; });
+                const selectsBody = document.querySelector('#selects-table tbody');
+                cardData.selects.forEach(item => { selectsBody.innerHTML += `<tr><td>${item.name}</td><td class="price">+$${item.price.toFixed(2)}</td></tr>`; });
+                document.getElementById('profile-source').textContent = cardData.source;
+                document.getElementById('profile-geo').textContent = cardData.geography;
+                document.getElementById('profile-male').textContent = cardData.gender.male;
+                document.getElementById('profile-female').textContent = cardData.gender.female;
+            } else {
+                document.getElementById('card-title').textContent = "Data Card Not Found";
+            }
+        });
     </script>
 </body>
 </html>
