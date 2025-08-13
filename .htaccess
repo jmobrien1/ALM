@@ -1,9 +1,25 @@
-# Allow ACME HTTP validation (keep at top)
+# Allow ACME HTTP validation (keeps cert issuance/renewal working)
 RewriteEngine On
 RewriteRule ^\.well-known/acme-challenge/ - [L]
+
+# Protect admin page with server-side Basic Auth
 <Files "admin.html">
   AuthType Basic
   AuthName "ALM Admin"
   AuthUserFile /home/r3ey5e1cozl4/.htpasswd
   Require valid-user
 </Files>
+
+# --- When your SSL is live, uncomment ONE of the two canonical redirects below ---
+
+## Force https + non-www
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#RewriteCond %{HTTP_HOST} ^www\.allegiancelistmarketing\.com$ [NC]
+#RewriteRule ^ https://allegiancelistmarketing.com%{REQUEST_URI} [L,R=301]
+
+## (OR) Force https + www
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+#RewriteCond %{HTTP_HOST} ^allegiancelistmarketing\.com$ [NC]
+#RewriteRule ^ https://www.allegiancelistmarketing.com%{REQUEST_URI} [L,R=301]
