@@ -13,10 +13,7 @@ jobs:
       - name: Prepare artifact
         run: |
           mkdir out
-          rsync -av --delete \
-            --exclude ".git" \
-            --exclude ".github" \
-            ./ ./out/
+          rsync -av --delete --exclude ".git" --exclude ".github" ./ ./out/
 
       - name: FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -28,7 +25,8 @@ jobs:
           port: 21
           local-dir: out/
           server-dir: ${{ secrets.FTP_DIR }}/
-          dangerous-clean-slate: true        # <-- nukes everything not in repo
-          exclude: |                         # keep these if present (optional)
-            .well-known/**                   # keeps cert renewal files
+          # set true to mirror (nuke anything not in repo)
+          dangerous-clean-slate: true
+          exclude: |
+            .well-known/**
             */.DS_Store
