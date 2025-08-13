@@ -27,5 +27,6 @@ jobs:
           local-dir: out/
           server-dir: ${{ secrets.FTP_DIR }}/
           protocol: ftps
-          # After verifying correct folder, you can mirror exactly by enabling:
+          # After first successful deploy, set this to true to mirror exactly
+          # (will delete old WP files in public_html):
           # dangerous-clean-slate: true
