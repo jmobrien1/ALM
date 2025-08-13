@@ -40,12 +40,20 @@
         .cta-form label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .cta-form input, .cta-form textarea { width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; }
         .submit-btn { width: 100%; padding: 1rem; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; }
+        /* ALM overrides */
+        .brand img{height:96px!important;width:auto;display:block}
+        .nav{height:96px!important}
     </style>
+<style>
+  .nav{height:96px}
+  .brand img{height:96px;width:auto;display:block}
+</style>
+
 </head>
 <body>
     <header class="header">
         <nav class="nav container">
-            <a href="index.html" class="logo">🇺🇸 Allegiance List Marketing</a>
+            <a class="brand" href="index.html"><img src="assets/img/alm-logo.png" alt="Allegiance List Marketing logo"></a>
             <ul class="nav-links">
                 <li><a href="index.html#services">Services</a></li>
                 <li><a href="marketplace.html">Data Marketplace</a></li>
