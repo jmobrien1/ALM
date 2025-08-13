@@ -15,7 +15,7 @@
     .header { background:var(--white); border-bottom:1px solid var(--border) }
     .nav { display:flex; justify-content:space-between; align-items:center; height:96px }
     .brand img{height:96px;width:auto;display:block}
-    .nav-links { display:flex; list-style:none; gap:3rem }
+    .nav-links { display:flex; list-style:none; gap:3rem; margin:0; padding:0 }
     .nav-links a { color:var(--dark); text-decoration:none; font-weight:500 }
     main { padding:40px 0 }
     .breadcrumb { font-size:.9rem; color:var(--gray); margin-bottom:1rem }
@@ -24,7 +24,7 @@
     .datacard-layout { display:grid; grid-template-columns:2fr 1fr; gap:2rem; align-items:flex-start }
     .data-card { background:var(--white); padding:2rem; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); border:1px solid var(--border) }
     .data-card h3 { font-size:1.5rem; margin-top:0; margin-bottom:1.2rem; border-bottom:1px solid var(--border); padding-bottom:1rem }
-    .stat-block { display:flex; text-align:center; justify-content:space-around }
+    .stat-block { display:flex; text-align:center; justify-content:space-around; gap:1rem; flex-wrap:wrap }
     .stat-item .value { font-size:2rem; font-weight:700; color:var(--primary) }
     .stat-item .label { font-size:.9rem; color:var(--gray); text-transform:uppercase }
     .data-table { width:100%; border-collapse:collapse }
@@ -34,7 +34,10 @@
     .key-value-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.2rem }
     .kv-item .key { font-weight:700; color:var(--gray); font-size:.9rem; display:block }
     .kv-item .value { font-size:1.05rem }
-    .btn { background:var(--primary); color:#fff; border:none; padding:.75rem 1rem; border-radius:8px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block }
+    .btn { background:#0A3D62; color:#fff; border:none; padding:.75rem 1rem; border-radius:8px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block }
+    .btn.alt { background:#334155 }
+    .btn.red { background:#DC2626 }
+    @media (max-width:980px){ .datacard-layout{ grid-template-columns:1fr } }
   </style>
 </head>
 <body>
@@ -81,24 +84,135 @@
         </div>
         <aside class="sidebar">
           <div class="data-card">
-            <h3>Request Information</h3>
-            <p style="font-size:.9rem;color:#64748b;margin-top:-.5rem;margin-bottom:1rem;">For counts, questions, or to place an order.</p>
-            <a id="email-btn" class="btn" href="#">Email Us</a>
+            <h3>Actions</h3>
+            <p style="font-size:.9rem;color:#64748b;margin-top:-.5rem;margin-bottom:1rem;">Download or request details.</p>
+            <button id="download-pdf" class="btn">Download PDF</button>
+            <a id="email-btn" class="btn alt" style="margin-left:8px" href="#">Email Us</a>
           </div>
         </aside>
       </div>
     </div>
   </main>
+
+  <!-- PDF libs -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.7.1/dist/jspdf.plugin.autotable.min.js"></script>
+
   <script>
-    let store=[];
-    const qs = new URLSearchParams(location.search);
-    const id = qs.get('id');
+    let currentCard = null;
 
+    // Helper: fetch an image and return dataURL for PDF embedding
+    async function toDataURL(url){
+      const res = await fetch(url, {cache:'no-store'});
+      const blob = await res.blob();
+      return await new Promise(resolve => { const fr=new FileReader(); fr.onload=()=>resolve(fr.result); fr.readAsDataURL(blob); });
+    }
+    function fmt(n){ return (n||0).toLocaleString(); }
+
+    async function generatePDF(card){
+      if(!card) return;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit:'pt', format:'letter' });
+      const pageW = doc.internal.pageSize.getWidth();
+      const margin = 48;
+      let y = margin;
+
+      // Header/logo
+      try {
+        const logo = await toDataURL('assets/img/alm-logo.png');
+        doc.addImage(logo, 'PNG', margin, y, 120, 90);
+      } catch(e) { /* ignore if image fails */ }
+
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(20);
+      doc.text(card.title || 'Data Card', margin, y + 110);
+
+      doc.setFont('helvetica', ''); doc.setFontSize(11);
+      doc.text('Universe: ' + fmt(card.universe), margin, y + 130);
+      doc.text('Base Rate: $' + ((+card.baseRate||0).toFixed(2)) + '/M', margin + 220, y + 130);
+      doc.text('Last Updated: ' + (card.lastUpdate||''), margin + 400, y + 130);
+
+      y += 160;
+
+      // Description
+      if(card.description){
+        doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text('Description', margin, y);
+        y += 14;
+        doc.setFont('helvetica',''); doc.setFontSize(11);
+        const lines = doc.splitTextToSize(card.description, pageW - margin*2);
+        doc.text(lines, margin, y + 10);
+        y += 10 + lines.length * 14;
+      }
+
+      // Pricing table
+      if((card.pricing||[]).length){
+        doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text('Pricing', margin, y + 20);
+        y += 24;
+        doc.autoTable({
+          startY: y,
+          margin: { left: margin, right: margin },
+          styles: { fontSize: 11 },
+          head: [['Segment', 'Count', 'Price/M']],
+          body: card.pricing.map(r => [r.segment||'', fmt(r.count||0), '$'+(+r.price||0).toFixed(2)]),
+        });
+        y = doc.lastAutoTable.finalY + 10;
+      }
+
+      // Selects table
+      if((card.selects||[]).length){
+        doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text('Optional Selects', margin, y + 20);
+        y += 24;
+        doc.autoTable({
+          startY: y,
+          margin: { left: margin, right: margin },
+          styles: { fontSize: 11 },
+          head: [['Select', 'Price/M']],
+          body: card.selects.map(s => [s.name||'', '$'+(+s.price||0).toFixed(2)]),
+        });
+        y = doc.lastAutoTable.finalY + 10;
+      }
+
+      // Audience profile
+      const profile = [
+        ['Source', card.source||''],
+        ['Geography', card.geography||''],
+        ['Male', card.genderMale||''],
+        ['Female', card.genderFemale||''],
+      ].filter(r => r[1]);
+      if(profile.length){
+        doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text('Audience Profile', margin, y + 20);
+        y += 24;
+        doc.autoTable({
+          startY: y,
+          margin: { left: margin, right: margin },
+          styles: { fontSize: 11 },
+          head: [['Field', 'Value']],
+          body: profile,
+        });
+        y = doc.lastAutoTable.finalY + 10;
+      }
+
+      // Footer
+      doc.setDrawColor(200); doc.line(margin, 750, pageW-margin, 750);
+      doc.setFont('helvetica',''); doc.setFontSize(9);
+      doc.text('Allegiance List Marketing — Political Fundraising Excellence', margin, 767);
+      doc.text(new Date().toLocaleString(), pageW - margin, 767, { align:'right' });
+
+      doc.save((card.title || 'Data Card') + '.pdf');
+    }
+
+    // Page boot
     (async function(){
-      store = await (await fetch('data/datacards.json',{cache:'no-store'})).json();
-      const card = store.find(c=>String(c.id)===String(id));
-      if(!card){ document.getElementById('card-title').textContent="Data Card Not Found"; return; }
+      const qs = new URLSearchParams(location.search);
+      const id = qs.get('id');
 
+      let store=[];
+      try { store = await (await fetch('data/datacards.json',{cache:'no-store'})).json(); } catch(e){ store=[]; }
+      const card = store.find(c => String(c.id) === String(id));
+      currentCard = card;
+
+      if(!card){ document.getElementById('card-title').textContent = "Data Card Not Found"; return; }
+
+      // Fill UI
       document.title = card.title + " | Allegiance List Marketing";
       document.getElementById('breadcrumb-title').textContent = card.title;
       document.getElementById('card-title').textContent = card.title;
@@ -122,8 +236,7 @@
       });
 
       const email = document.getElementById('email-btn');
-      const subject = encodeURIComponent("Data Card Inquiry — " + card.title);
-      email.href = "mailto:?subject=" + subject;
+      email.href = "mailto:?subject=" + encodeURIComponent("Data Card Inquiry — " + card.title);
 
       if(card.pdf){
         const pdfCard = document.getElementById('pdf-card');
@@ -131,6 +244,16 @@
         const link = document.getElementById('pdf-link');
         link.href = card.pdf;
         link.textContent = "Open " + card.title + " PDF";
+      }
+
+      // Wire the Download PDF button
+      document.getElementById('download-pdf').addEventListener('click', function(e){
+        e.preventDefault(); generatePDF(currentCard);
+      });
+
+      // If someone linked with #pdf, auto-generate
+      if (location.hash === '#pdf') {
+        setTimeout(()=>generatePDF(currentCard), 300);
       }
     })();
   </script>
