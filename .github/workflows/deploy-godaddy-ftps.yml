@@ -1,0 +1,31 @@
+name: Deploy to GoDaddy (FTPS)
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare artifact
+        run: |
+          mkdir out
+          rsync -av --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            ./ ./out/
+
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: out/
+          server-dir: ${{ secrets.FTP_DIR }}/
+          protocol: ftps
+          # After verifying correct folder, you can mirror exactly by enabling:
+          # dangerous-clean-slate: true
