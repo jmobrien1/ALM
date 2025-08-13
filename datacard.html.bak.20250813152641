@@ -236,7 +236,7 @@
       });
 
       const email = document.getElementById('email-btn');
-      email.href = "mailto:megan.com?subject=" + encodeURIComponent("Data Card Inquiry — " + card.title);
+      email.href = "mailto:?subject=" + encodeURIComponent("Data Card Inquiry — " + card.title);
 
       if(card.pdf){
         const pdfCard = document.getElementById('pdf-card');
