@@ -24,8 +24,11 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps           # explicit FTPS (TLS) on port 21
+          protocol: ftps
+          port: 21
           local-dir: out/
           server-dir: ${{ secrets.FTP_DIR }}/
-          # Once you confirm correct folder, you can mirror exactly by enabling:
-          # dangerous-clean-slate: true
+          dangerous-clean-slate: true        # <-- nukes everything not in repo
+          exclude: |                         # keep these if present (optional)
+            .well-known/**                   # keeps cert renewal files
+            */.DS_Store
