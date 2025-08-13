@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
 <title>ALM • Data Card Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -23,209 +24,224 @@ small{color:var(--muted)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:900px){.row{grid-template-columns:1fr}}
 .code{background:#0b1220;color:#e2e8f0;padding:10px;border-radius:8px;overflow:auto;font-family:ui-monospace,Menlo,monospace}
-a.action{cursor:pointer;color:#0A3D62;text-decoration:none;font-weight:600}
-a.action:hover{text-decoration:underline}
+
+/* Gate */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f6f8fb}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.06);width:min(520px,92vw)}
+.card h1{margin:0 0 8px}
+.card p{color:#64748b;margin:0 0 14px}
+.card form{display:flex;gap:10px}
+.card input[type=password]{flex:1}
+#app{display:none}
+.err{color:#DC2626;font-weight:600;margin-top:8px;display:none}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Data Card Admin</h1>
-  <p>Edit your catalog, then <b>Download JSON</b> and commit <code>data/datacards.json</code> to publish.</p>
 
-  <div class="toolbar">
-    <button class="btn" id="btnAdd">Add Card</button>
-    <button class="btn" id="btnDownload">Download JSON</button>
-    <a class="btn red" target="_blank" href="https://github.com/jmobrien1/ALM/edit/main/data/datacards.json">Open GitHub Web Editor</a>
+<!-- Password gate -->
+<section id="gate">
+  <div class="card">
+    <h1>Admin Sign-in</h1>
+    <p>Enter the passphrase to manage data cards.</p>
+    <form id="login">
+      <input id="pw" type="password" placeholder="Passphrase" autocomplete="current-password" required />
+      <button class="btn" type="submit">Unlock</button>
+    </form>
+    <div id="msg" class="err">Incorrect passphrase. Try again.</div>
   </div>
+</section>
 
-  <table id="tbl">
-    <thead>
-      <tr><th style="width:140px">ID</th><th>Title</th><th style="width:160px">Universe</th><th style="width:140px">Base $/M</th><th style="width:160px">Updated</th><th style="width:180px">Actions</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<!-- App (hidden until unlocked) -->
+<div id="app">
+  <div class="wrap">
+    <h1>Data Card Admin</h1>
+    <p>Edit your catalog, then <b>Download JSON</b> and commit <code>data/datacards.json</code> to publish.</p>
 
-  <h2>Selected Card</h2>
-  <div id="detail">
-    <div class="row">
-      <div><label>Title<input id="f_title"/></label></div>
-      <div><label>Short Description<input id="f_short"/></label></div>
+    <div class="toolbar">
+      <button class="btn" id="btnAdd">Add Card</button>
+      <button class="btn" id="btnDownload">Download JSON</button>
+      <a class="btn red" target="_blank" href="https://github.com/jmobrien1/ALM/edit/main/data/datacards.json">Open GitHub Web Editor</a>
     </div>
-    <div class="row">
-      <div><label>Universe<input id="f_universe" type="number"/></label></div>
-      <div><label>Base Rate ($/M)<input id="f_base" type="number" step="0.01"/></label></div>
-    </div>
-    <div class="row">
-      <div><label>Last Updated<input id="f_updated" placeholder="YYYY-MM-DD"/></label></div>
-      <div><label>PDF (optional path)<input id="f_pdf" placeholder="assets/pdfs/Example.pdf"/></label></div>
-    </div>
-    <label>Description<textarea id="f_desc" rows="5"></textarea></label>
 
-    <h3>Pricing</h3>
-    <div id="pricing"></div>
-    <button class="btn" id="btnAddPrice">+ Add Price Row</button>
+    <table id="tbl">
+      <thead>
+        <tr><th style="width:140px">ID</th><th>Title</th><th style="width:160px">Universe</th><th style="width:140px">Base $/M</th><th style="width:160px">Updated</th><th style="width:180px">Actions</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-    <h3 style="margin-top:16px">Selects</h3>
-    <div id="selects"></div>
-    <button class="btn" id="btnAddSelect">+ Add Select</button>
+    <h2>Selected Card</h2>
+    <div id="detail">
+      <div class="row">
+        <div><label>Title<input id="f_title"/></label></div>
+        <div><label>Short Description<input id="f_short"/></label></div>
+      </div>
+      <div class="row">
+        <div><label>Universe<input id="f_universe" type="number"/></label></div>
+        <div><label>Base Rate ($/M)<input id="f_base" type="number" step="0.01"/></label></div>
+      </div>
+      <div class="row">
+        <div><label>Last Updated<input id="f_updated" placeholder="YYYY-MM-DD"/></label></div>
+        <div><label>PDF (optional path)<input id="f_pdf" placeholder="assets/pdfs/Example.pdf"/></label></div>
+      </div>
+      <label>Description<textarea id="f_desc" rows="5"></textarea></label>
+
+      <h3>Pricing</h3>
+      <div id="pricing"></div>
+      <button class="btn" id="btnAddPrice">+ Add Price Row</button>
+
+      <h3 style="margin-top:16px">Selects</h3>
+      <div id="selects"></div>
+      <button class="btn" id="btnAddSelect">+ Add Select</button>
+    </div>
+
+    <h2>JSON Preview</h2>
+    <pre class="code" id="json"></pre>
   </div>
-
-  <h2>JSON Preview</h2>
-  <pre class="code" id="json"></pre>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const el = (s, d=document) => d.querySelector(s);
-  const tblBody = el('#tbl tbody');
-  const preview = el('#json');
-  let cards = [];
-  let currentId = null;
+const SALT_B64 = "XyOXhaqUl5M3g7SMwr/nog==";     // from step 2
+const HASH_B64 = "w0MtrNpCrFPkgKyJEmsGHzpz8ycUIIM1mRk2SFcYRgg=";     // from step 2
+const ITER = 200000;
 
-  async function load() {
-    try {
-      const r = await fetch('data/datacards.json', { cache: 'no-store' });
-      cards = await r.json();
-    } catch (e) {
-      console.error('Failed to load datacards.json:', e);
-      cards = [];
-    }
-    renderTable();
-    if (cards.length) select(cards[0].id);
-  }
+// constant-time compare
+function equalBytes(a,b){ if(a.byteLength!==b.byteLength) return false; const va=new Uint8Array(a), vb=new Uint8Array(b); let diff=0; for(let i=0;i<va.length;i++) diff|=(va[i]^vb[i]); return diff===0; }
 
-  function dumpJSON() {
-    preview.textContent = JSON.stringify(cards, null, 2);
-  }
+async function derive(password, saltB64){
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', hash:'SHA-256', salt:Uint8Array.from(atob(saltB64), c=>c.charCodeAt(0)), iterations:ITER}, key, 256);
+  return new Uint8Array(bits).buffer;
+}
 
-  function renderTable() {
-    tblBody.innerHTML = '';
-    [...cards]
-      .sort((a,b)=> String(a.title||'').localeCompare(String(b.title||'')))
-      .forEach(c => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${c.id}</td>
-          <td>${c.title||''}</td>
-          <td>${(c.universe||0).toLocaleString()}</td>
-          <td>$${(+c.baseRate||0).toFixed(2)}</td>
-          <td>${c.lastUpdate||''}</td>
-          <td>
-            <a href="#" class="action edit" data-id="${c.id}">Edit</a> •
-            <a href="#" class="action del" data-id="${c.id}">Delete</a> •
-            <a class="action" href="datacard.html?id=${c.id}" target="_blank">View</a>
-          </td>`;
-        tblBody.appendChild(tr);
-      });
-    dumpJSON();
-  }
+async function unlockFlow(){
+  // already unlocked this tab?
+  if(sessionStorage.getItem('alm_admin_ok') === HASH_B64){ document.getElementById('gate').style.display='none'; document.getElementById('app').style.display='block'; initApp(); return; }
 
-  function select(id) {
-    const c = cards.find(x => String(x.id) === String(id));
-    if (!c) return;
-    currentId = c.id;
-
-    const bind = (inputId, prop, isNum=false) => {
-      const i = el('#' + inputId);
-      i.value = c[prop] ?? '';
-      i.oninput = () => { c[prop] = isNum ? +i.value : i.value; dumpJSON(); renderTable(); bindAll(); };
-    };
-    bind('f_title','title');
-    bind('f_short','shortDescription');
-    bind('f_universe','universe',true);
-    bind('f_base','baseRate',true);
-    bind('f_updated','lastUpdate');
-    bind('f_pdf','pdf');
-    const desc = el('#f_desc'); desc.value = c.description||''; desc.oninput = () => { c.description = desc.value; dumpJSON(); };
-
-    // Pricing
-    const pWrap = el('#pricing'); pWrap.innerHTML = '';
-    (c.pricing ||= []).forEach((row, i) => {
-      const d = document.createElement('div'); d.className='row';
-      d.innerHTML = `
-        <div><label>Segment<input value="${row.segment||''}"></label></div>
-        <div><label>Count<input type="number" value="${row.count||0}"></label></div>
-        <div><label>$/M<input type="number" step="0.01" value="${row.price||0}"></label></div>
-        <div><button class="btn red" type="button">Delete</button></div>`;
-      const [segInp, cntInp, priceInp, delBtn] = d.querySelectorAll('input,button');
-      segInp.oninput = () => { row.segment = segInp.value; dumpJSON(); };
-      cntInp.oninput = () => { row.count = +cntInp.value; dumpJSON(); };
-      priceInp.oninput = () => { row.price = +priceInp.value; dumpJSON(); };
-      delBtn.onclick = () => { c.pricing.splice(i,1); select(currentId); renderTable(); };
-      pWrap.appendChild(d);
-    });
-    el('#btnAddPrice').onclick = () => { c.pricing.push({segment:'',count:0,price:0}); select(currentId); renderTable(); };
-
-    // Selects
-    const sWrap = el('#selects'); sWrap.innerHTML = '';
-    (c.selects ||= []).forEach((row, i) => {
-      const d = document.createElement('div'); d.className='row';
-      d.innerHTML = `
-        <div><label>Select<input value="${row.name||''}"></label></div>
-        <div><label>$/M<input type="number" step="0.01" value="${row.price||0}"></label></div>
-        <div><button class="btn red" type="button">Delete</button></div>`;
-      const [nameInp, priceInp, delBtn] = d.querySelectorAll('input,button');
-      nameInp.oninput = () => { row.name = nameInp.value; dumpJSON(); };
-      priceInp.oninput = () => { row.price = +priceInp.value; dumpJSON(); };
-      delBtn.onclick = () => { c.selects.splice(i,1); select(currentId); renderTable(); };
-      sWrap.appendChild(d);
-    });
-    el('#btnAddSelect').onclick = () => { c.selects.push({name:'',price:0}); select(currentId); renderTable(); };
-
-    dumpJSON();
-  }
-
-  function addCard() {
-    const id = Date.now();
-    const c = {
-      id,
-      title: "New Data Card",
-      shortDescription: "",
-      description: "",
-      universe: 0,
-      baseRate: 0,
-      lastUpdate: "",
-      source: "",
-      geography: "",
-      genderMale: "",
-      genderFemale: "",
-      pricing: [],
-      selects: [],
-      pdf: ""
-    };
-    cards.push(c);
-    renderTable();
-    select(id);
-  }
-
-  function deleteCard(id) {
-    if (!confirm('Delete this card?')) return;
-    cards = cards.filter(x => String(x.id) !== String(id));
-    renderTable();
-    if (cards.length) select(cards[0].id); else { currentId = null; dumpJSON(); }
-  }
-
-  function bindAll(){
-    // Table actions via event delegation
-    tblBody.onclick = (e) => {
-      const a = e.target.closest('a');
-      if (!a) return;
-      if (a.classList.contains('edit')) { e.preventDefault(); select(a.dataset.id); }
-      if (a.classList.contains('del'))  { e.preventDefault(); deleteCard(a.dataset.id); }
-    };
-  }
-
-  // Toolbar
-  el('#btnAdd').addEventListener('click', addCard);
-  el('#btnDownload').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(cards,null,2)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'datacards.json'; a.click();
-    URL.revokeObjectURL(a.href);
+  const form = document.getElementById('login');
+  const pw = document.getElementById('pw');
+  const msg = document.getElementById('msg');
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    msg.style.display='none';
+    try{
+      const derived = await derive(pw.value, SALT_B64);
+      const ok = equalBytes(derived, Uint8Array.from(atob(HASH_B64), c=>c.charCodeAt(0)).buffer);
+      if(ok){
+        sessionStorage.setItem('alm_admin_ok', HASH_B64);
+        document.getElementById('gate').style.display='none';
+        document.getElementById('app').style.display='block';
+        initApp();
+      }else{
+        msg.style.display='block';
+        pw.select();
+      }
+    }catch(err){ msg.textContent='Error during sign-in.'; msg.style.display='block'; }
   });
+}
 
-  bindAll();
-  load();
-});
+document.addEventListener('DOMContentLoaded', unlockFlow);
+
+/* ------- Admin app (same as your working version) ------- */
+function adminApp(){
+  const el=(s,d=document)=>d.querySelector(s);
+  const tblBody=el('#tbl tbody'); const preview=el('#json');
+  let cards=[], currentId=null;
+
+  async function load(){
+    try{
+      const r=await fetch('data/datacards.json',{cache:'no-store'});
+      cards = await r.json();
+    }catch(e){ cards=[]; }
+    renderTable(); if(cards.length) select(cards[0].id);
+  }
+  function dumpJSON(){ preview.textContent = JSON.stringify(cards,null,2); }
+  function renderTable(){
+    tblBody.innerHTML='';
+    [...cards].sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''))).forEach(c=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td>${c.id}</td>
+        <td>${c.title||''}</td>
+        <td>${(c.universe||0).toLocaleString()}</td>
+        <td>$${(+c.baseRate||0).toFixed(2)}</td>
+        <td>${c.lastUpdate||''}</td>
+        <td>
+          <a href="#" class="action edit" data-id="${c.id}">Edit</a> •
+          <a href="#" class="action del" data-id="${c.id}">Delete</a> •
+          <a class="action" href="datacard.html?id=${c.id}" target="_blank">View</a>
+        </td>`;
+      tblBody.appendChild(tr);
+    });
+    dumpJSON();
+  }
+  function select(id){
+    const c = cards.find(x=>String(x.id)===String(id)); if(!c) return; currentId=c.id;
+    const bind=(i,prop,num=false)=>{ const n=el('#'+i); n.value=c[prop]??''; n.oninput=()=>{ c[prop]=num?+n.value:n.value; dumpJSON(); renderTable(); bindAll(); }; };
+    bind('f_title','title'); bind('f_short','shortDescription'); bind('f_universe','universe',true); bind('f_base','baseRate',true);
+    bind('f_updated','lastUpdate'); bind('f_pdf','pdf');
+    const d=el('#f_desc'); d.value=c.description||''; d.oninput=()=>{c.description=d.value; dumpJSON();};
+
+    // pricing
+    const p=el('#pricing'); p.innerHTML='';
+    (c.pricing ||= []).forEach((row,i)=>{
+      const div=document.createElement('div'); div.className='row';
+      div.innerHTML=`<div><label>Segment<input value="${row.segment||''}"></label></div>
+                     <div><label>Count<input type="number" value="${row.count||0}"></label></div>
+                     <div><label>$/M<input type="number" step="0.01" value="${row.price||0}"></label></div>
+                     <div><button class="btn red" type="button">Delete</button></div>`;
+      const [seg,cnt,pr,del]=div.querySelectorAll('input,button');
+      seg.oninput=()=>{row.segment=seg.value; dumpJSON();};
+      cnt.oninput=()=>{row.count=+cnt.value; dumpJSON();};
+      pr.oninput =()=>{row.price=+pr.value; dumpJSON();};
+      del.onclick =()=>{c.pricing.splice(i,1); select(currentId); renderTable();};
+      p.appendChild(div);
+    });
+    el('#btnAddPrice').onclick=()=>{(c.pricing ||= []).push({segment:'',count:0,price:0}); select(currentId); renderTable();};
+
+    // selects
+    const s=el('#selects'); s.innerHTML='';
+    (c.selects ||= []).forEach((row,i)=>{
+      const div=document.createElement('div'); div.className='row';
+      div.innerHTML=`<div><label>Select<input value="${row.name||''}"></label></div>
+                     <div><label>$/M<input type="number" step="0.01" value="${row.price||0}"></label></div>
+                     <div><button class="btn red" type="button">Delete</button></div>`;
+      const [name,pr,del]=div.querySelectorAll('input,button');
+      name.oninput=()=>{row.name=name.value; dumpJSON();};
+      pr.oninput   =()=>{row.price=+pr.value; dumpJSON();};
+      del.onclick  =()=>{c.selects.splice(i,1); select(currentId); renderTable();};
+      s.appendChild(div);
+    });
+    el('#btnAddSelect').onclick=()=>{(c.selects ||= []).push({name:'',price:0}); select(currentId); renderTable();};
+
+    dumpJSON();
+  }
+  function addCard(){
+    const id=Date.now();
+    cards.push({id,title:"New Data Card",shortDescription:"",description:"",universe:0,baseRate:0,lastUpdate:"",source:"",geography:"",genderMale:"",genderFemale:"",pricing:[],selects:[],pdf:""});
+    renderTable(); select(id);
+  }
+  function delCard(id){
+    if(!confirm('Delete this card?')) return;
+    cards = cards.filter(x=>String(x.id)!==String(id));
+    renderTable(); if(cards.length) select(cards[0].id); else { currentId=null; dumpJSON(); }
+  }
+  function bindAll(){
+    tblBody.onclick=(e)=>{
+      const a=e.target.closest('a'); if(!a) return;
+      if(a.classList.contains('edit')){ e.preventDefault(); select(a.dataset.id); }
+      if(a.classList.contains('del')) { e.preventDefault(); delCard(a.dataset.id); }
+    };
+  }
+  document.getElementById('btnAdd').addEventListener('click', addCard);
+  document.getElementById('btnDownload').addEventListener('click', ()=>{
+    const blob=new Blob([JSON.stringify(cards,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='datacards.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+  bindAll(); load();
+}
+function initApp(){ adminApp(); }
 </script>
 </body>
 </html>
