@@ -87,7 +87,7 @@
             <h3>Actions</h3>
             <p style="font-size:.9rem;color:#64748b;margin-top:-.5rem;margin-bottom:1rem;">Download or request details.</p>
             <button id="download-pdf" class="btn">Download PDF</button>
-            <a id="email-btn" class="btn alt" style="margin-left:8px" href="mailto:megan.com">Email Us</a>
+            <a id="email-btn" class="btn alt" style="margin-left:8px"  href="mailto:megan.com">Email Us</a>
           </div>
         </aside>
       </div>
@@ -258,6 +258,15 @@
     })();
   </script>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var link=document.getElementById('email-btn')||document.querySelector('a[href^="mailto"]');
+  if(!link) return;
+  var t=document.getElementById('card-title');
+  var subj = t ? 'Data Card Inquiry — ' + t.textContent.trim() : 'Allegiance List Marketing Inquiry';
+  link.setAttribute('href','mailto:megan@allegiancelists.com?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(location.href));
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   var link = document.getElementById('email-btn');

@@ -147,7 +147,7 @@
       <p style="margin:8px 0;font-size:18px">
         <a href="tel:+17033959266" style="text-decoration:none;color:inherit">703.395.9266</a>
         &nbsp;|&nbsp;
-        <a href="mailto:megan.com" style="text-decoration:none;color:inherit">Email Us</a>
+        <a href="mailto:megan.com?subject=Allegiance%20List%20Marketing%20Inquiry"  style="text-decoration:none;color:inherit">Email Us</a>
         &nbsp;|&nbsp;
         <span>15 North King Street, Suite 205, Leesburg, VA 20175</span>
       </p>
@@ -163,6 +163,15 @@
     if(location.hash.toLowerCase()==="#marketplace"){ location.replace("marketplace.html"); }
   </script>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('a').forEach(function(a){
+    if ((a.textContent||'').trim().toLowerCase()==='email us') {
+      a.setAttribute('href','mailto:megan@allegiancelists.com?subject='+encodeURIComponent('Allegiance List Marketing Inquiry'));
+    }
+  });
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('a').forEach(function(a){
