@@ -28,7 +28,7 @@
     .cta-btn { background:var(--accent); color:#fff; padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:700; }
 
     /* Hero */
-    .hero { background:var(--primary); color:var(--white); min-height:90vh; display:flex; align-items:center; padding:110px 0 80px; }
+    .hero { background:#fff; color:var(--white); min-height:90vh; display:flex; align-items:center; padding:110px 0 80px; }
     .hero-container { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
     .hero-content h1 { font-size:3.5rem; line-height:1.1; margin-bottom:1rem; color:var(--white); }
     .hero-content .subtitle { font-size:1.25rem; color:rgba(255,255,255,.92); margin-bottom:2rem; max-width:640px; }
@@ -49,9 +49,7 @@
 
     /* Footer */
     footer { padding:40px 0; text-align:center; color:#64748b; font-size:.95rem; }
-    .hero .grid{grid-template-columns:1fr;}
-    .hero img{display:none!important;}
-    /* ALM overrides */
+    .hero .grid{grid-template-columns:1.2fr .8fr;}/* ALM overrides */
     .brand img{height:96px!important;width:auto;display:block}
     .brand span{display:none!important}
     .nav{height:96px!important}
@@ -108,7 +106,8 @@
 
       <div class="hero-art" aria-hidden="true">
         <img src="assets/img/alm-logo.png" alt="" style="max-width:420px;width:100%;height:auto;display:block;margin:auto;filter:drop-shadow(0 20px 40px rgba(0,0,0,.25));">
-      </div>
+        <div><img class="hero-logo" src="assets/img/alm-logo-white.png" alt=""></div>
+</div>
     </div>
   </section>
 
