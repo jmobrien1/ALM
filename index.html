@@ -1,51 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Allegiance List Marketing | Political Fundraising Excellence</title>
-    <meta name="description" content="Premier political fundraising and direct mail specialists. 20+ years of conservative campaign expertise, now featuring our new Data Card Marketplace.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #0A3D62; --accent: #E67E22; --dark: #1A202C; --light: #F4F7F9; --gray: #A0AEC0; --white: #ffffff; }
-        html { scroll-behavior: smooth; }
-        body { margin: 0; font-family: 'Roboto', sans-serif; line-height: 1.6; color: var(--dark); background-color: var(--white); overflow-x: hidden; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; color: var(--primary); }
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
-        .header { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(10, 61, 98, 0.1); z-index: 1000; }
-        .nav { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-        .logo { font-size: 22px; font-weight: 800; color: var(--primary); text-decoration: none; white-space: nowrap; }
-        .nav-links { display: flex; list-style: none; gap: 3rem; align-items: center; }
-        .nav-links a { color: var(--dark); text-decoration: none; font-weight: 500; }
-        .cta-btn { background: var(--accent); color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; }
-        .hero { background: var(--primary); color: var(--white); min-height: 100vh; display: flex; align-items: center; padding-top: 80px; }
-        .hero-container { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
-        .hero-content h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 2rem; color: var(--white); }
-        .hero-content .subtitle { font-size: 1.5rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 3rem; max-width: 600px; }
-        .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-        .stat-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 2.5rem; border-radius: 24px; text-align: center; }
-        .stat-number { font-size: 3rem; font-weight: 800; color: white; display: block; margin-bottom: 0.5rem; }
-        .stat-label { color: rgba(255, 255, 255, 0.8); }
-        .services { padding: 120px 0; background: var(--light); }
-        .section-header { text-align: center; margin-bottom: 5rem; }
-        .section-title { font-size: 3rem; margin-bottom: 1.5rem; }
-        .section-subtitle { font-size: 1.3rem; color: #555; max-width: 600px; margin: 0 auto; }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 3rem; }
-        .service-card { background: white; padding: 3rem; border-radius: 24px; box-shadow: 0 15px 40px rgba(0,0,0,0.06); transition: all 0.3s ease; }
-        .service-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0,0,0,0.1); }
-        .service-card h3 { font-size: 1.6rem; margin-bottom: 1rem; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Allegiance List Marketing | Political Fundraising Excellence</title>
+  <meta name="description" content="Premier political fundraising and direct mail specialists. 20+ years of conservative campaign expertise, now featuring our new Data Card Marketplace.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary:#0A3D62; --accent:#E67E22; --dark:#1A202C; --light:#F4F7F9; --gray:#A0AEC0; --white:#ffffff; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; font-family:'Roboto',sans-serif; line-height:1.6; color:var(--dark); background:var(--white); overflow-x:hidden; }
+    h1,h2,h3,h4,h5,h6 { font-family:'Montserrat',sans-serif; color:var(--primary); }
+    .container { max-width:1400px; margin:0 auto; padding:0 2rem; }
+
+    /* Header / nav */
+    .header { position:fixed; top:0; width:100%; background:rgba(255,255,255,.9);
+              backdrop-filter:blur(15px); border-bottom:1px solid rgba(10,61,98,.1); z-index:1000; }
+    .nav { display:flex; justify-content:space-between; align-items:center; height:80px; }
+    .brand { display:flex; align-items:center; gap:.75rem; text-decoration:none; color:var(--primary); white-space:nowrap; }
+    .brand img { height:44px; width:auto; display:block; }
+    .brand span { font-size:20px; font-weight:800; letter-spacing:.02em; }
+    .nav-links { display:flex; list-style:none; gap:2rem; align-items:center; margin:0; padding:0; }
+    .nav-links a { color:var(--dark); text-decoration:none; font-weight:500; }
+    .cta-btn { background:var(--accent); color:#fff; padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:700; }
+
+    /* Hero */
+    .hero { background:var(--primary); color:var(--white); min-height:90vh; display:flex; align-items:center; padding:110px 0 80px; }
+    .hero-container { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+    .hero-content h1 { font-size:3.5rem; line-height:1.1; margin-bottom:1rem; color:var(--white); }
+    .hero-content .subtitle { font-size:1.25rem; color:rgba(255,255,255,.92); margin-bottom:2rem; max-width:640px; }
+    .hero-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:1.25rem; }
+    .stat-card { background:rgba(255,255,255,.12); backdrop-filter:blur(10px); padding:1.5rem; border-radius:18px; text-align:center; }
+    .stat-number { font-size:2rem; font-weight:800; color:#fff; display:block; margin-bottom:.25rem; }
+    .stat-label { color:rgba(255,255,255,.85); font-size:.95rem; }
+
+    /* Services */
+    .services { padding:90px 0; background:var(--light); }
+    .section-header { text-align:center; margin-bottom:3.5rem; }
+    .section-title { font-size:2.25rem; margin-bottom:1rem; }
+    .section-subtitle { font-size:1.1rem; color:#555; max-width:640px; margin:0 auto; }
+    .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; }
+    .service-card { background:#fff; padding:2rem; border-radius:18px; box-shadow:0 15px 40px rgba(0,0,0,.06); transition:.25s ease; }
+    .service-card:hover { transform:translateY(-6px); box-shadow:0 25px 50px rgba(0,0,0,.1); }
+    .service-card h3 { font-size:1.3rem; margin:.5rem 0 1rem; }
+
+    /* Footer */
+    footer { padding:40px 0; text-align:center; color:#64748b; font-size:.95rem; }
+  </style>
 </head>
 <body>
-<p style="margin:0;">
-  <img src="/ALM/assets/img/alm-logo.png"
-       alt="Allegiance List Marketing logo"
-       style="display:block;max-width:360px;width:100%;height:auto;margin:24px auto;">
-</p>
-<p style="margin:0;">
-  <img src="/ALM/assets/img/alm-logo.png"
-       alt="Allegiance List Marketing logo"
-       style="display:block;max-width:360px;width:100%;height:auto;margin:24px auto;">
-</p>
+  <!-- Fixed header with single logo -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="#top">
+          <img src="assets/img/alm-logo.png" alt="Allegiance List Marketing logo">
+          <span>Allegiance List Marketing</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#marketplace">Marketplace</a></li>
+          <li><a class="cta-btn" href="#contact">Get in touch</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="top" class="hero">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <h1>Political Fundraising Excellence</h1>
+        <p class="subtitle">
+          Premier political fundraising and direct mail specialists with 20+ years of conservative
+          campaign expertise — now featuring our new <strong>Data Card Marketplace</strong>.
+        </p>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <span class="stat-number">20+ yrs</span>
+            <span class="stat-label">Campaign Experience</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">Data-led</span>
+            <span class="stat-label">Targeting & List Mgmt</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">Mail + Digital</span>
+            <span class="stat-label">Integrated Programs</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">Marketplace</span>
+            <span class="stat-label">Data Cards & Audiences</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <img src="assets/img/alm-logo.png" alt="" style="max-width:420px;width:100%;height:auto;display:block;margin:auto;filter:drop-shadow(0 20px 40px rgba(0,0,0,.25));">
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="services">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What We Do</h2>
+        <p class="section-subtitle">Strategy, data, and creative that move donors to action.</p>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card" id="list-management">
+          <h3>List Management & Brokerage</h3>
+          <p>List planning, segmentation, hygiene, and brokerage — built for conservative fundraising performance.</p>
+        </article>
+
+        <article class="service-card" id="marketplace">
+          <h3>Data Card Marketplace</h3>
+          <p>Discover high-performing audiences and data cards with transparent performance notes and easy ordering.</p>
+        </article>
+
+        <article class="service-card" id="direct-mail">
+          <h3>Direct Mail & Digital</h3>
+          <p>From offer and creative to production and omni-channel execution — measured and optimized end-to-end.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / Footer -->
+  <footer id="contact">
+    <div class="container">
+      <p>© <span id="y"></span> Allegiance List Marketing — Political Fundraising Excellence</p>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
