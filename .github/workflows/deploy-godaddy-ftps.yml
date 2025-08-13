@@ -12,21 +12,40 @@ jobs:
 
       - name: Prepare artifact
         run: |
+          rm -rf out
           mkdir out
-          rsync -av --delete --exclude ".git" --exclude ".github" ./ ./out/
+          rsync -av --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude "out" \
+            --exclude "*.bak.*" \
+            --exclude ".DS_Store" \
+            --exclude "Jekyll" --exclude "as" --exclude "no" \
+            --exclude "processing" --exclude "serve" --exclude "static," \
+            --exclude "#" --exclude "ftp.allegiancelistmarketing.com" \
+            ./ ./out/
 
       - name: FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
+          server: ${{ secrets.FTP_SERVER }}          # allegiancelistmarketing.com
+          username: ${{ secrets.FTP_USERNAME }}      # megan@allegiancelistmarketing.com
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
-          timeout: 120000              # wait up to 120s for control connection
+          timeout: 120000
           local-dir: out/
-          server-dir: ${{ secrets.FTP_DIR }}/
-          dangerous-clean-slate: true  # mirror exactly (nukes extras)
+          server-dir: ${{ secrets.FTP_DIR }}/        # . (login root = public_html)
+          dangerous-clean-slate: true
           exclude: |
             .well-known/**
-            */.DS_Store
+            *.bak.*
+            .DS_Store
+            Jekyll
+            as
+            no
+            processing
+            serve
+            static,
+            #
+            ftp.allegiancelistmarketing.com
