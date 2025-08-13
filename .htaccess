@@ -1,0 +1,3 @@
+# Allow ACME HTTP validation (keep at top)
+RewriteEngine On
+RewriteRule ^\.well-known/acme-challenge/ - [L]
