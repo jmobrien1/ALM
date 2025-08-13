@@ -24,9 +24,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps           # explicit FTPS (TLS) on port 21
           local-dir: out/
           server-dir: ${{ secrets.FTP_DIR }}/
-          protocol: ftps
-          # After first successful deploy, set this to true to mirror exactly
-          # (will delete old WP files in public_html):
+          # Once you confirm correct folder, you can mirror exactly by enabling:
           # dangerous-clean-slate: true
