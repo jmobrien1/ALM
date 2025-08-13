@@ -23,10 +23,10 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
+          timeout: 120000              # wait up to 120s for control connection
           local-dir: out/
           server-dir: ${{ secrets.FTP_DIR }}/
-          # set true to mirror (nuke anything not in repo)
-          dangerous-clean-slate: true
+          dangerous-clean-slate: true  # mirror exactly (nukes extras)
           exclude: |
             .well-known/**
             */.DS_Store
