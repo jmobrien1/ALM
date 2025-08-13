@@ -1,95 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Marketplace | Allegiance List Marketing</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #0A3D62; --accent: #E67E22; --dark: #1A202C; --light: #F4F7F9; --gray: #64748b; --white: #ffffff; }
-        body { margin: 0; font-family: 'Roboto', sans-serif; line-height: 1.6; color: var(--dark); background-color: var(--light); }
-        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--primary); }
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
-        .header { background: var(--white); border-bottom: 1px solid rgba(10, 61, 98, 0.1); }
-        .nav { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-        .logo { font-size: 22px; font-weight: 800; color: var(--primary); text-decoration: none; white-space: nowrap; }
-        .nav-links { display: flex; list-style: none; gap: 3rem; }
-        .nav-links a { color: var(--dark); text-decoration: none; font-weight: 500; }
-        main { padding: 60px 0; }
-        .marketplace-interface { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; }
-        .filter-panel { background: var(--white); padding: 2rem; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); height: fit-content; }
-        .data-table-container { background: var(--white); border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); padding: 2rem; overflow-x: auto; }
-        .data-table { width: 100%; border-collapse: collapse; }
-        .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
-        .data-table th { font-family: 'Montserrat', sans-serif; }
-        .data-table td p { margin: 0; font-size: 0.9rem; color: var(--gray); }
-        .details-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; display:inline-block; }
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Data Card Marketplace | Allegiance List Marketing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--primary:#0A3D62;--accent:#DC2626;--ink:#1A202C;--muted:#64748b;--light:#F4F7F9;--border:#e5e7eb}
+    *{box-sizing:border-box} body{margin:0;font-family:'Roboto',sans-serif;color:var(--ink);background:var(--light)}
+    h1,h2{font-family:'Montserrat',sans-serif;color:var(--primary)}
+    .header{background:#fff;border-bottom:1px solid rgba(10,61,98,.1)}
+    .nav{max-width:1200px;margin:0 auto;height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--primary);font-weight:800}
+    .links a{text-decoration:none;color:var(--ink);margin-left:22px}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 56px}
+    .lead{color:#475569;max-width:740px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:20px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;color:#475569;font-size:.95rem}
+    .pill{background:#F1F5F9;border:1px solid #E2E8F0;border-radius:999px;padding:6px 10px}
+    .btn{align-self:flex-start;background:var(--primary);color:#fff;font-weight:700;text-decoration:none;border-radius:10px;padding:10px 14px}
+    .search{margin-top:16px;display:flex;gap:10px}
+    .search input{flex:1;padding:12px 14px;border:1px solid var(--border);border-radius:10px}
+  </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="nav container">
-            <a href="index.html" class="logo">🇺🇸 Allegiance List Marketing</a>
-            <ul class="nav-links">
-                <li><a href="index.html#services">Services</a></li>
-                <li><a href="marketplace.html"><b>Data Marketplace</b></a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <div class="container">
-            <div class="section-header" style="margin-bottom: 3rem;">
-                <h2>Data Card Marketplace</h2>
-                <p>Discover the perfect audience for your next campaign.</p>
-            </div>
-            <div class="marketplace-interface">
-                <aside class="filter-panel">
-                    <h3>Filter Lists</h3>
-                </aside>
-                <div class="data-table-container">
-                    <table class="data-table" id="data-card-table">
-                        <thead>
-                            <tr>
-                                <th>Title & Description</th>
-                                <th>Universe Size</th>
-                                <th>Base Rate ($/M)</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script>
-        const dataCards = [
-            { card_id: 282876, title: "Allegiant Pro-Life Conservative Donors", short_description: "Active conservative Christian donors defending the right to life and freedom.", universe_size: 161746, base_rate_per_thousand: 75.00 },
-            { card_id: 479597, title: "Real America Donors", short_description: "Patriotic Americans fighting to stop the progressive agenda of the Biden/Harris Administration.", universe_size: 397542, base_rate_per_thousand: 100.00 },
-            { card_id: 486336, title: "Build The Wall Donors", short_description: "Engaged citizens who support efforts to reign in out-of-control illegal immigration.", universe_size: 53587, base_rate_per_thousand: 100.00 },
-            { card_id: 424915, title: "Catholic Action Donors", short_description: "A nationwide audience of Catholic Americans passionate about advancing the Roman Catholic way of life.", universe_size: 16411, base_rate_per_thousand: 75.00 },
-            { card_id: 481240, title: "Donors to Veteran Causes", short_description: "Patriotic Americans who support organizations and missions invested in helping our Veterans.", universe_size: 27354, base_rate_per_thousand: 100.00 },
-            { card_id: 580140, title: "America First Patriot Donors", short_description: "Freedom-loving donors unwilling to see the country destroyed by socialist policies.", universe_size: 13394, base_rate_per_thousand: 125.00 },
-            { card_id: 305791, title: "Pro-Life America", short_description: "Staunch pro-life donors committed to supporting policy that advances the pro-life movement.", universe_size: 73761, base_rate_per_thousand: 100.00 },
-            { card_id: 401792, title: "College Republican National Committee", short_description: "Donors who support programs to engage young voters on campuses across the nation.", universe_size: 110317, base_rate_per_thousand: 135.00 },
-            { card_id: 586316, title: "Americans Against the Biden Agenda", short_description: "Patriotic Americans who stand against bureaucracy and progressive doctrine.", universe_size: 82949, base_rate_per_thousand: 100.00 }
-        ];
-        document.addEventListener('DOMContentLoaded', () => {
-            const tableBody = document.querySelector('#data-card-table tbody');
-            dataCards.sort((a, b) => a.title.localeCompare(b.title));
-            dataCards.forEach(card => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><b>${card.title}</b><p>${card.short_description}</p></td>
-                    <td>${card.universe_size.toLocaleString()}</td>
-                    <td>$${card.base_rate_per_thousand.toFixed(2)}</td>
-                    <td><a href="datacard.html?id=${card.card_id}" class="details-btn">View Details</a></td>
-                `;
-                tableBody.appendChild(row);
-            });
-        });
-    </script>
+  <header class="header">
+    <nav class="nav">
+      <a class="brand" href="index.html">Allegiance List Marketing</a>
+      <div class="links">
+        <a href="index.html#services">Services</a>
+        <a href="marketplace.html"><b>Marketplace</b></a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1>Data Card Marketplace</h1>
+    <p class="lead">Browse our catalog of data cards. Click any item for full details, pricing, selects, and audience profile.</p>
+
+    <div class="search">
+      <input id="q" type="search" placeholder="Search by title… (e.g., Real America, Pro-Life, Veterans)">
+    </div>
+
+    <section id="cards" class="grid" aria-live="polite"></section>
+  </main>
+
+  <script>
+    // Directory data (sourced from your PDFs)
+    const items = [
+      {id:479597, title:"Real America Donors", universe:397542, base:100, updated:"2023-10-24"},
+      {id:305791, title:"Pro-Life America", universe:73761, base:100, updated:"2019-05-28"},
+      {id:481240, title:"Donors to Veteran Causes", universe:27354, base:100, updated:"2018-05-29"},
+      {id:401792, title:"College Republican National Committee", universe:110317, base:135, updated:"2022-03-30"},
+      {id:424915, title:"Catholic Action Donors", universe:16411, base:75, updated:"2018-07-10"},
+      {id:486336, title:"Build The Wall Donors", universe:53587, base:100, updated:"2019-05-17"},
+      {id:586316, title:"Americans Against the Biden Agenda", universe:82949, base:100, updated:"2021-09-17"},
+      {id:580140, title:"America First Patriot Donors", universe:13394, base:125, updated:"2021-08-26"},
+      {id:282876, title:"Allegiant Pro-Life Conservative Donors", universe:161746, base:75, updated:"2018-10-02"}
+    ];
+
+    const el = (s, d=document)=>d.querySelector(s);
+    const list = el('#cards');
+    const q = el('#q');
+
+    function fmt(n){return n.toLocaleString()}
+    function cardHTML(x){
+      return `
+        <article class="card">
+          <h2 style="font-size:1.15rem;margin:0">${x.title}</h2>
+          <div class="meta">
+            <span class="pill">Universe: ${fmt(x.universe)}</span>
+            <span class="pill">Base Rate: $${x.base.toFixed(2)}/M</span>
+            <span class="pill">Updated: ${x.updated}</span>
+          </div>
+          <a class="btn" href="datacard.html?id=${x.id}">View details</a>
+        </article>`;
+    }
+
+    function render(filter=""){
+      const f = filter.trim().toLowerCase();
+      list.innerHTML = items
+        .filter(x => !f || x.title.toLowerCase().includes(f))
+        .sort((a,b)=>a.title.localeCompare(b.title))
+        .map(cardHTML)
+        .join("");
+    }
+    q.addEventListener('input', e=>render(e.target.value));
+    render();
+  </script>
 </body>
 </html>
