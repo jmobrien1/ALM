@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "ALM Admin"
+AuthUserFile /home/r3ey5e1cozl4/.htpasswd
+Require valid-user

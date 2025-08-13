@@ -3,7 +3,7 @@ RewriteEngine On
 RewriteRule ^\.well-known/acme-challenge/ - [L]
 
 # Protect admin page with server-side Basic Auth
-<Files "admin.html">
+<Files "admin/">
   AuthType Basic
   AuthName "ALM Admin"
   AuthUserFile /home/r3ey5e1cozl4/.htpasswd
