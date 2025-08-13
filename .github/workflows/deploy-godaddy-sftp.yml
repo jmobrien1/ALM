@@ -1,0 +1,25 @@
+name: Deploy to GoDaddy (SFTP)
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare artifact
+        run: |
+          mkdir out
+          rsync -av --delete --exclude ".git" --exclude ".github" ./ ./out/
+      - name: SFTP Deploy
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          local_path: out/*
+          remote_path: ${{ secrets.SFTP_DIR }}
+          delete_remote_files: false
+          sftp_only: true
