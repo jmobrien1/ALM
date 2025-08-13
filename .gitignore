@@ -5,3 +5,19 @@ index.html.bak.*
 
 # backups
 index.html.bak.*
+# build
+out/
+# backups
+*.bak.*
+# macOS
+.DS_Store
+# misc junk
+# (filenames that slipped in during earlier shell pastes)
+Jekyll
+as
+no
+processing
+serve
+static,
+#
+ftp.allegiancelistmarketing.com
