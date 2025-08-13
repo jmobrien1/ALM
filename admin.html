@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ALM • Data Card Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--primary:#0A3D62;--accent:#DC2626;--ink:#1A202C;--muted:#64748b;--light:#F4F7F9;--border:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;font-family:'Roboto',sans-serif;color:var(--ink);background:#fff}
+h1,h2{font-family:'Montserrat',sans-serif;color:var(--primary)}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 16px}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:#334155}
+.btn.red{background:var(--accent)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:'Montserrat',sans-serif;text-align:left}
+input,textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px}
+small{color:var(--muted)}
+.code{background:#0b1220;color:#e2e8f0;padding:10px;border-radius:8px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Data Card Admin</h1>
+  <p>Load <code>data/datacards.json</code>, edit, then <b>Download JSON</b> and commit it to the repo.</p>
+
+  <div class="toolbar">
+    <button class="btn" id="add">Add Card</button>
+    <button class="btn alt" id="download">Download JSON</button>
+    <button class="btn alt" id="copy">Copy JSON</button>
+    <a class="btn red" target="_blank" id="editLink" href="https://github.com/jmobrien1/ALM/edit/main/data/datacards.json">Open GitHub Web Editor</a>
+  </div>
+
+  <table id="tbl">
+    <thead>
+      <tr><th style="width:160px">ID</th><th>Title</th><th style="width:150px">Universe</th><th style="width:140px">Base $/M</th><th style="width:150px">Updated</th><th style="width:120px">Actions</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Selected Card</h2>
+  <div id="detail">
+    <div class="row">
+      <div><label>Title<input id="f_title"/></label></div>
+      <div><label>Short Description<input id="f_short"/></label></div>
+    </div>
+    <div class="row">
+      <div><label>Universe<input id="f_universe" type="number"/></label></div>
+      <div><label>Base Rate ($/M)<input id="f_base" type="number" step="0.01"/></label></div>
+    </div>
+    <div class="row">
+      <div><label>Last Updated<input id="f_updated" placeholder="YYYY-MM-DD"/></label></div>
+      <div><label>PDF (optional - path under assets/pdfs/)<input id="f_pdf" placeholder="assets/pdfs/Real America Donors.pdf"/></label></div>
+    </div>
+    <div class="row">
+      <div><label>Source<input id="f_source"/></label></div>
+      <div><label>Geography<input id="f_geo"/></label></div>
+    </div>
+    <div class="row">
+      <div><label>% Male<input id="f_male"/></label></div>
+      <div><label>% Female<input id="f_female"/></label></div>
+    </div>
+    <label>Description<textarea id="f_desc" rows="5"></textarea></label>
+
+    <h3>Pricing</h3>
+    <div id="pricing"></div>
+    <button class="btn alt" id="addPrice">+ Add Price Row</button>
+
+    <h3 style="margin-top:16px">Selects</h3>
+    <div id="selects"></div>
+    <button class="btn alt" id="addSelect">+ Add Select</button>
+  </div>
+
+  <h2>JSON Preview</h2>
+  <pre class="code" id="json"></pre>
+</div>
+
+<script>
+let cards = [];
+let current = null;
+
+function el(tag, attrs={}, ...children){
+  const x=document.createElement(tag);
+  Object.entries(attrs).forEach(([k,v])=>{ if(k==='class') x.className=v; else if(k==='html') x.innerHTML=v; else x.setAttribute(k,v); });
+  children.forEach(c=>x.appendChild(typeof c==='string'?document.createTextNode(c):c));
+  return x;
+}
+
+async function load(){
+  const res = await fetch('data/datacards.json', {cache:'no-store'});
+  cards = await res.json();
+  renderTable(); 
+  if(cards[0]) select(cards[0].id);
+}
+function renderTable(){
+  const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML='';
+  cards.sort((a,b)=>a.title.localeCompare(b.title)).forEach(c=>{
+    const tr=el('tr',{}, 
+      el('td',{}, c.id),
+      el('td',{}, c.title),
+      el('td',{}, (c.universe||0).toLocaleString()),
+      el('td',{}, c.baseRate!=null?`$${(+c.baseRate).toFixed(2)}`:''),
+      el('td',{}, c.lastUpdate||''),
+      el('td',{}, 
+        el('a',{href:'#',onclick:e=>{e.preventDefault();select(c.id)}},'Edit'),' ',
+        el('a',{href:`datacard.html?id=${c.id}`,target:'_blank'},'View'),' ',
+        el('a',{href:'#',onclick:e=>{e.preventDefault();removeCard(c.id)}},'Delete')
+      )
+    );
+    tbody.appendChild(tr);
+  });
+  dumpJSON();
+}
+function select(id){
+  current = cards.find(x=>x.id==id);
+  if(!current) return;
+  // bind fields
+  const bind = (id, prop) => {
+    const input = document.getElementById(id);
+    input.value = current[prop]??'';
+    input.oninput = () => { current[prop]= input.type==='number'? +input.value : input.value; dumpJSON(); renderTable(); };
+  };
+  bind('f_title','title');
+  bind('f_short','shortDescription');
+  bind('f_universe','universe');
+  bind('f_base','baseRate');
+  bind('f_updated','lastUpdate');
+  bind('f_pdf','pdf');
+  bind('f_source','source');
+  bind('f_geo','geography');
+  bind('f_male','genderMale');
+  bind('f_female','genderFemale');
+  const desc = document.getElementById('f_desc');
+  desc.value = current.description||''; desc.oninput=()=>{ current.description=desc.value; dumpJSON(); };
+
+  // pricing
+  const p = document.getElementById('pricing'); p.innerHTML='';
+  (current.pricing||[]).forEach((row,i)=>p.appendChild(priceRow(row,i)));
+  document.getElementById('addPrice').onclick=()=>{ (current.pricing ||= []).push({segment:'',count:0,price:0}); renderTable(); select(current.id); };
+
+  // selects
+  const s = document.getElementById('selects'); s.innerHTML='';
+  (current.selects||[]).forEach((row,i)=>s.appendChild(selectRow(row,i)));
+  document.getElementById('addSelect').onclick=()=>{ (current.selects ||= []).push({name:'',price:0}); renderTable(); select(current.id); };
+
+  dumpJSON();
+}
+function priceRow(row,i){
+  const wrap = el('div',{}, 
+    el('div',{class:'row'},
+      el('div',{}, el('label',{}, 'Segment', el('input',{value:row.segment||'', oninput:e=>{row.segment=e.target.value; dumpJSON();}}))),
+      el('div',{}, el('label',{}, 'Count', el('input',{type:'number',value:row.count||0,oninput:e=>{row.count=+e.target.value; dumpJSON();}})))
+    ),
+    el('div',{class:'row'},
+      el('div',{}, el('label',{}, 'Price per Thousand', el('input',{type:'number', step:'0.01', value:row.price||0, oninput:e=>{row.price=+e.target.value; dumpJSON();}}))),
+      el('div',{}, el('button',{class:'btn red',onclick:()=>{ current.pricing.splice(i,1); renderTable(); select(current.id);} },'Delete')))
+  );
+  return wrap;
+}
+function selectRow(row,i){
+  const wrap = el('div',{}, 
+    el('div',{class:'row'},
+      el('div',{}, el('label',{}, 'Select Name', el('input',{value:row.name||'', oninput:e=>{row.name=e.target.value; dumpJSON();}}))),
+      el('div',{}, el('label',{}, 'Price per Thousand', el('input',{type:'number', step:'0.01', value:row.price||0, oninput:e=>{row.price=+e.target.value; dumpJSON();}})))
+    ),
+    el('div',{}, el('button',{class:'btn red',onclick:()=>{ current.selects.splice(i,1); renderTable(); select(current.id);} },'Delete'))
+  );
+  return wrap;
+}
+function addCard(){
+  const newId = Date.now();
+  cards.push({id:newId,title:"New Data Card",shortDescription:"",description:"",universe:0,baseRate:0,lastUpdate:"",source:"",geography:"",genderMale:"",genderFemale:"",pricing:[],selects:[],pdf:""});
+  renderTable(); select(newId);
+}
+function removeCard(id){
+  if(!confirm('Delete this card?')) return;
+  cards = cards.filter(x=>x.id!=id);
+  renderTable(); if(cards[0]) select(cards[0].id); else current=null, dumpJSON();
+}
+function dumpJSON(){
+  const out = JSON.stringify(cards, null, 2);
+  document.getElementById('json').textContent = out;
+}
+function downloadJSON(){
+  const blob = new Blob([document.getElementById('json').textContent], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'datacards.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+async function copyJSON(){
+  await navigator.clipboard.writeText(document.getElementById('json').textContent);
+  alert('JSON copied. Paste it into the GitHub web editor and commit.');
+}
+
+document.getElementById('add').onclick = addCard;
+document.getElementById('download').onclick = downloadJSON;
+document.getElementById('copy').onclick = copyJSON;
+load();
+</script>
+</body>
+</html>

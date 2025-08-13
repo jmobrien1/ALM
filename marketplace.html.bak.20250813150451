@@ -12,10 +12,9 @@
     *{box-sizing:border-box} body{margin:0;font-family:'Roboto',sans-serif;color:var(--ink);background:var(--light)}
     h1,h2{font-family:'Montserrat',sans-serif;color:var(--primary)}
     .header{background:#fff;border-bottom:1px solid rgba(10,61,98,.1)}
-    .nav{max-width:1200px;margin:0 auto;height:96px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
-    .brand{display:flex;align-items:center;text-decoration:none}
-    .brand img{height:96px;width:auto;display:block}
-    .links a{text-decoration:none;color:var(--ink);margin-left:22px;font-weight:600}
+    .nav{max-width:1200px;margin:0 auto;height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--primary);font-weight:800}
+    .links a{text-decoration:none;color:var(--ink);margin-left:22px}
     .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 56px}
     .lead{color:#475569;max-width:740px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:20px}
@@ -25,12 +24,20 @@
     .btn{align-self:flex-start;background:var(--primary);color:#fff;font-weight:700;text-decoration:none;border-radius:10px;padding:10px 14px}
     .search{margin-top:16px;display:flex;gap:10px}
     .search input{flex:1;padding:12px 14px;border:1px solid var(--border);border-radius:10px}
+        /* ALM overrides */
+        .brand img{height:96px!important;width:auto;display:block}
+        .nav{height:96px!important}
   </style>
+<style>
+  .nav{height:96px}
+  .brand img{height:96px;width:auto;display:block}
+</style>
+
 </head>
 <body>
   <header class="header">
     <nav class="nav">
-      <a class="brand" href="index.html"><img src="assets/img/alm-logo.png" alt="Allegiance List Marketing logo"></a>
+      <a class="brand" href="index.html">Allegiance List Marketing</a>
       <div class="links">
         <a href="index.html#services">Services</a>
         <a href="marketplace.html"><b>Marketplace</b></a>
@@ -50,30 +57,47 @@
   </main>
 
   <script>
-    const el=(s,d=document)=>d.querySelector(s);
-    const list=el('#cards'); const q=el('#q');
-    function fmt(n){return (n||0).toLocaleString()}
-    function cardHTML(x){return `
-      <article class="card">
-        <h2 style="font-size:1.15rem;margin:0">${x.title}</h2>
-        <div class="meta">
-          <span class="pill">Universe: ${fmt(x.universe)}</span>
-          <span class="pill">Base Rate: $${(+x.baseRate||0).toFixed(2)}/M</span>
-          <span class="pill">Updated: ${x.lastUpdate||''}</span>
-        </div>
-        <a class="btn" href="datacard.html?id=${x.id}">View details</a>
-      </article>`;}
-    let items=[];
-    async function load(){ items = await (await fetch('data/datacards.json',{cache:'no-store'})).json(); render(); }
-    function render(filter=''){
+    // Directory data (sourced from your PDFs)
+    const items = [
+      {id:479597, title:"Real America Donors", universe:397542, base:100, updated:"2023-10-24"},
+      {id:305791, title:"Pro-Life America", universe:73761, base:100, updated:"2019-05-28"},
+      {id:481240, title:"Donors to Veteran Causes", universe:27354, base:100, updated:"2018-05-29"},
+      {id:401792, title:"College Republican National Committee", universe:110317, base:135, updated:"2022-03-30"},
+      {id:424915, title:"Catholic Action Donors", universe:16411, base:75, updated:"2018-07-10"},
+      {id:486336, title:"Build The Wall Donors", universe:53587, base:100, updated:"2019-05-17"},
+      {id:586316, title:"Americans Against the Biden Agenda", universe:82949, base:100, updated:"2021-09-17"},
+      {id:580140, title:"America First Patriot Donors", universe:13394, base:125, updated:"2021-08-26"},
+      {id:282876, title:"Allegiant Pro-Life Conservative Donors", universe:161746, base:75, updated:"2018-10-02"}
+    ];
+
+    const el = (s, d=document)=>d.querySelector(s);
+    const list = el('#cards');
+    const q = el('#q');
+
+    function fmt(n){return n.toLocaleString()}
+    function cardHTML(x){
+      return `
+        <article class="card">
+          <h2 style="font-size:1.15rem;margin:0">${x.title}</h2>
+          <div class="meta">
+            <span class="pill">Universe: ${fmt(x.universe)}</span>
+            <span class="pill">Base Rate: $${x.base.toFixed(2)}/M</span>
+            <span class="pill">Updated: ${x.updated}</span>
+          </div>
+          <a class="btn" href="datacard.html?id=${x.id}">View details</a>
+        </article>`;
+    }
+
+    function render(filter=""){
       const f = filter.trim().toLowerCase();
       list.innerHTML = items
         .filter(x => !f || x.title.toLowerCase().includes(f))
         .sort((a,b)=>a.title.localeCompare(b.title))
-        .map(cardHTML).join('');
+        .map(cardHTML)
+        .join("");
     }
     q.addEventListener('input', e=>render(e.target.value));
-    load();
+    render();
   </script>
 </body>
 </html>
