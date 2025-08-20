@@ -371,11 +371,11 @@
   },
   {
     "id": "citizen-ag-dsg",
-    "title": "Citizen AG — a DSG Property",
+    "title": "CITIZEN AG — a DSG Property",
     "universe": 6759,
     "baseRate": 130,
     "lastUpdate": "2025-05-29",
-    "description": "Nonprofit advocating for Americans in the courts; pro-Constitution/election integrity donors.",
+    "description": "Nonprofit advocating for Americans in the courts; pro-Constitution donors focused on ballot integrity.",
     "pricing": [
       {
         "segment": "Donors",
@@ -408,15 +408,15 @@
     ],
     "source": "100% Direct Mail Generated",
     "geography": "National",
-    "pdf": "assets/pdfs/citizen-ag-dsg.pdf"
+    "pdf": ""
   },
   {
     "id": "constitutional-rights-pac-dsg",
-    "title": "Constitutional Rights PAC — a DSG Property",
+    "title": "CONSTITUTIONAL RIGHTS PAC — a DSG Property",
     "universe": 20373,
     "baseRate": 130,
     "lastUpdate": "2025-03-26",
-    "description": "Hard-hitting pro-America, pro-Trump donor list; high average gift—prime for conservative candidates/PACs.",
+    "description": "Hard-hitting, pro-America, pro-Trump donor file with high average gift; strong for conservative candidates and PACs.",
     "pricing": [
       {
         "segment": "Donors",
@@ -442,17 +442,17 @@
         "price": 10
       }
     ],
-    "source": "100% Direct Mail Generated",
+    "source": "100% Direct Mail Generated (Exchange Available)",
     "geography": "National",
-    "pdf": "assets/pdfs/constitutional-rights-pac-dsg.pdf"
+    "pdf": ""
   },
   {
     "id": "friends-ww2-memorial-dsg",
-    "title": "Friends of the National World War II Memorial — a DSG Property",
+    "title": "FRIENDS OF THE NATIONAL WORLD WAR II MEMORIAL — a DSG Property",
     "universe": 48586,
     "baseRate": 125,
     "lastUpdate": "2025-07-11",
-    "description": "Donors supporting education/commemoration that preserves WWII veterans’ legacy; patriotic, pro-veteran audience.",
+    "description": "Donors supporting the legacy of WWII veterans through education, commemoration, and patriotic programs.",
     "pricing": [
       {
         "segment": "Donors",
@@ -480,15 +480,15 @@
     ],
     "source": "100% Direct Mail Generated",
     "geography": "National",
-    "pdf": "assets/pdfs/friends-ww2-memorial-dsg.pdf"
+    "pdf": ""
   },
   {
     "id": "great-america-masterfile-dsg",
-    "title": "Great America Masterfile — a DSG Property",
+    "title": "GREAT AMERICA MASTERFILE — a DSG Property",
     "universe": 231942,
     "baseRate": 125,
     "lastUpdate": "2024-06-30",
-    "description": "High-gift pro-Trump political donors supporting America First campaigns and PACs; rental only.",
+    "description": "High-gift pro-Trump donor masterfile; rental only; strong for America First campaigns, candidates, and PACs.",
     "pricing": [
       {
         "segment": "Donors",
@@ -514,8 +514,49 @@
         "price": 10
       }
     ],
+    "source": "100% Direct Mail Generated (Rental Only)",
+    "geography": "National",
+    "pdf": ""
+  },
+  {
+    "id": "gator-pac-direct-dsg",
+    "title": "GATOR PAC DIRECT — a DSG Property",
+    "universe": 13788,
+    "baseRate": 125,
+    "lastUpdate": "2025-07-16",
+    "description": "Right-of-center, pro–America First donors and activists; strong response to premium offers and election-integrity messaging.",
+    "pricing": [
+      {
+        "segment": "Donors",
+        "count": 13788,
+        "price": 125
+      },
+      {
+        "segment": "Activists",
+        "count": 9138,
+        "price": 50
+      }
+    ],
+    "selects": [
+      {
+        "name": "Donation Amount",
+        "price": 5
+      },
+      {
+        "name": "Donation Recency",
+        "price": 5
+      },
+      {
+        "name": "Donation Frequency",
+        "price": 5
+      },
+      {
+        "name": "State/SCF/County/Zip/District",
+        "price": 10
+      }
+    ],
     "source": "100% Direct Mail Generated",
     "geography": "National",
-    "pdf": "assets/pdfs/great-america-masterfile-dsg.pdf"
+    "pdf": ""
   }
 ]
