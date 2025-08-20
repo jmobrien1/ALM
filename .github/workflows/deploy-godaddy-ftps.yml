@@ -1,4 +1,4 @@
-name: Deploy to GoDaddy (FTPS)
+name: Deploy to GoDaddy (FTPS, robust)
 on:
   push:
     branches: [ main ]
@@ -20,32 +20,41 @@ jobs:
             --exclude "out" \
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
-            --exclude "Jekyll" --exclude "as" --exclude "no" \
-            --exclude "processing" --exclude "serve" --exclude "static," \
-            --exclude "#" --exclude "ftp.allegiancelistmarketing.com" \
             ./ ./out/
 
-      - name: FTP-Deploy-Action
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}          # allegiancelistmarketing.com
-          username: ${{ secrets.FTP_USERNAME }}      # megan@allegiancelistmarketing.com
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          timeout: 120000
-          local-dir: out/
-          server-dir: ${{ secrets.FTP_DIR }}/        # . (login root = public_html)
-          dangerous-clean-slate: true
-          exclude: |
-            .well-known/**
-            *.bak.*
-            .DS_Store
-            Jekyll
-            as
-            no
-            processing
-            serve
-            static,
-            #
-            ftp.allegiancelistmarketing.com
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Upload via FTPS (explicit TLS) with retries
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}     # e.g. allegiancelistmarketing.com
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}   # megan@allegiancelistmarketing.com
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}        # "." if login dir is public_html
+        run: |
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" <<'LFTP_CMDS'
+          set net:max-retries 5
+          set net:persist-retries 3
+          set net:timeout 30
+          set net:reconnect-interval-base 5
+          set net:reconnect-interval-max 60
+          set ftp:passive-mode true
+          set ftp:ssl-force true
+          set ftp:ssl-protect-data true
+          set xfer:clobber on
+          # If your cert is still propagating during WAF/SSL setup, you can temporarily disable verify:
+          set ssl:verify-certificate false
+
+          # Create target dir if needed
+          mkdir -p $FTP_DIR
+
+          # Mirror up (reverse) in a single stream; exclude junk
+          mirror -R --verbose=1 --parallel=1 \
+            --exclude-glob ".git*" \
+            --exclude-glob ".github/*" \
+            --exclude-glob "out/*" \
+            --exclude-glob "*.bak.*" \
+            --exclude-glob ".DS_Store" \
+            out/ $FTP_DIR/
+          bye
+          LFTP_CMDS
