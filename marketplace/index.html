@@ -1,41 +1,114 @@
-<!-- paste the full drop-in marketplace.html content here -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Allegiance List Marketing — Marketplace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <style>
+    :root { --ink:#0A2342; --accent:#C22B2B; --bg:#f7f8fb; }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial;background:var(--bg);color:#111}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e7e8ef;padding:16px}
+    h1{margin:0;color:var(--ink);font-size:1.25rem}
+    .toolbar{display:flex;gap:12px;align-items:center;margin-top:10px}
+    input[type="search"]{flex:1;padding:10px 12px;border:1px solid #d9dce4;border-radius:10px;font-size:15px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:16px;max-width:1200px;margin:24px auto}
+    .card{background:#fff;border:1px solid #ececf3;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+    .title{font-weight:700;color:var(--ink);font-size:1rem;line-height:1.2}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;color:#444;font-size:.9rem}
+    .pill{border:1px solid #e1e3ea;border-radius:999px;padding:4px 10px;background:#fafbff}
+    .desc{color:#333;font-size:.92rem;min-height:2.6em}
+    .cta{margin-top:auto;display:flex;justify-content:space-between;align-items:center}
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid #dfe3ef;background:#fff;text-decoration:none;color:var(--ink);font-weight:600}
+    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    footer{max-width:1200px;margin:8px auto 40px;color:#666;padding:0 16px;font-size:.9rem}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Marketplace</h1>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Search by title, description, selects…" />
+      <span id="stats" class="pill">0 items</span>
+    </div>
+  </header>
 
-<section id="dynamic-market" style="padding:24px 16px;max-width:1100px;margin:0 auto">
-  <h1 style="margin:0 0 12px;font-size:28px">Data Card Marketplace</h1>
-  <div id="cards-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px"></div>
-</section>
-<script>(function(){
-  const url=(window.ALM_DATA_URL||"data/datacards.json")+"?v="+Date.now();
-  const el=document.getElementById("cards-list");
-  const norm=x=>({
-    id: String(x.id ?? x.card_id ?? ""),
-    title: x.title ?? x.name ?? "",
-    universe: +(x.universe ?? x.universe_size ?? 0),
-    baseRate: +(x.baseRate ?? x.base_rate_per_thousand ?? x.base_rate ?? 0),
-    lastUpdate: x.lastUpdate ?? x.last_updated ?? "",
-    shortDescription: x.shortDescription ?? x.short_description ?? "",
-    pdf: x.pdf ?? ""
-  });
-  const cardHTML=c=>"<article class=\"card\" style=\"border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fff\">\
-    <h2 style=\"font-size:1.05rem;margin:0 0 8px\">"+ (c.title||"Untitled") +"</h2>\
-    <div style=\"font-size:.9rem;color:#475569;margin-bottom:8px\">\
-      <span style=\"display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:3px 8px;margin-right:6px\">Universe: "+(c.universe||0).toLocaleString()+"</span>\
-      <span style=\"display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:3px 8px\">Base Rate: $"+(+c.baseRate||0).toFixed(2)+"/M</span>\
-    </div>"\
-    + (c.shortDescription?"<p style=\"margin:0 0 10px;color:#334155\">"+c.shortDescription+"</p>":"") \
-    + "<div style=\"display:flex;gap:8px;flex-wrap:wrap\">\
-        <a href=\"datacard.html?id="+encodeURIComponent(c.id)+"\" \
-           style=\"text-decoration:none;background:#dc2626;color:#fff;border-radius:999px;padding:8px 12px;font-weight:700\">View details</a>" \
-        + (c.pdf?"<a href=\""+c.pdf+"\" style=\"text-decoration:none;background:#334155;color:#fff;border-radius:999px;padding:8px 12px;font-weight:700\">Download PDF</a>":"") +\
-      "</div>\
-  </article>";
-  fetch(url,{cache:"no-store"}).then(r=>{if(!r.ok) throw new Error(r.status+" "+r.statusText); return r.json();})
-    .then(arr=>{ if(!Array.isArray(arr)) throw new Error("JSON root is not an array");
-      const items=arr.map(norm).filter(c=>c.title);
-      if(!items.length){ el.innerHTML="<p>No data cards found.</p>"; return; }
-      items.sort((a,b)=>String(a.title).localeCompare(String(b.title)));
-      el.innerHTML=items.map(cardHTML).join("");
-    })
-    .catch(e=>{ el.innerHTML="<pre style=\"white-space:pre-wrap;color:#b91c1c;background:#fff0f0;border:1px solid #fecaca;padding:10px;border-radius:8px\">Failed to load "+url+"\n"+e+"</pre>"; });
-})();</script>
+  <main>
+    <section id="dynamic-market" style="padding:24px 16px;max-width:1100px;margin:0 auto">
+      <div id="cards-list" class="grid" aria-live="polite"></div>
+    </section>
+    <template id="card-tpl">
+      <article class="card">
+        <div class="title"></div>
+        <div class="meta">
+          <span class="pill universe"></span>
+          <span class="pill base"></span>
+          <span class="pill updated"></span>
+        </div>
+        <div class="desc"></div>
+        <div class="cta">
+          <a class="btn view" target="_self">View</a>
+          <a class="btn primary" href="mailto:info@allegiancelistmarketing.com?subject=List%20Inquiry">Request list</a>
+        </div>
+      </article>
+    </template>
+  </main>
 
+  <footer>Tip: Titles match provider PDFs. New cards come from your Markdown conversions.</footer>
+
+  <script>
+  (async function(){
+    const cacheBust = `?v=${Date.now()}`;
+    const JSON_URL = (window.ALM_DATA_URL || "data/datacards.json") + cacheBust;
+
+    async function getJSON(u){
+      try{ const r = await fetch(u, {cache:"no-store"}); if(!r.ok) throw new Error(r.statusText); return await r.json(); }
+      catch(e){ console.error("load json failed", e); return []; }
+    }
+
+    const data = await getJSON(JSON_URL);
+    const items = (Array.isArray(data) ? data : []).map(d => ({
+      id: String(d.id ?? d.card_id ?? ""),
+      title: (d.title||"").trim(),
+      shortDescription: (d.shortDescription ?? d.short_description ?? d.description ?? "").trim(),
+      universe: Number(d.universe ?? d.universe_size ?? 0),
+      baseRate: Number(d.baseRate ?? d.base_rate_per_thousand ?? d.base_rate ?? 0),
+      lastUpdate: (d.lastUpdate ?? d.last_updated ?? "").trim()
+    })).filter(d => d.title);
+
+    items.sort((a,b)=>a.title.localeCompare(b.title, undefined, {sensitivity:"base"}));
+
+    const grid = document.getElementById("cards-list");
+    const tpl  = document.getElementById("card-tpl");
+
+    function fmtMoney(v){ return v>0 ? `$${v.toFixed(2)}/M` : "call"; }
+    function fmtUniverse(n){ return n>0 ? n.toLocaleString() : "n/a"; }
+
+    function render(list){
+      grid.innerHTML = "";
+      for (const d of list){
+        const node = tpl.content.firstElementChild.cloneNode(true);
+        node.querySelector(".title").textContent = d.title;
+        node.querySelector(".universe").textContent = `Universe: ${fmtUniverse(d.universe)}`;
+        node.querySelector(".base").textContent = `Base: ${fmtMoney(d.baseRate)}`;
+        node.querySelector(".updated").textContent = `Updated: ${d.lastUpdate || "n/a"}`;
+        node.querySelector(".desc").textContent = d.shortDescription || "";
+        node.querySelector("a.view").href = `datacard.html?id=${encodeURIComponent(d.id)}`;
+        grid.appendChild(node);
+      }
+      document.getElementById("stats").textContent = `${list.length} items`;
+    }
+
+    render(items);
+
+    // search
+    const idx = items.map(d => ({d, hay:[d.title, d.shortDescription].join(" ").toLowerCase()}));
+    document.getElementById("q").addEventListener("input", e => {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) return render(items);
+      render(idx.filter(o=>o.hay.includes(q)).map(o=>o.d));
+    });
+  })();
+  </script>
+</body>
+</html>
