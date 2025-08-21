@@ -284,3 +284,33 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 </html>
+<!-- ALM_MD_V2: Markdown support for data cards -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function(){
+  function param(n){ return new URLSearchParams(location.search).get(n); }
+  const id = param('id');
+  if(!id) return;
+
+  fetch('data/datacards.json?v='+Date.now()).then(r=>r.json()).then(arr=>{
+    const card = arr.find(c => String(c.card_id) === String(id));
+    if(!card || !card.markdown) return;
+
+    // container
+    let host = document.getElementById('md-content');
+    if(!host){
+      host = document.createElement('section');
+      host.id = 'md-content';
+      host.style.maxWidth = '900px';
+      host.style.margin = '24px auto';
+      host.style.padding = '0 16px';
+      document.body.appendChild(host);
+    }
+
+    fetch(card.markdown+'?v='+Date.now())
+      .then(r=>r.text())
+      .then(md => { host.innerHTML = marked.parse(md); })
+      .catch(console.error);
+  }).catch(console.error);
+})();
+</script>

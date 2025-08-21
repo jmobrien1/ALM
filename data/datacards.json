@@ -406,9 +406,15 @@
         "price": 0
       }
     ],
-    "source": "100% Direct Mail Generated",
+    "source": "Direct mail",
     "geography": "National",
-    "pdf": ""
+    "pdf": "",
+    "card_id": 2,
+    "universe_size": 6759,
+    "base_rate_per_thousand": 130,
+    "last_updated": "2025-05-29",
+    "short_description": "A DSG donor file available via Allegiance List Marketing.",
+    "markdown": "assets/md/citizen-ag-dsg.md"
   },
   {
     "id": "constitutional-rights-pac-dsg",
@@ -442,9 +448,15 @@
         "price": 10
       }
     ],
-    "source": "100% Direct Mail Generated (Exchange Available)",
+    "source": "Direct mail",
     "geography": "National",
-    "pdf": ""
+    "pdf": "",
+    "card_id": 3,
+    "universe_size": 20373,
+    "base_rate_per_thousand": 130,
+    "last_updated": "2025-03-26",
+    "short_description": "A DSG donor file available via Allegiance List Marketing.",
+    "markdown": "assets/md/constitutional-rights-pac-dsg.md"
   },
   {
     "id": "friends-ww2-memorial-dsg",
@@ -478,9 +490,15 @@
         "price": 10
       }
     ],
-    "source": "100% Direct Mail Generated",
+    "source": "Direct mail",
     "geography": "National",
-    "pdf": ""
+    "pdf": "",
+    "card_id": 4,
+    "universe_size": 48586,
+    "base_rate_per_thousand": 125,
+    "last_updated": "2025-07-11",
+    "short_description": "A DSG donor file available via Allegiance List Marketing.",
+    "markdown": "assets/md/friends-ww2-memorial-dsg.md"
   },
   {
     "id": "great-america-masterfile-dsg",
@@ -514,9 +532,15 @@
         "price": 10
       }
     ],
-    "source": "100% Direct Mail Generated (Rental Only)",
+    "source": "Direct mail",
     "geography": "National",
-    "pdf": ""
+    "pdf": "",
+    "card_id": 5,
+    "universe_size": 231942,
+    "base_rate_per_thousand": 125,
+    "last_updated": "2024-06-30",
+    "short_description": "A DSG donor file available via Allegiance List Marketing.",
+    "markdown": "assets/md/great-america-masterfile-dsg.md"
   },
   {
     "id": "gator-pac-direct-dsg",
@@ -555,8 +579,14 @@
         "price": 10
       }
     ],
-    "source": "100% Direct Mail Generated",
+    "source": "Direct mail",
     "geography": "National",
-    "pdf": ""
+    "pdf": "",
+    "card_id": 1,
+    "universe_size": 13788,
+    "base_rate_per_thousand": 125,
+    "last_updated": "2025-07-16",
+    "short_description": "A DSG donor file available via Allegiance List Marketing.",
+    "markdown": "assets/md/gator-pac-direct-dsg.md"
   }
 ]
