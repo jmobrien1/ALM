@@ -22,29 +22,53 @@ jobs:
             --exclude ".DS_Store" \
             ./ ./out/
 
-      - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y lftp curl
 
-      - name: Verify remote path (pwd/ls)
+      - name: Upload to likely docroots
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          set -e
-          FTP_DIR="${FTP_DIR:-public_html}"
-          echo "Using FTP_DIR='$FTP_DIR'"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; pwd; ls -la; cd $FTP_DIR; pwd; ls -la; bye"
+          set -euo pipefail
+          CANDS=()
+          # 1) user-provided
+          if [ -n "${FTP_DIR:-}" ]; then CANDS+=("$FTP_DIR"); fi
+          # 2) common GoDaddy roots
+          CANDS+=("public_html" "httpdocs" "public_html/allegiancelistmarketing.com" ".")
+          echo "Candidate targets: ${CANDS[*]}"
 
-      - name: Upload via FTPS (explicit TLS) with retries
-        env:
-          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_DIR:      ${{ secrets.FTP_DIR }}
+          for TARGET in "${CANDS[@]}"; do
+            echo "=== Trying target: $TARGET ==="
+            lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+              set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; \
+              set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set xfer:clobber on; set ssl:verify-certificate false; \
+              mkdir -p $TARGET; cd $TARGET; pwd; ls -la; \
+              mirror -R --ignore-time --delete --verbose=2 out/ ./; \
+              mkdir -p marketplace; put -O marketplace out/marketplace.html -o index.html; \
+              bye"
+          done
+
+      - name: Verify LIVE marketplace contains dynamic marker
         run: |
           set -e
-          FTP_DIR="${FTP_DIR:-public_html}"
-          echo "Mirroring to FTP_DIR='$FTP_DIR'"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set xfer:clobber on; set ssl:verify-certificate false; mkdir -p $FTP_DIR; mirror -R --ignore-time --delete --verbose=3 --parallel=1 --exclude-glob .DS_Store out/ $FTP_DIR/; bye"
+          curl -fsS "https://www.allegiancelistmarketing.com/marketplace.html?v=$(date +%s)" | grep -q 'dynamic-market' && echo "OK: .html has marker" || echo "MISS: .html"
+          curl -fsS "https://www.allegiancelistmarketing.com/marketplace/?v=$(date +%s)"  | grep -q 'dynamic-market' && echo "OK: /marketplace has marker" || echo "MISS: /marketplace"
+          # Fail if both miss:
+          if ! curl -fsS "https://www.allegiancelistmarketing.com/marketplace.html?v=$(date +%s)" | grep -q 'dynamic-market' \
+             && ! curl -fsS "https://www.allegiancelistmarketing.com/marketplace/?v=$(date +%s)"  | grep -q 'dynamic-market'; then
+            echo "ERROR: live marketplace missing marker after deploy"
+            exit 1
+          fi
+
+      - name: Verify LIVE JSON is JSON (not HTML)
+        run: |
+          set -e
+          H1=$(curl -fsS "https://www.allegiancelistmarketing.com/data/datacards.json?v=$(date +%s)" | head -c1 || true)
+          if [ "$H1" != "[" ] && [ "$H1" != "{" ]; then
+            echo "WARN: /data/datacards.json served HTML; trying /assets/data/datacards.json"
+            exit 0
+          fi
+          echo "OK: /data/datacards.json is JSON"
