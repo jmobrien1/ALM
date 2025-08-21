@@ -1,7 +1,7 @@
 name: Deploy to GoDaddy (FTPS, robust)
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -32,26 +32,10 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          # default to public_html if FTP_DIR is empty
+          set -e
           FTP_DIR="${FTP_DIR:-public_html}"
           echo "Using FTP_DIR='$FTP_DIR'"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" <<LFTP_CMDS
-          set ftp:passive-mode true
-          set ftp:ssl-force true
-          set ftp:ssl-protect-data true
-          set ssl:verify-certificate false
-          echo ">>> pwd BEFORE"
-          pwd
-          echo ">>> ls BEFORE"
-          ls -la
-          echo ">>> cd $FTP_DIR"
-          cd $FTP_DIR
-          echo ">>> pwd AFTER"
-          pwd
-          echo ">>> ls AFTER"
-          ls -la
-          bye
-LFTP_CMDS
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; pwd; ls -la; cd $FTP_DIR; pwd; ls -la; bye"
 
       - name: Upload via FTPS (explicit TLS) with retries
         env:
@@ -60,26 +44,7 @@ LFTP_CMDS
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
+          set -e
           FTP_DIR="${FTP_DIR:-public_html}"
           echo "Mirroring to FTP_DIR='$FTP_DIR'"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" <<'LFTP_CMDS'
-          set net:max-retries 5
-          set net:persist-retries 3
-          set net:timeout 30
-          set net:reconnect-interval-base 5
-          set net:reconnect-interval-max 60
-          set ftp:passive-mode true
-          set ftp:ssl-force true
-          set ftp:ssl-protect-data true
-          set xfer:clobber on
-          set ssl:verify-certificate false
-          mkdir -p $FTP_DIR
-          mirror -R --verbose=3 --parallel=1 \
-            --exclude-glob ".git*" \
-            --exclude-glob ".github/*" \
-            --exclude-glob "out/*" \
-            --exclude-glob "*.bak.*" \
-            --exclude-glob ".DS_Store" \
-            out/ $FTP_DIR/
-          bye
-LFTP_CMDS
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set xfer:clobber on; set ssl:verify-certificate false; mkdir -p $FTP_DIR; mirror -R --verbose=3 --parallel=1 --exclude-glob .DS_Store out/ $FTP_DIR/; bye"
