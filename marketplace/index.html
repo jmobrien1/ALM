@@ -1,0 +1,41 @@
+<!-- paste the full drop-in marketplace.html content here -->
+
+<section id="dynamic-market" style="padding:24px 16px;max-width:1100px;margin:0 auto">
+  <h1 style="margin:0 0 12px;font-size:28px">Data Card Marketplace</h1>
+  <div id="cards-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px"></div>
+</section>
+<script>(function(){
+  const url=(window.ALM_DATA_URL||"data/datacards.json")+"?v="+Date.now();
+  const el=document.getElementById("cards-list");
+  const norm=x=>({
+    id: String(x.id ?? x.card_id ?? ""),
+    title: x.title ?? x.name ?? "",
+    universe: +(x.universe ?? x.universe_size ?? 0),
+    baseRate: +(x.baseRate ?? x.base_rate_per_thousand ?? x.base_rate ?? 0),
+    lastUpdate: x.lastUpdate ?? x.last_updated ?? "",
+    shortDescription: x.shortDescription ?? x.short_description ?? "",
+    pdf: x.pdf ?? ""
+  });
+  const cardHTML=c=>"<article class=\"card\" style=\"border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fff\">\
+    <h2 style=\"font-size:1.05rem;margin:0 0 8px\">"+ (c.title||"Untitled") +"</h2>\
+    <div style=\"font-size:.9rem;color:#475569;margin-bottom:8px\">\
+      <span style=\"display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:3px 8px;margin-right:6px\">Universe: "+(c.universe||0).toLocaleString()+"</span>\
+      <span style=\"display:inline-block;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:3px 8px\">Base Rate: $"+(+c.baseRate||0).toFixed(2)+"/M</span>\
+    </div>"\
+    + (c.shortDescription?"<p style=\"margin:0 0 10px;color:#334155\">"+c.shortDescription+"</p>":"") \
+    + "<div style=\"display:flex;gap:8px;flex-wrap:wrap\">\
+        <a href=\"datacard.html?id="+encodeURIComponent(c.id)+"\" \
+           style=\"text-decoration:none;background:#dc2626;color:#fff;border-radius:999px;padding:8px 12px;font-weight:700\">View details</a>" \
+        + (c.pdf?"<a href=\""+c.pdf+"\" style=\"text-decoration:none;background:#334155;color:#fff;border-radius:999px;padding:8px 12px;font-weight:700\">Download PDF</a>":"") +\
+      "</div>\
+  </article>";
+  fetch(url,{cache:"no-store"}).then(r=>{if(!r.ok) throw new Error(r.status+" "+r.statusText); return r.json();})
+    .then(arr=>{ if(!Array.isArray(arr)) throw new Error("JSON root is not an array");
+      const items=arr.map(norm).filter(c=>c.title);
+      if(!items.length){ el.innerHTML="<p>No data cards found.</p>"; return; }
+      items.sort((a,b)=>String(a.title).localeCompare(String(b.title)));
+      el.innerHTML=items.map(cardHTML).join("");
+    })
+    .catch(e=>{ el.innerHTML="<pre style=\"white-space:pre-wrap;color:#b91c1c;background:#fff0f0;border:1px solid #fecaca;padding:10px;border-radius:8px\">Failed to load "+url+"\n"+e+"</pre>"; });
+})();</script>
+
