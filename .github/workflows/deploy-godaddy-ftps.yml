@@ -47,4 +47,4 @@ jobs:
           set -e
           FTP_DIR="${FTP_DIR:-public_html}"
           echo "Mirroring to FTP_DIR='$FTP_DIR'"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set xfer:clobber on; set ssl:verify-certificate false; mkdir -p $FTP_DIR; mirror -R --verbose=3 --parallel=1 --exclude-glob .DS_Store out/ $FTP_DIR/; bye"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set xfer:clobber on; set ssl:verify-certificate false; mkdir -p $FTP_DIR; mirror -R --ignore-time --delete --verbose=3 --parallel=1 --exclude-glob .DS_Store out/ $FTP_DIR/; bye"
