@@ -59,7 +59,7 @@
   <script>
   (async function(){
     const cacheBust = `?v=${Date.now()}`;
-    const JSON_URL = (window.ALM_DATA_URL || "data/datacards.json") + cacheBust;
+    const JSON_URL = (window.ALM_DATA_URL || "assets/data/datacards.json") + cacheBust;
 
     async function getJSON(u){
       try{ const r = await fetch(u, {cache:"no-store"}); if(!r.ok) throw new Error(r.statusText); return await r.json(); }
