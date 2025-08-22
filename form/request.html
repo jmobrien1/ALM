@@ -1,0 +1,18 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Request a List</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial;padding:20px;max-width:680px;margin:0 auto}</style>
+<h1>Request a List</h1>
+<form method="post" action="submit.php">
+  <input type="hidden" name="card" id="card">
+  <label>Full Name<br><input name="name" required style="width:100%"></label><br><br>
+  <label>Email<br><input type="email" name="email" required style="width:100%"></label><br><br>
+  <label>Company<br><input name="company" style="width:100%"></label><br><br>
+  <label>Notes<br><textarea name="notes" rows="6" style="width:100%"></textarea></label><br><br>
+  <button type="submit">Send Request</button>
+</form>
+<script>
+  const id = new URLSearchParams(location.search).get('card') || '';
+  document.getElementById('card').value = id;
+</script>

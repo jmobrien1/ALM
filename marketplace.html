@@ -19,7 +19,7 @@
     .pill{border:1px solid #e1e3ea;border-radius:999px;padding:4px 10px;background:#fafbff}
     .desc{color:#333;font-size:.92rem;min-height:2.6em}
     .cta{margin-top:auto;display:flex;justify-content:space-between;align-items:center}
-    .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid #dfe3ef;background:#fff;text-decoration:none;color:var(--ink);font-weight:600}
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid #dfe3ef;background:#fff;text-decoration:none;color:#111;font-weight:600}
     .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
     footer{max-width:1200px;margin:8px auto 40px;color:#666;padding:0 16px;font-size:.9rem}
   </style>
@@ -48,14 +48,16 @@
         <div class="desc"></div>
         <div class="cta">
           <a class="btn view" target="_self">View</a>
-          <a class="btn primary" href="mailto:info@allegiancelistmarketing.com?subject=List%20Inquiry">Request list</a>
+          <a class="btn primary" href="#" data-action="request">Request list</a>
         </div>
       </article>
     </template>
   </main>
 
-  <footer>Tip: Titles match provider PDFs. New cards come from your Markdown conversions.</footer>
+  <footer>Titles match provider PDFs. New cards come from your PDF ingests.</footer>
 
+  <!-- Fuse.js (fuzzy search) and runtime -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
   (async function(){
     const cacheBust = `?v=${Date.now()}`;
@@ -69,11 +71,13 @@
     const data = await getJSON(JSON_URL);
     const items = (Array.isArray(data) ? data : []).map(d => ({
       id: String(d.id ?? d.card_id ?? ""),
+      slug: (d.slug||""),
       title: (d.title||"").trim(),
       shortDescription: (d.shortDescription ?? d.short_description ?? d.description ?? "").trim(),
       universe: Number(d.universe ?? d.universe_size ?? 0),
       baseRate: Number(d.baseRate ?? d.base_rate_per_thousand ?? d.base_rate ?? 0),
-      lastUpdate: (d.lastUpdate ?? d.last_updated ?? "").trim()
+      lastUpdate: (d.lastUpdate ?? d.last_updated ?? "").trim(),
+      selects: d.selects || []
     })).filter(d => d.title);
 
     items.sort((a,b)=>a.title.localeCompare(b.title, undefined, {sensitivity:"base"}));
@@ -81,8 +85,8 @@
     const grid = document.getElementById("cards-list");
     const tpl  = document.getElementById("card-tpl");
 
-    function fmtMoney(v){ return v>0 ? `$${v.toFixed(2)}/M` : "call"; }
-    function fmtUniverse(n){ return n>0 ? n.toLocaleString() : "n/a"; }
+    const fmtMoney = v => v>0 ? `$${v.toFixed(2)}/M` : "call";
+    const fmtUniverse = n => n>0 ? n.toLocaleString() : "n/a";
 
     function render(list){
       grid.innerHTML = "";
@@ -94,6 +98,7 @@
         node.querySelector(".updated").textContent = `Updated: ${d.lastUpdate || "n/a"}`;
         node.querySelector(".desc").textContent = d.shortDescription || "";
         node.querySelector("a.view").href = `datacard.html?id=${encodeURIComponent(d.id)}`;
+        node.querySelector('[data-action="request"]').href = `form/request.html?card=${encodeURIComponent(d.id)}`;
         grid.appendChild(node);
       }
       document.getElementById("stats").textContent = `${list.length} items`;
@@ -101,12 +106,12 @@
 
     render(items);
 
-    // search
-    const idx = items.map(d => ({d, hay:[d.title, d.shortDescription].join(" ").toLowerCase()}));
+    // fuzzy search
+    const fuse = new Fuse(items, {keys:["title","shortDescription","selects"], threshold:0.36, ignoreLocation:true});
     document.getElementById("q").addEventListener("input", e => {
-      const q = e.target.value.trim().toLowerCase();
+      const q = e.target.value.trim();
       if (!q) return render(items);
-      render(idx.filter(o=>o.hay.includes(q)).map(o=>o.d));
+      render(fuse.search(q).map(x => x.item));
     });
   })();
   </script>
