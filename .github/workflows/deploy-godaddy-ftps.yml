@@ -74,7 +74,7 @@ jobs:
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
           set -euxo pipefail
-          : "${FTP_DIR:=public_html}"
+          : "${FTP_DIR:=.}"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
             set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
