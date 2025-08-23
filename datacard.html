@@ -29,17 +29,36 @@
   <script>
   (async function(){
     const id = new URLSearchParams(location.search).get('id');
-    if(!id){ document.getElementById('title').textContent = "Data card not found"; return; }
+    const titleEl = document.getElementById('title');
+    if(!id){ titleEl.textContent = "Data card not found"; return; }
 
     const bust = '?v=' + Date.now();
-    const tryJSON = async u => { try{ const r=await fetch(u,{cache:'no-store'}); if(r.ok) return r.json(); }catch(e){} return null; };
-    const data = await (async ()=> await tryJSON('assets/data/datacards.json'+bust) || await tryJSON('data/datacards.json'+bust))();
-    if(!data){ document.getElementById('title').textContent = "Data card not found"; return; }
+    async function tryJSON(u){
+      try{
+        const r = await fetch(u,{cache:'no-store'});
+        if(!r.ok) return null;
+        return await r.json();
+      }catch(e){ return null; }
+    }
 
-    const card = data.find(c => String(c.card_id ?? c.id) === String(id));
-    if(!card){ document.getElementById('title').textContent = "Data card not found"; return; }
+    // 1) Load from assets path first
+    const a = await tryJSON('assets/data/datacards.json'+bust);
+    let data = Array.isArray(a) ? a : [];
+    let card = data.find(c => String(c.card_id ?? c.id) === String(id));
 
-    document.getElementById('title').textContent = card.title || "Untitled";
+    // 2) If ID not found, fall back to legacy path even if assets/ loaded successfully
+    if(!card){
+      const b = await tryJSON('data/datacards.json'+bust);
+      if(Array.isArray(b)){
+        data = b;
+        card = data.find(c => String(c.card_id ?? c.id) === String(id));
+      }
+    }
+
+    if(!card){ titleEl.textContent = "Data card not found"; return; }
+
+    // Render header/meta
+    titleEl.textContent = card.title || "Untitled";
     const u = Number(card.universe_size ?? card.universe ?? 0);
     const r = Number(card.base_rate_per_thousand ?? card.baseRate ?? 0);
     const pills = [];
@@ -48,14 +67,16 @@
     if(card.last_updated || card.lastUpdate) pills.push(`<span class="pill">Updated: ${card.last_updated || card.lastUpdate}</span>`);
     document.getElementById('meta').innerHTML = pills.join(" ");
 
+    // Actions
     const actions = [];
     actions.push(`<a class="btn primary" href="form/request.html?card=${encodeURIComponent(id)}">Request list</a>`);
     if(card.pdf) actions.push(`<a class="btn" target="_blank" href="${card.pdf}">Download PDF</a>`);
     document.getElementById('actions').innerHTML = actions.join(" ");
 
+    // Markdown render (if present)
     if(card.markdown){
       try{
-        const md = await fetch(card.markdown + bust).then(r=>r.text());
+        const md = await fetch(card.markdown + bust, {cache:'no-store'}).then(r=>r.text());
         document.getElementById('md-content').innerHTML = marked.parse(md);
       }catch(e){ document.getElementById('fallback').style.display = "block"; }
     }else{
