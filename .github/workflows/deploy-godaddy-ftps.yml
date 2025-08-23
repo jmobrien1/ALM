@@ -98,21 +98,27 @@ jobs:
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
             set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
-            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ftp:use-epsv false; \
             set xfer:clobber on; set ssl:verify-certificate false; \
             mkdir -f -p $FTP_DIR; cd $FTP_DIR; \
             mirror -R --ignore-time --delete --verbose=3 out/ ./; \
+            pwd; ls -la; echo '--- head deploy-check.txt ---'; cat -n deploy-check.txt | head -n 5 || true; \
             bye"
 
       # Prove docroot == this commit
       - name: Verify deploy (deploy-check.txt)
         run: |
           set -euxo pipefail
-          live_sha=$(curl -fsS "https://www.allegiancelistmarketing.com/deploy-check.txt?v=$(date +%s)")
-          test "$live_sha" = "${GITHUB_SHA}"
-          echo "Docroot updated: $live_sha"
+          for i in 1 2 3 4 5 6 7 8; do
+            live_sha=20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "https://www.allegiancelistmarketing.com/deploy-check.txt?v=20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701date +%s)")
+            if [ "" = "" ]; then
+              echo "Docroot updated: "; exit 0
+            fi
+            echo "Mismatch (got , want ); retry #..."
+            sleep 20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701(i*5))
+          done
+          echo "Docroot not updated after retries."; exit 1
 
-      # Verify JSON + pages; heal JSON if needed
       - name: Verify JSON + pages (heal if needed)
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
