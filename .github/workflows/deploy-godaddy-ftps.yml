@@ -114,7 +114,7 @@ jobs:
 
           good=0
           echo "$body" | jq -e 'type=="array"' >/dev/null 2>&1 && good=1
-          echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null 2>&1 || good=0
+          echo "$body" | jq -e '.[] | select(((.card_id // .id)|tostring=="580140") or ((.card_id // .id)|tostring=="424915"))' >/dev/null 2>&1 || good=0
 
           if [ "$good" -ne 1 ]; then
             echo "Self-heal: uploading local datacards.json to both paths"
@@ -129,6 +129,6 @@ jobs:
               "ftp://$FTP_SERVER/$FTP_DIR/data/datacards.json"
 
             body=$(curl -fsS "$canonical")
-            echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null
+            echo "$body" | jq -e '.[] | select(((.card_id // .id)|tostring=="580140") or ((.card_id // .id)|tostring=="424915"))' >/dev/null
           fi
           echo "Live JSON OK."
