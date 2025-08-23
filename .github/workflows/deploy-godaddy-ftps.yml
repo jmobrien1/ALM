@@ -2,7 +2,7 @@ name: Deploy to GoDaddy (FTPS, stable)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -10,47 +10,51 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      RUN_INGEST: 'false'   # flip to 'true' later when ingest is ready
+      SITE_HOST: https://www.allegiancelistmarketing.com
+      RUN_INGEST: 'false'   # flip to 'true' when ingest script is ready
 
     steps:
       - uses: actions/checkout@v4
 
-      # Tools first (so lftp exists before use)
+      # Tools first so lftp exists before we call it
       - name: Install lftp + curl + jq
         run: |
           set -euxo pipefail
           sudo apt-get update
           sudo apt-get install -y lftp curl jq
 
-      - name: Setup Node (for schema validation)
+      - name: Setup Node (for schema validation and optional ingest)
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Validate the JSON contract (schema + invariants)
-      - name: Validate datacards.json (schema + contracts)
+      # Validate the JSON contract (fast fail on real data errors)
+      - name: Validate datacards.json (schema + invariants)
         run: |
           set -euxo pipefail
           test -f assets/data/datacards.json
 
-          # JSON Schema
+          # Schema (draft-07, permissive on union types)
           npx -y ajv-cli@5 validate \
             -s assets/data/datacards.schema.json \
-            -d assets/data/datacards.json
+            -d assets/data/datacards.json \
+            --strict=false
 
-          # Contract: array + contains legacy IDs + >=5 markdown-backed cards
+          # Invariants we actually care about
           jq -e 'type=="array"' assets/data/datacards.json >/dev/null
           jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' assets/data/datacards.json >/dev/null
           jq -e '[ .[] | select(.markdown and (.markdown|type=="string")) ] | length >= 5' assets/data/datacards.json >/dev/null
 
-      # Optional ingest – gated, non-blocking
+      # Optional ingest (kept non-blocking until your script is solid)
       - name: (optional) Build datacards from PDFs
+        if: ${{ env.RUN_INGEST == 'true' }}
+        continue-on-error: true
         run: |
           set -euxo pipefail
-          if [ -f tools/ingest_legacy_pdfs.js ] && [ "${RUN_INGEST}" = "true" ]; then
-            node tools/ingest_legacy_pdfs.js
+          if [ -f tools/ingest_legacy_pdfs.js ]; then
+            node --trace-uncaught --unhandled-rejections=strict tools/ingest_legacy_pdfs.js
           else
-            echo "Skipping ingest (flag false or file missing)"
+            echo "Skipping ingest (file missing)"
           fi
 
       # Package site → out/
@@ -69,7 +73,6 @@ jobs:
 
           # deploy markers
           echo "${GITHUB_SHA}" > out/deploy-check.txt
-          mkdir -p out/.well-known
           echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
 
           # legacy JSON path for older pages
@@ -85,7 +88,7 @@ jobs:
       - name: Confirm lftp install
         run: lftp --version
 
-      # Upload (tolerant mkdir, verbose mirror)
+      # Upload (NO shell commands inside lftp; everything else runs in bash outside)
       - name: Upload via FTPS (verbose + tolerant mkdir)
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
@@ -96,29 +99,38 @@ jobs:
           set -euxo pipefail
           : "${FTP_DIR:=public_html}"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
-            set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
+            set cmd:fail-exit true; \
+            set net:max-retries 10; set net:persist-retries 3; set net:timeout 60; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
             set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ftp:use-epsv false; \
             set xfer:clobber on; set ssl:verify-certificate false; \
             mkdir -f -p $FTP_DIR; cd $FTP_DIR; \
             mirror -R --ignore-time --delete --verbose=3 out/ ./; \
-            pwd; ls -la; echo '--- head deploy-check.txt ---'; head -n 5 deploy-check.txt || true; \
+            cls -la; pwd; \
             bye"
 
-      # Prove docroot == this commit
+      # Give the CDN / edge a moment if needed (Sucuri/GoDaddy can lag)
+      - name: Wait for deploy propagation
+        run: sleep 15
+
+      # Prove docroot == this commit (with retries + no-cache)
       - name: Verify deploy (deploy-check.txt)
         run: |
           set -euxo pipefail
           for i in 1 2 3 4 5 6 7 8; do
-            live_sha=20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "https://www.allegiancelistmarketing.com/deploy-check.txt?v=20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701date +%s)")
-            if [ "" = "" ]; then
-              echo "Docroot updated: "; exit 0
+            live_sha=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
+              "$SITE_HOST/deploy-check.txt?v=$(date +%s)")
+            if [ "$live_sha" = "${GITHUB_SHA}" ]; then
+              echo "Docroot updated: $live_sha"
+              exit 0
             fi
-            echo "Mismatch (got , want ); retry #..."
-            sleep 20 20 12 61 79 80 81 98 33 100 204 250 395 398 399 400 701(i*5))
+            echo "Mismatch (got $live_sha, want ${GITHUB_SHA}); retry #$i..."
+            sleep $((i*5))
           done
-          echo "Docroot not updated after retries."; exit 1
+          echo "Docroot not updated after retries."
+          exit 1
 
+      # Verify JSON + pages; heal JSON if needed (do this OUTSIDE lftp)
       - name: Verify JSON + pages (heal if needed)
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
@@ -128,27 +140,30 @@ jobs:
         run: |
           set -euxo pipefail
           : "${FTP_DIR:=public_html}"
-          ad="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
-          body=$(curl -fsS "$ad" || true)
+          ad="$SITE_HOST/assets/data/datacards.json?v=$(date +%s)"
+          body=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "$ad" || true)
 
           ok=0
           echo "$body" | jq -e 'type=="array"' >/dev/null 2>&1 && ok=1 || ok=0
           echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null 2>&1 || ok=0
 
           if [ "$ok" -ne 1 ]; then
-            echo "Healing datacards.json on server..."
+            echo "Healing datacards.json on server (both canonical + legacy paths)..."
             curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
               --user "$FTP_USERNAME:$FTP_PASSWORD" \
               -T out/assets/data/datacards.json \
               "ftp://$FTP_SERVER/$FTP_DIR/assets/data/datacards.json"
+
             curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
               --user "$FTP_USERNAME:$FTP_PASSWORD" \
               -T out/assets/data/datacards.json \
               "ftp://$FTP_SERVER/$FTP_DIR/data/datacards.json"
-            body=$(curl -fsS "$ad")
+
+            sleep 3
+            body=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "$ad")
             echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null
           fi
 
-          # Pages smoke test (should not contain "Data card not found")
-          curl -fsS "https://www.allegiancelistmarketing.com/datacard.html?id=580140&v=$(date +%s)" | grep -q "Data card not found" && { echo "580140 page not rendering"; exit 1; } || true
-          curl -fsS "https://www.allegiancelistmarketing.com/datacard.html?id=424915&v=$(date +%s)" | grep -q "Data card not found" && { echo "424915 page not rendering"; exit 1; } || true
+          # Pages smoke test (should NOT show the not-found banner)
+          curl -fsS "$SITE_HOST/datacard.html?id=580140&v=$(date +%s)" | grep -q "Data card not found" && { echo "580140 page not rendering"; exit 1; } || true
+          curl -fsS "$SITE_HOST/datacard.html?id=424915&v=$(date +%s)" | grep -q "Data card not found" && { echo "424915 page not rendering"; exit 1; } || true
