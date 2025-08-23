@@ -23,3 +23,10 @@ RewriteRule ^\.well-known/acme-challenge/ - [L]
 #RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 #RewriteCond %{HTTP_HOST} ^allegiancelistmarketing\.com$ [NC]
 #RewriteRule ^ https://www.allegiancelistmarketing.com%{REQUEST_URI} [L,R=301]
+<IfModule mod_headers.c>
+  <FilesMatch "\.(json|md)$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+</IfModule>
