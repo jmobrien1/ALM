@@ -2,7 +2,7 @@ name: Deploy to GoDaddy (FTPS, stable)
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -10,54 +10,43 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
-      SITE_HOST: https://www.allegiancelistmarketing.com
-      RUN_INGEST: 'false'   # flip to 'true' when ingest script is ready
+      SITE_HOST: www.allegiancelistmarketing.com
+      RUN_INGEST: 'false' # keep false until ingest is ready
 
     steps:
       - uses: actions/checkout@v4
 
-      # Tools first so lftp exists before we call it
       - name: Install lftp + curl + jq
         run: |
           set -euxo pipefail
           sudo apt-get update
           sudo apt-get install -y lftp curl jq
 
-      - name: Setup Node (for schema validation and optional ingest)
+      - name: Setup Node (for schema validation)
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Validate the JSON contract (fast fail on real data errors)
-      - name: Validate datacards.json (schema + invariants)
+      - name: Validate datacards.json (schema + contracts)
         run: |
           set -euxo pipefail
           test -f assets/data/datacards.json
-
-          # Schema (draft-07, permissive on union types)
           npx -y ajv-cli@5 validate \
             -s assets/data/datacards.schema.json \
-            -d assets/data/datacards.json \
-            --strict=false
-
-          # Invariants we actually care about
+            -d assets/data/datacards.json
           jq -e 'type=="array"' assets/data/datacards.json >/dev/null
           jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' assets/data/datacards.json >/dev/null
           jq -e '[ .[] | select(.markdown and (.markdown|type=="string")) ] | length >= 5' assets/data/datacards.json >/dev/null
 
-      # Optional ingest (kept non-blocking until your script is solid)
       - name: (optional) Build datacards from PDFs
-        if: ${{ env.RUN_INGEST == 'true' }}
-        continue-on-error: true
         run: |
           set -euxo pipefail
-          if [ -f tools/ingest_legacy_pdfs.js ]; then
-            node --trace-uncaught --unhandled-rejections=strict tools/ingest_legacy_pdfs.js
+          if [ -f tools/ingest_legacy_pdfs.js ] && [ "${RUN_INGEST}" = "true" ]; then
+            node tools/ingest_legacy_pdfs.js
           else
-            echo "Skipping ingest (file missing)"
+            echo "Skipping ingest (flag false or file missing)"
           fi
 
-      # Package site → out/
       - name: Prepare artifact
         run: |
           set -euxo pipefail
@@ -70,30 +59,19 @@ jobs:
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
             ./ ./out/
-
-          # deploy markers
-          mkdir -p out/.well-known
-          printf "%s
-" "${GITHUB_SHA}" > out/deploy-check.txt
-          printf "%s
-" "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
-          printf "%s
-" "${GITHUB_SHA}" > "out/deploy-${GITHUB_SHA}.txt"
-
-          # legacy JSON path for older pages
+          # markers (unique + fixed + hidden)
+          printf "%s\n" "${GITHUB_SHA}" > out/deploy-check.txt
+          printf "%s\n" "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
+          printf "%s\n" "${GITHUB_SHA}" > "out/deploy-${GITHUB_SHA}.txt"
+          # legacy JSON path
           if [ -f out/assets/data/datacards.json ]; then
             mkdir -p out/data
             cp -f out/assets/data/datacards.json out/data/datacards.json
           fi
-
           # /marketplace/ alias
           mkdir -p out/marketplace
           cp -f out/marketplace.html out/marketplace/index.html || true
 
-      - name: Confirm lftp install
-        run: lftp --version
-
-      # Upload (NO shell commands inside lftp; everything else runs in bash outside)
       - name: Upload via FTPS (verbose + tolerant mkdir)
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
@@ -104,74 +82,74 @@ jobs:
           set -euxo pipefail
           : "${FTP_DIR:=public_html}"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
-            set cmd:fail-exit true; \
-            set net:max-retries 10; set net:persist-retries 3; set net:timeout 60; \
+            set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
             set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
             set xfer:clobber on; set ssl:verify-certificate false; \
             mkdir -f -p $FTP_DIR; cd $FTP_DIR; \
             mirror -R --ignore-time --delete --verbose=3 out/ ./; \
-            cls -la; pwd; \
+            pwd; ls -la; \
+            echo '---- remote deploy-check.txt ----'; get -O - deploy-check.txt || true; \
+            echo '---- remote unique marker ----'; get -O - deploy-${GITHUB_SHA}.txt || true; \
             bye"
 
-      # Give the CDN / edge a moment if needed (Sucuri/GoDaddy can lag)
-      - name: Wait for deploy propagation
-        run: sleep 15
-
-      # Prove docroot == this commit (with retries + no-cache)
       - name: Wait for deploy propagation
         run: sleep 45
 
-        - name: Verify deploy (deploy-check.txt)
+      - name: Verify deploy (unique marker, then fallback)
+        env:
+          SITE_HOST: ${{ env.SITE_HOST }}
         run: |
           set -euxo pipefail
+          uniq_url="https://${SITE_HOST}/deploy-${GITHUB_SHA}.txt?r=${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}"
+          uniq_val=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "$uniq_url" || true)
+          if [ "$uniq_val" = "${GITHUB_SHA}" ]; then
+            echo "Docroot updated via unique marker: $uniq_val"
+            exit 0
+          fi
           for i in 1 2 3 4 5 6 7 8; do
             live_sha=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
-              "$SITE_HOST/deploy-check.txt?v=$(date +%s)")
+              "https://${SITE_HOST}/deploy-check.txt?v=$(date +%s)" || true)
             if [ "$live_sha" = "${GITHUB_SHA}" ]; then
-              echo "Docroot updated: $live_sha"
+              echo "Docroot updated via deploy-check: $live_sha"
               exit 0
             fi
-            echo "Mismatch (got $live_sha, want ${GITHUB_SHA}); retry #$i..."
+            echo "Mismatch (got '$live_sha', want '${GITHUB_SHA}') retry #$i ..."
             sleep $((i*5))
           done
           echo "Docroot not updated after retries."
           exit 1
 
-      # Verify JSON + pages; heal JSON if needed (do this OUTSIDE lftp)
       - name: Verify JSON + pages (heal if needed)
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
+          SITE_HOST:    ${{ env.SITE_HOST }}
         run: |
           set -euxo pipefail
           : "${FTP_DIR:=public_html}"
-          ad="$SITE_HOST/assets/data/datacards.json?v=$(date +%s)"
-          body=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "$ad" || true)
+          ad="https://${SITE_HOST}/assets/data/datacards.json?v=$(date +%s)"
+          body=$(curl -fsS "$ad" || true)
 
           ok=0
           echo "$body" | jq -e 'type=="array"' >/dev/null 2>&1 && ok=1 || ok=0
           echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null 2>&1 || ok=0
 
           if [ "$ok" -ne 1 ]; then
-            echo "Healing datacards.json on server (both canonical + legacy paths)..."
+            echo "Healing datacards.json on server..."
             curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
               --user "$FTP_USERNAME:$FTP_PASSWORD" \
               -T out/assets/data/datacards.json \
               "ftp://$FTP_SERVER/$FTP_DIR/assets/data/datacards.json"
-
             curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
               --user "$FTP_USERNAME:$FTP_PASSWORD" \
               -T out/assets/data/datacards.json \
               "ftp://$FTP_SERVER/$FTP_DIR/data/datacards.json"
-
-            sleep 3
-            body=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "$ad")
+            body=$(curl -fsS "$ad")
             echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null
           fi
 
-          # Pages smoke test (should NOT show the not-found banner)
-          curl -fsS "$SITE_HOST/datacard.html?id=580140&v=$(date +%s)" | grep -q "Data card not found" && { echo "580140 page not rendering"; exit 1; } || true
-          curl -fsS "$SITE_HOST/datacard.html?id=424915&v=$(date +%s)" | grep -q "Data card not found" && { echo "424915 page not rendering"; exit 1; } || true
+          curl -fsS "https://${SITE_HOST}/datacard.html?id=580140&v=$(date +%s)" | grep -q "Data card not found" && { echo "580140 page not rendering"; exit 1; } || true
+          curl -fsS "https://${SITE_HOST}/datacard.html?id=424915&v=$(date +%s)" | grep -q "Data card not found" && { echo "424915 page not rendering"; exit 1; } || true
