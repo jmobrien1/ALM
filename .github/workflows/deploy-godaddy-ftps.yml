@@ -72,8 +72,13 @@ jobs:
             ./ ./out/
 
           # deploy markers
-          echo "${GITHUB_SHA}" > out/deploy-check.txt
-          echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
+          mkdir -p out/.well-known
+          printf "%s
+" "${GITHUB_SHA}" > out/deploy-check.txt
+          printf "%s
+" "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
+          printf "%s
+" "${GITHUB_SHA}" > "out/deploy-${GITHUB_SHA}.txt"
 
           # legacy JSON path for older pages
           if [ -f out/assets/data/datacards.json ]; then
@@ -114,7 +119,10 @@ jobs:
         run: sleep 15
 
       # Prove docroot == this commit (with retries + no-cache)
-      - name: Verify deploy (deploy-check.txt)
+      - name: Wait for deploy propagation
+        run: sleep 45
+
+        - name: Verify deploy (deploy-check.txt)
         run: |
           set -euxo pipefail
           for i in 1 2 3 4 5 6 7 8; do
