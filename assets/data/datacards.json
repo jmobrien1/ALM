@@ -1,6 +1,18 @@
 [
   {
-    "id": 282876,
+    "title": "Allegiance List Marketing",
+    "universe_size": 0,
+    "base_rate_per_thousand": 0,
+    "last_updated": "",
+    "short_description": "",
+    "source": "",
+    "geography": "",
+    "pdf": "assets/pdfs/legacy/Marketplace.pdf",
+    "markdown": "assets/md/allegiance-list-marketing.md",
+    "id": "allegiance-list-marketing"
+  },
+  {
+    "id": "282876",
     "title": "Allegiant Pro-Life Conservative Donors",
     "shortDescription": "Active conservative Christian donors defending the right to life and freedom.",
     "description": "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom. This group works to support candidates who steadfastly believe that life begins at conception.",
@@ -37,7 +49,7 @@
     "card_id": 282876
   },
   {
-    "id": 580140,
+    "id": "580140",
     "title": "America First Patriot Donors",
     "shortDescription": "Freedom-loving donors unwilling to see the country destroyed by socialist policies.",
     "description": "Reach an audience of freedom-loving America First donors! These patriotic Americans love their country and are unwilling to stand on the sidelines and watch it be destroyed by the socialist policies of the Biden Harris Administration.",
@@ -65,7 +77,7 @@
     "card_id": 580140
   },
   {
-    "id": 586316,
+    "id": "586316",
     "title": "Americans Against the Biden Agenda",
     "shortDescription": "Patriotic Americans who stand against bureaucracy and progressive doctrine.",
     "description": "Compounded of patriotic Americans who stand against bureaucracy and progressive doctrine. These donors are averse to tax hikes, federal mandates, reckless federal spending, gun control, abortion, and other progressive policy pushed by the Biden administration.",
@@ -102,7 +114,7 @@
     "card_id": 586316
   },
   {
-    "id": 486336,
+    "id": "486336",
     "title": "Build The Wall Donors",
     "shortDescription": "Engaged citizens supporting strong borders and reduced illegal immigration.",
     "description": "Reach this active and engaged audience of American citizens who support efforts to reign in out-of-control illegal immigration. These donors support Trump and his promises to strengthen our nation's borders, including the construction of a border wall.",
@@ -142,6 +154,43 @@
     ],
     "pdf": "",
     "card_id": 486336
+  },
+  {
+    "id": "424915",
+    "title": "Catholic Action Donors",
+    "shortDescription": "Nationwide Catholic donors passionate about advancing the faith and ending abortion.",
+    "description": "An ideal list for those looking to reach a nationwide audience of Catholic Americans. These highly active donors are incredibly passionate about advancing the Roman Catholic way of life, sharing the Gospel and ending abortion.",
+    "universe": 16411,
+    "baseRate": 75,
+    "lastUpdate": "2018-07-10",
+    "source": "Direct mail sold",
+    "geography": "USA",
+    "genderMale": "N/A",
+    "genderFemale": "N/A",
+    "pricing": [
+      {
+        "segment": "TOTAL UNIVERSE",
+        "count": 16411,
+        "price": 75
+      },
+      {
+        "segment": "$5+ Donors",
+        "count": 12390,
+        "price": 75
+      }
+    ],
+    "selects": [
+      {
+        "name": "$25+",
+        "price": 10
+      },
+      {
+        "name": "Telemarketing",
+        "price": 25
+      }
+    ],
+    "pdf": "",
+    "card_id": 424915
   },
   {
     "id": "citizen-ag-dsg",
@@ -191,6 +240,55 @@
     "markdown": "assets/md/citizen-ag-dsg.md"
   },
   {
+    "id": "401792",
+    "title": "College Republican National Committee",
+    "shortDescription": "Donors supporting programs to engage young voters on campuses nationwide.",
+    "description": "The College Republican National Committee is the largest, oldest and most active Republican youth organization in the country today. Donors on this list are dedicated to CRNC's mission to engage young voters on campuses across our nation.",
+    "universe": 110317,
+    "baseRate": 135,
+    "lastUpdate": "2022-03-30",
+    "source": "Direct mail sold, Direct response",
+    "geography": "USA",
+    "genderMale": "N/A",
+    "genderFemale": "N/A",
+    "pricing": [
+      {
+        "segment": "TOTAL UNIVERSE",
+        "count": 110317,
+        "price": 135
+      },
+      {
+        "segment": "$5+ L12",
+        "count": 12850,
+        "price": 135
+      }
+    ],
+    "selects": [
+      {
+        "name": "Dollar Amount",
+        "price": 5
+      },
+      {
+        "name": "Telemarketing",
+        "price": 25
+      }
+    ],
+    "pdf": "",
+    "card_id": 401792
+  },
+  {
+    "title": "Conservative political appeals.",
+    "universe_size": 16411,
+    "base_rate_per_thousand": 75,
+    "last_updated": "",
+    "short_description": "Catholic Action Donors is an ideal list for those looking to reach a",
+    "source": "Direct mail sold",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Catholic Action Donors .pdf",
+    "markdown": "assets/md/conservative-political-appeals.md",
+    "id": "conservative-political-appeals"
+  },
+  {
     "id": "constitutional-rights-pac-dsg",
     "title": "CONSTITUTIONAL RIGHTS PAC — a DSG Property",
     "universe": 20373,
@@ -233,81 +331,7 @@
     "markdown": "assets/md/constitutional-rights-pac-dsg.md"
   },
   {
-    "id": 424915,
-    "title": "Catholic Action Donors",
-    "shortDescription": "Nationwide Catholic donors passionate about advancing the faith and ending abortion.",
-    "description": "An ideal list for those looking to reach a nationwide audience of Catholic Americans. These highly active donors are incredibly passionate about advancing the Roman Catholic way of life, sharing the Gospel and ending abortion.",
-    "universe": 16411,
-    "baseRate": 75,
-    "lastUpdate": "2018-07-10",
-    "source": "Direct mail sold",
-    "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 16411,
-        "price": 75
-      },
-      {
-        "segment": "$5+ Donors",
-        "count": 12390,
-        "price": 75
-      }
-    ],
-    "selects": [
-      {
-        "name": "$25+",
-        "price": 10
-      },
-      {
-        "name": "Telemarketing",
-        "price": 25
-      }
-    ],
-    "pdf": "",
-    "card_id": 424915
-  },
-  {
-    "id": 401792,
-    "title": "College Republican National Committee",
-    "shortDescription": "Donors supporting programs to engage young voters on campuses nationwide.",
-    "description": "The College Republican National Committee is the largest, oldest and most active Republican youth organization in the country today. Donors on this list are dedicated to CRNC's mission to engage young voters on campuses across our nation.",
-    "universe": 110317,
-    "baseRate": 135,
-    "lastUpdate": "2022-03-30",
-    "source": "Direct mail sold, Direct response",
-    "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 110317,
-        "price": 135
-      },
-      {
-        "segment": "$5+ L12",
-        "count": 12850,
-        "price": 135
-      }
-    ],
-    "selects": [
-      {
-        "name": "Dollar Amount",
-        "price": 5
-      },
-      {
-        "name": "Telemarketing",
-        "price": 25
-      }
-    ],
-    "pdf": "",
-    "card_id": 401792
-  },
-  {
-    "id": 481240,
+    "id": "481240",
     "title": "Donors to Veteran Causes",
     "shortDescription": "Patriotic Americans supporting organizations that help our Veterans.",
     "description": "Target a donor audience of patriotic Americans who support organizations and missions invested in helping our Veterans. These generous individuals respect and honor the sacrifice that the men and women who served our great country made.",
@@ -384,6 +408,47 @@
     "last_updated": "2025-07-11",
     "short_description": "A DSG donor file available via Allegiance List Marketing.",
     "markdown": "assets/md/friends-ww2-memorial-dsg.md"
+  },
+  {
+    "id": "gator-pac-dsg",
+    "title": "Gator PAC — a DSG Property",
+    "universe": 13788,
+    "baseRate": 125,
+    "lastUpdate": "2025-07-16",
+    "description": "Right-of-center donors backing President Trump’s America First agenda; premium-offer responders focused on election integrity.",
+    "pricing": [
+      {
+        "segment": "Donors",
+        "count": 13788,
+        "price": 125
+      },
+      {
+        "segment": "Activists",
+        "count": 9138,
+        "price": 50
+      }
+    ],
+    "selects": [
+      {
+        "name": "Donation Amount",
+        "price": 5
+      },
+      {
+        "name": "Donation Recency",
+        "price": 5
+      },
+      {
+        "name": "Donation Frequency",
+        "price": 5
+      },
+      {
+        "name": "State/SCF/County/Zip/District",
+        "price": 10
+      }
+    ],
+    "source": "100% Direct Mail Generated",
+    "geography": "National",
+    "pdf": "assets/pdfs/gator-pac-direct-dsg.pdf"
   },
   {
     "id": "gator-pac-direct-dsg",
@@ -475,49 +540,19 @@
     "markdown": "assets/md/great-america-masterfile-dsg.md"
   },
   {
-    "id": "gator-pac-dsg",
-    "title": "Gator PAC — a DSG Property",
-    "universe": 13788,
-    "baseRate": 125,
-    "lastUpdate": "2025-07-16",
-    "description": "Right-of-center donors backing President Trump’s America First agenda; premium-offer responders focused on election integrity.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 13788,
-        "price": 125
-      },
-      {
-        "segment": "Activists",
-        "count": 9138,
-        "price": 50
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "State/SCF/County/Zip/District",
-        "price": 10
-      }
-    ],
-    "source": "100% Direct Mail Generated",
-    "geography": "National",
-    "pdf": "assets/pdfs/gator-pac-direct-dsg.pdf",
-    "card_id": null
+    "title": "Manager",
+    "universe_size": 397542,
+    "base_rate_per_thousand": 100,
+    "last_updated": "",
+    "short_description": "The Real America Donor audience is made up of patriotic Americans who are boldly",
+    "source": "Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Real America Donors .pdf",
+    "markdown": "assets/md/manager.md",
+    "id": "manager"
   },
   {
-    "id": 305791,
+    "id": "305791",
     "title": "Pro-Life America",
     "shortDescription": "Staunch pro-life donors committed to advancing the pro-life movement.",
     "description": "These staunch pro-life donors are committed to supporting policy that advances the pro-life movement and electing officials who will always work to protect and defend the unborn.",
@@ -554,7 +589,19 @@
     "card_id": 305791
   },
   {
-    "id": 479597,
+    "title": "Reach these highly engaged conservative donors today!",
+    "universe_size": 110317,
+    "base_rate_per_thousand": 135,
+    "last_updated": "",
+    "short_description": "The College Republican National Committee is the largest, oldest",
+    "source": "Direct mail sold, Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/College Republican National Committee .pdf",
+    "markdown": "assets/md/reach-these-highly-engaged-conservative-donors-today.md",
+    "id": "reach-these-highly-engaged-conservative-donors-today"
+  },
+  {
+    "id": "479597",
     "title": "Real America Donors",
     "shortDescription": "Patriotic Americans opposing the progressive agenda; America First values.",
     "description": "The Real America Donor audience is made up of patriotic Americans who are boldly in the fight to not only stop the progressive agenda of the Biden/Harris Administration, but to see a truly America First administration in the White House. They support Constitutional issues including Second Amendment Rights, Freedom of Speech and Religion and limited government.",
@@ -598,5 +645,17 @@
     ],
     "pdf": "",
     "card_id": 479597
+  },
+  {
+    "title": "Religious liberty advocate groups",
+    "universe_size": 82949,
+    "base_rate_per_thousand": 100,
+    "last_updated": "",
+    "short_description": "Americans Against the Biden Agenda is compounded of patriotic",
+    "source": "Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Americans Against the Biden Agenda.pdf",
+    "markdown": "assets/md/religious-liberty-advocate-groups.md",
+    "id": "religious-liberty-advocate-groups"
   }
 ]
