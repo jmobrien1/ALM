@@ -1,4 +1,4 @@
-name: Deploy to GoDaddy (FTPS)
+name: Deploy to GoDaddy (FTPS, robust)
 on:
   push:
     branches: [ "main" ]
@@ -7,14 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
       - name: Prepare artifact
         run: |
           rm -rf out
-          mkdir out
+          mkdir -p out/.well-known
           rsync -av --delete \
             --exclude ".git" \
             --exclude ".github" \
@@ -22,33 +21,61 @@ jobs:
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
             ./ ./out/
+          echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
+          echo "${GITHUB_SHA}" > out/deploy-check.txt
 
-      - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp curl
+      - name: Install lftp + curl + jq
+        run: sudo apt-get update && sudo apt-get install -y lftp curl jq
 
-      - name: Upload via FTPS (explicit TLS) with retries
+      - name: Upload to public_html via FTPS
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          set -e
-          : "${FTP_DIR:=public_html}"
+          set -euo pipefail
+          TARGET="${FTP_DIR:-public_html}"
+          echo "Uploading to $TARGET"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
             set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
             set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
             set xfer:clobber on; set ssl:verify-certificate false; \
-            mkdir -p $FTP_DIR; cd $FTP_DIR; \
+            mkdir -p $TARGET; cd $TARGET; pwd; \
             mirror -R --ignore-time --delete --verbose=2 out/ ./; \
-            mkdir -p marketplace; put -O marketplace out/marketplace.html -o index.html; \
             bye"
 
-      - name: Verify LIVE marketplace and JSON
+      - name: Verify live docroot matches this commit
         run: |
           set -e
-          curl -fsS "https://www.allegiancelistmarketing.com/marketplace.html?v=$(date +%s)" | grep -q 'dynamic-market' && echo "OK: marketplace.html"
-          curl -fsS "https://www.allegiancelistmarketing.com/marketplace/?v=$(date +%s)"  | grep -q 'dynamic-market' && echo "OK: /marketplace/"
-          H1=$(curl -fsS "https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)" | head -c1 || true)
-          if [ "$H1" != "[" ] && [ "$H1" != "{" ]; then echo "ERROR: JSON missing"; exit 1; fi
+          live_sha=$(curl -fsS "https://www.allegiancelistmarketing.com/.well-known/alm-deploy.txt")
+          test "$live_sha" = "${GITHUB_SHA}" || { echo "Docroot not updated (got $live_sha)"; exit 1; }
+          echo "Docroot updated to $live_sha"
+
+      - name: Verify LIVE JSON has legacy IDs
+        run: |
+          set -e
+          url1="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
+          url2="https://www.allegiancelistmarketing.com/data/datacards.json?v=$(date +%s)"  # fallback check
+          echo "Checking $url1"
+          body=$(curl -fsS "$url1" || true)
+          if [ -n "$body" ]; then
+            echo "$body" | jq -e '.[0]' >/dev/null 2>&1 || { echo "assets/data is not JSON"; exit 1; }
+            echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null && echo "Found 580140 in assets/data" || echo "MISSING 580140 in assets/data"
+            echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null && echo "Found 424915 in assets/data" || echo "MISSING 424915 in assets/data"
+          else
+            echo "assets/data not reachable"
+          fi
+
+          # If assets/data is missing either ID, fail unless the legacy file (data/) has them (to avoid a false pass)
+          need_fail=0
+          echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null || need_fail=1
+          echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null || need_fail=1
+
+          if [ $need_fail -ne 0 ]; then
+            echo "Trying legacy path $url2 for debugging:"
+            curl -fsS "$url2" | jq -r '.[]|.card_id' | head || true
+            echo "ERROR: assets/data/datacards.json missing legacy IDs"; exit 1
+          fi
+          echo "OK: assets/data/datacards.json includes legacy IDs."
