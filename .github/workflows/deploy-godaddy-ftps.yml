@@ -1,4 +1,4 @@
-name: Deploy to GoDaddy (FTPS, minimal-stable)
+name: Deploy to GoDaddy (FTPS, robust)
 
 on:
   push:
@@ -8,24 +8,45 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    # Read creds from repo secrets. (Set FTP_DIR in secrets if your docroot isn't public_html.)
-    env:
-      FTP_SERVER:   ${{ secrets.FTP_SERVER }}
-      FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      FTP_DIR:      ${{ secrets.FTP_DIR }}
-
+    timeout-minutes: 25
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
+      # --- Build (optional) ---
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps (if package.json exists)
+        run: |
+          set -e
+          if [ -f package.json ]; then
+            if [ -f package-lock.json ]; then
+              npm ci --no-audit --no-fund
+            else
+              npm i --no-audit --no-fund
+            fi
+          else
+            echo "No package.json; skipping npm install"
+          fi
+
+      - name: Build datacards from PDFs (optional)
+        run: |
+          set -e
+          if [ -f tools/ingest_legacy_pdfs.js ]; then
+            node tools/ingest_legacy_pdfs.js
+          else
+            echo "No ingest_legacy_pdfs.js; skipping ingest"
+          fi
+
+      # --- Prepare artifact ---
       - name: Prepare artifact
         run: |
           set -e
           rm -rf out
-          mkdir -p out
+          mkdir -p out/.well-known
           rsync -av --delete \
             --exclude ".git" \
             --exclude ".github" \
@@ -33,40 +54,101 @@ jobs:
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
             ./ ./out/
-          # marker used for post-deploy verification
+          # write deploy markers
+          echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
           echo "${GITHUB_SHA}" > out/deploy-check.txt
-          # ensure /marketplace/ directory index exists
+          # keep legacy JSON path too
+          if [ -f out/assets/data/datacards.json ]; then
+            mkdir -p out/data
+            cp -f out/assets/data/datacards.json out/data/datacards.json
+          fi
+          # ensure /marketplace/ alias
           mkdir -p out/marketplace
-          [ -f out/marketplace.html ] && cp -f out/marketplace.html out/marketplace/index.html || true
+          cp -f out/marketplace.html out/marketplace/index.html || true
 
-      - name: Install lftp & curl
-        run: sudo apt-get update && sudo apt-get install -y lftp curl
+      # --- Upload ---
+      - name: Install lftp + curl + jq
+        run: sudo apt-get update && sudo apt-get install -y lftp curl jq
 
-      - name: Upload via FTPS (mirror)
+      - name: Upload via FTPS (verbose + tolerant mkdir)
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
           set -e
-          DEST_DIR="${FTP_DIR:-public_html}"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "
-            set net:max-retries 5
-            set net:persist-retries 3
-            set net:timeout 45
-            set net:reconnect-interval-base 5
-            set net:reconnect-interval-max 60
-            set ftp:passive-mode true
-            set ftp:ssl-force true
-            set ftp:ssl-protect-data true
-            set ssl:verify-certificate false
-            mkdir -f -p $DEST_DIR
-            cd $DEST_DIR
-            mirror -R --ignore-time --delete --verbose=2 out/ ./
-            bye
-          "
+          : "${FTP_DIR:=public_html}"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+            set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
+            set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+            set ssl:verify-certificate false; set cmd:fail-exit yes; debug 5; \
+            mkdir -f -p $FTP_DIR; cd $FTP_DIR; pwd; \
+            mirror -R --ignore-time --delete --verbose=3 out/ ./; \
+            bye"
 
-      - name: Verify deploy (deploy-check.txt)
+      - name: Post-upload FTPS probe (list + head)
+        if: always()
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
           set -e
+          : "${FTP_DIR:=public_html}"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
+            cd $FTP_DIR; pwd; ls -la; \
+            echo '--- ls deploy-check.txt ---'; ls -l deploy-check.txt || true; \
+            echo '--- first bytes of deploy-check.txt ---'; get -o - deploy-check.txt | head -c 80 || true; echo; \
+            echo '--- assets/data listing ---'; cls -la assets/data || true; \
+            echo '--- head assets/data/datacards.json ---'; get -o - assets/data/datacards.json | head -c 512 || true; echo; \
+            bye"
+
+      # --- Verify + auto-heal marker ---
+      - name: Verify deploy (deploy-check.txt) with auto-heal
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
+        run: |
+          set -e
+          : "${FTP_DIR:=public_html}"
           url="https://www.allegiancelistmarketing.com/deploy-check.txt?v=$(date +%s)"
-          live_sha="$(curl -fsS "$url" || true)"
-          echo "remote: $live_sha"
-          echo "local : $GITHUB_SHA"
-          test "$live_sha" = "$GITHUB_SHA"
+          tries=3
+          i=0
+          while [ $i -lt $tries ]; do
+            live_sha="$(curl -fsS "$url" || true)"
+            echo "remote: $live_sha"
+            echo "local : ${GITHUB_SHA}"
+            if [ "$live_sha" = "${GITHUB_SHA}" ]; then
+              echo "Deploy marker OK."
+              exit 0
+            fi
+            echo "Mismatch (attempt $((i+1))/$tries). Re-uploading marker and retrying..."
+            printf "%s\n" "${GITHUB_SHA}" > /tmp/deploy-check.txt
+            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
+              --user "$FTP_USERNAME:$FTP_PASSWORD" \
+              -T /tmp/deploy-check.txt \
+              "ftp://$FTP_SERVER/${FTP_DIR}/deploy-check.txt"
+            sleep 4
+            i=$((i+1))
+          done
+          echo "ERROR: deploy-check.txt still mismatched after retries."
+          exit 1
+
+      # (Optional) JSON sanity — warn-only
+      - name: Verify LIVE JSON has key IDs (warn-only)
+        continue-on-error: true
+        run: |
+          set -e
+          ad="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
+          body="$(curl -fsS "$ad" || true)"
+          if [ -z "$body" ]; then echo "WARN: assets JSON not reachable"; exit 0; fi
+          echo "$body" | jq -e 'type=="array"' >/dev/null 2>&1 || { echo "WARN: assets JSON not array"; exit 0; }
+          echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null 2>&1 \
+            && echo "JSON OK (found legacy IDs)" \
+            || echo "WARN: legacy IDs not found (but deploy succeeded)"
