@@ -33,10 +33,6 @@ jobs:
           node -v
           ls -la assets/pdfs/legacy || true
           node tools/ingest_legacy_pdfs.js
-          # quick sanity
-          jq 'length' assets/data/datacards.json
-          jq -r '.[]|.card_id' assets/data/datacards.json | head
-
       # --- Prepare artifact ---
       - name: Prepare artifact
         run: |
