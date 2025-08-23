@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       # --- Build (optional) ---
       - name: Setup Node
@@ -62,9 +63,6 @@ jobs:
           fi
           mkdir -p out/marketplace
           cp -f out/marketplace.html out/marketplace/index.html || true
-          echo "Artifact ready:"
-          ls -la out | sed -n '1,120p'
-          ls -la out/assets/data || true
 
       # --- Upload ---
       - name: Install lftp + curl + jq
@@ -91,7 +89,7 @@ jobs:
               bye" && break || sleep 3
           done
 
-      # --- Probe docroot (never fail job) ---
+      # --- Probe docroot (soft) ---
       - name: Probe: list + head (soft)
         if: always()
         continue-on-error: true
@@ -110,7 +108,7 @@ jobs:
             echo '--- head datacards.json ---'; cat -n assets/data/datacards.json | head -n 20 || true; \
             bye"
 
-      # --- Verify marker (warn-only) ---
+      # --- Verify marker (soft, self-heal) ---
       - name: Verify docroot marker (warn-only; self-heal)
         continue-on-error: true
         env:
@@ -140,7 +138,7 @@ jobs:
           fi
           true
 
-      # --- Verify JSON/pages (retry, heal, warn-only) ---
+      # --- Verify JSON/pages (soft, retry + heal) ---
       - name: Verify LIVE JSON/pages (retry + heal; warn-only)
         continue-on-error: true
         env:
