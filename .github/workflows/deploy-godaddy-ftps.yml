@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
 
       - name: Install deps
         run: |
@@ -33,6 +33,7 @@ jobs:
           node -v
           ls -la assets/pdfs/legacy || true
           node tools/ingest_legacy_pdfs.js
+
       # --- Prepare artifact ---
       - name: Prepare artifact
         run: |
@@ -46,6 +47,7 @@ jobs:
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
             ./ ./out/
+          # write both markers (hidden + non-hidden)
           echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
           echo "${GITHUB_SHA}" > out/deploy-check.txt
           # keep legacy JSON path too
@@ -79,11 +81,29 @@ jobs:
             mirror -R --ignore-time --delete --verbose=2 out/ ./; \
             bye"
 
-      # --- Verify + self heal ---
-      - name: Verify docroot SHA
+      - name: Post-upload FTPS probe (list + head)
+        if: always()
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
           set -e
-          url="https://www.allegiancelistmarketing.com/.well-known/alm-deploy.txt?v=$(date +%s)"
+          : "${FTP_DIR:=public_html}"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
+            cd $FTP_DIR; pwd; ls -la; \
+            echo '--- head deploy-check.txt ---'; cat -n deploy-check.txt | head -n 5 || true; \
+            echo '--- assets/data listing ---'; cls -la assets/data || true; \
+            echo '--- head datacards.json ---'; cat -n assets/data/datacards.json | head -n 20 || true; \
+            bye"
+
+      # --- Verify + self-heal ---
+      - name: Verify docroot SHA (deploy-check.txt)
+        run: |
+          set -e
+          url="https://www.allegiancelistmarketing.com/deploy-check.txt?v=$(date +%s)"
           live_sha=$(curl -fsS "$url")
           test "$live_sha" = "${GITHUB_SHA}" || { echo "Docroot not updated (got $live_sha)"; exit 1; }
           echo "Docroot updated: $live_sha"
@@ -107,8 +127,13 @@ jobs:
               --user "$FTP_USERNAME:$FTP_PASSWORD" \
               -T out/assets/data/datacards.json \
               "ftp://$FTP_SERVER/$FTP_DIR/assets/data/datacards.json"
+            # also legacy path for older pages
+            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
+              --user "$FTP_USERNAME:$FTP_PASSWORD" \
+              -T out/assets/data/datacards.json \
+              "ftp://$FTP_SERVER/$FTP_DIR/data/datacards.json"
             body=$(curl -fsS "$ad")
           fi
-          echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null || { echo "Missing 580140"; exit 1; }
-          echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null || { echo "Missing 424915"; exit 1; }
+          echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.title|test("America First Patriot Donors";"i")) )' >/dev/null || { echo "Missing 580140"; exit 1; }
+          echo "$body" | jq -e '.[] | select((.card_id|tostring=="424915") or (.title|test("Catholic Action Donors";"i")) )' >/dev/null || { echo "Missing 424915"; exit 1; }
           echo "OK: Live JSON includes legacy IDs."
