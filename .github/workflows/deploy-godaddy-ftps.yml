@@ -69,6 +69,7 @@ jobs:
 
           # deploy markers
           echo "${GITHUB_SHA}" > out/deploy-check.txt
+          mkdir -p out/.well-known
           echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
 
           # legacy JSON path for older pages
