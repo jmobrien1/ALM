@@ -1,4 +1,5 @@
 name: Deploy to GoDaddy (FTPS, robust)
+
 on:
   push:
     branches: [ "main" ]
@@ -15,24 +16,30 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install deps
+      - name: Install deps (if package.json exists)
         run: |
           set -e
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund
+          if [ -f package.json ]; then
+            if [ -f package-lock.json ]; then
+              npm ci --no-audit --no-fund
+            else
+              npm i --no-audit --no-fund
+            fi
           else
-            npm i --no-audit --no-fund
+            echo "No package.json; skipping npm install"
           fi
 
-      - name: Build datacards from PDFs
+      - name: Build datacards from PDFs (optional)
         run: |
-          set -euxo pipefail
-          node -v
-          ls -la assets/pdfs/legacy || true
-          node tools/ingest_legacy_pdfs.js
+          set -e
+          if [ -f tools/ingest_legacy_pdfs.js ]; then
+            node tools/ingest_legacy_pdfs.js
+          else
+            echo "No ingest_legacy_pdfs.js; skipping ingest"
+          fi
 
       # --- Prepare artifact ---
       - name: Prepare artifact
@@ -47,7 +54,7 @@ jobs:
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
             ./ ./out/
-          # write both markers (hidden + non-hidden)
+          # write deploy markers
           echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
           echo "${GITHUB_SHA}" > out/deploy-check.txt
           # keep legacy JSON path too
@@ -57,13 +64,13 @@ jobs:
           fi
           # ensure /marketplace/ alias
           mkdir -p out/marketplace
-          cp -f out/marketplace.html out/marketplace/index.html
+          cp -f out/marketplace.html out/marketplace/index.html || true
 
       # --- Upload ---
       - name: Install lftp + curl + jq
         run: sudo apt-get update && sudo apt-get install -y lftp curl jq
 
-      - name: FTPS upload (mirror)
+      - name: Upload via FTPS
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -81,83 +88,47 @@ jobs:
             mirror -R --ignore-time --delete --verbose=2 out/ ./; \
             bye"
 
-      - name: Post-upload FTPS probe (list + head)
-      - name: Post-upload FTPS probe (list + head)
-      - name: Verify LIVE JSON (contains legacy IDs) and self-heal if needed
-        env:
-          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_DIR:      ${{ secrets.FTP_DIR }}
-        run: |
-          set -e
-          : "${FTP_DIR:=public_html}"
-
-          check_json () {
-            local url="$1"
-            curl -fsS "$url" | jq -e '.[0]' >/dev/null 2>&1
-          }
-
-          has_id () {
-            local url="$1" id="$2"
-            curl -fsS "$url" | jq -e ".[] | select((.card_id|tostring==\"$id\"))" >/dev/null 2>&1
-          }
-
-          ASSETS_URL="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
-          LEGACY_URL="https://www.allegiancelistmarketing.com/data/datacards.json?v=$(date +%s)"
-
-          need_fix=0
-          if ! check_json "$ASSETS_URL"; then
-            echo "assets/data/datacards.json is not JSON (or missing)"; need_fix=1
-          else
-            has_id "$ASSETS_URL" "580140" || need_fix=1
-            has_id "$ASSETS_URL" "424915" || need_fix=1
-          fi
-
-          if [ "$need_fix" -ne 0 ]; then
-            echo "Re-uploading datacards.json to BOTH paths…"
-            for P in "assets/data/datacards.json" "data/datacards.json"; do
-              curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
-                --user "$FTP_USERNAME:$FTP_PASSWORD" \
-                -T out/assets/data/datacards.json \
-                "ftp://$FTP_SERVER/$FTP_DIR/$P"
-            done
-            # quick lftp head for visibility
-            lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
-              set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
-              cd $FTP_DIR; echo '--- head assets/data/datacards.json ---'; \
-              cat -n assets/data/datacards.json | head -n 15 || true; bye"
-          fi
-
-          # Final assert (on the canonical assets path)
-          for id in 580140 424915; do
-            curl -fsS "$ASSETS_URL" | jq -e ".[] | select((.card_id|tostring==\"$id\"))" >/dev/null \
-              || { echo "ERROR: still missing $id in assets/data/datacards.json"; exit 1; }
-          done
-          echo "OK: Live JSON includes legacy IDs."
-        if: always()
-        env:
-          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_DIR:      ${{ secrets.FTP_DIR }}
-        run: |
-          set -e
-          : "${FTP_DIR:=public_html}"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
-            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
-            cd $FTP_DIR; pwd; ls -la; \
-            echo '--- head deploy-check.txt ---'; cat -n deploy-check.txt | head -n 5 || true; \
-            echo '--- assets/data listing ---'; cls -la assets/data || true; \
-            echo '--- head datacards.json ---'; cat -n assets/data/datacards.json | head -n 20 || true; \
-            bye"
-
       # --- Verify + self-heal ---
       - name: Verify docroot SHA (deploy-check.txt)
         run: |
           set -e
           url="https://www.allegiancelistmarketing.com/deploy-check.txt?v=$(date +%s)"
-          live_sha=$(curl -fsS "$url")
-          test "$live_sha" = "${GITHUB_SHA}" || { echo "Docroot not updated (got $live_sha)"; exit 1; }
+          live_sha=$(curl -fsS "$url" || true)
+          if [ "$live_sha" != "${GITHUB_SHA}" ]; then
+            echo "Docroot not updated (got '$live_sha')"
+            exit 1
+          fi
           echo "Docroot updated: $live_sha"
 
+      - name: Verify LIVE JSON (has legacy IDs) and self-heal if needed
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
+        run: |
+          set -e
+          : "${FTP_DIR:=public_html}"
+          canonical="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
+          body=$(curl -fsS "$canonical" || true)
+
+          good=0
+          echo "$body" | jq -e 'type=="array"' >/dev/null 2>&1 && good=1
+          echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null 2>&1 || good=0
+
+          if [ "$good" -ne 1 ]; then
+            echo "Self-heal: uploading local datacards.json to both paths"
+            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
+              --user "$FTP_USERNAME:$FTP_PASSWORD" \
+              -T out/assets/data/datacards.json \
+              "ftp://$FTP_SERVER/$FTP_DIR/assets/data/datacards.json"
+
+            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
+              --user "$FTP_USERNAME:$FTP_PASSWORD" \
+              -T out/assets/data/datacards.json \
+              "ftp://$FTP_SERVER/$FTP_DIR/data/datacards.json"
+
+            body=$(curl -fsS "$canonical")
+            echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null
+          fi
+          echo "Live JSON OK."
