@@ -7,11 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
       - name: Prepare artifact
         run: |
+          set -e
           rm -rf out
           mkdir -p out/.well-known
           rsync -av --delete \
@@ -21,61 +23,111 @@ jobs:
             --exclude "*.bak.*" \
             --exclude ".DS_Store" \
             ./ ./out/
+          # Deploy markers for verification
           echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
           echo "${GITHUB_SHA}" > out/deploy-check.txt
+          # Ensure legacy JSON path also exists for compatibility
+          if [ -f out/assets/data/datacards.json ]; then
+            mkdir -p out/data
+            cp -f out/assets/data/datacards.json out/data/datacards.json
+          fi
+          # Ensure directory indexes exist
+          mkdir -p out/marketplace
+          cp -f out/marketplace.html out/marketplace/index.html
 
       - name: Install lftp + curl + jq
         run: sudo apt-get update && sudo apt-get install -y lftp curl jq
 
-      - name: Upload to public_html via FTPS
+      - name: FTPS smoke test (pwd/ls)
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          set -euo pipefail
+          set -e
           TARGET="${FTP_DIR:-public_html}"
-          echo "Uploading to $TARGET"
+          echo "FTPS to $FTP_SERVER as $FTP_USERNAME, target=$TARGET"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
-            set net:max-retries 5; set net:persist-retries 3; set net:timeout 30; \
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
+            pwd; ls -la; cd $TARGET; pwd; ls -la; bye"
+
+      - name: Upload site (mirror)
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
+        run: |
+          set -e
+          TARGET="${FTP_DIR:-public_html}"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+            set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
             set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
             set xfer:clobber on; set ssl:verify-certificate false; \
-            mkdir -p $TARGET; cd $TARGET; pwd; \
+            mkdir -p $TARGET; cd $TARGET; \
             mirror -R --ignore-time --delete --verbose=2 out/ ./; \
             bye"
 
-      - name: Verify live docroot matches this commit
+      - name: Post-upload FTPS probe (list + head JSON)
+        if: always()
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
           set -e
-          live_sha=$(curl -fsS "https://www.allegiancelistmarketing.com/.well-known/alm-deploy.txt")
-          test "$live_sha" = "${GITHUB_SHA}" || { echo "Docroot not updated (got $live_sha)"; exit 1; }
-          echo "Docroot updated to $live_sha"
+          TARGET="${FTP_DIR:-public_html}"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
+            cd $TARGET; echo '--- assets/data listing ---'; cls -la assets/data || true; \
+            echo '--- head of assets/data/datacards.json ---'; cat -n assets/data/datacards.json | head -n 40 || true; \
+            echo '--- data listing (legacy) ---'; cls -la data || true; \
+            echo '--- head of data/datacards.json ---'; cat -n data/datacards.json | head -n 40 || true; \
+            bye"
 
-      - name: Verify LIVE JSON has legacy IDs
+      - name: Verify HTTP docroot matches commit
         run: |
           set -e
-          url1="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
-          url2="https://www.allegiancelistmarketing.com/data/datacards.json?v=$(date +%s)"  # fallback check
-          echo "Checking $url1"
-          body=$(curl -fsS "$url1" || true)
-          if [ -n "$body" ]; then
-            echo "$body" | jq -e '.[0]' >/dev/null 2>&1 || { echo "assets/data is not JSON"; exit 1; }
+          url="https://www.allegiancelistmarketing.com/.well-known/alm-deploy.txt"
+          echo "GET $url"
+          live_sha=$(curl -fsS "$url" || true)
+          echo "live_sha=$live_sha  expected_sha=${GITHUB_SHA}"
+          test "$live_sha" = "${GITHUB_SHA}" || { echo "Docroot not updated (got $live_sha)"; exit 1; }
+          echo "Docroot updated."
+
+      - name: Verify LIVE JSON (try assets/data; fallback legacy)
+        run: |
+          set -e
+          ad="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
+          ld="https://www.allegiancelistmarketing.com/data/datacards.json?v=$(date +%s)"
+          echo "Checking $ad"
+          if curl -fsS "$ad" | jq -e '.[0]' >/dev/null 2>&1; then
+            body=$(curl -fsS "$ad")
             echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null && echo "Found 580140 in assets/data" || echo "MISSING 580140 in assets/data"
             echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null && echo "Found 424915 in assets/data" || echo "MISSING 424915 in assets/data"
+            need_fix=0
+            echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null || need_fix=1
+            echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null || need_fix=1
           else
-            echo "assets/data not reachable"
+            echo "assets/data not JSON or not reachable"; need_fix=1
           fi
 
-          # If assets/data is missing either ID, fail unless the legacy file (data/) has them (to avoid a false pass)
-          need_fail=0
-          echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null || need_fail=1
-          echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null || need_fail=1
-
-          if [ $need_fail -ne 0 ]; then
-            echo "Trying legacy path $url2 for debugging:"
-            curl -fsS "$url2" | jq -r '.[]|.card_id' | head || true
-            echo "ERROR: assets/data/datacards.json missing legacy IDs"; exit 1
+          if [ $need_fix -ne 0 ]; then
+            echo "Attempting one-shot JSON re-upload via FTPS + retry"
+            # download repo copy
+            curl -fsS -o repo.json "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_SHA}/assets/data/datacards.json"
+            test -s repo.json || { echo "repo.json not found, cannot fix"; exit 1; }
+            # upload via curl FTPS
+            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
+              --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" \
+              -T repo.json "ftp://${{ secrets.FTP_SERVER }}/${{ secrets.FTP_DIR || 'public_html' }}/assets/data/datacards.json"
+            echo "Retry GET $ad"
+            body=$(curl -fsS "$ad" || true)
+            echo "$body" | jq -e '.[]|select(.card_id==580140)' >/dev/null && echo "Found 580140 after fix" || { echo "Still missing 580140"; exit 1; }
+            echo "$body" | jq -e '.[]|select(.card_id==424915)' >/dev/null && echo "Found 424915 after fix" || { echo "Still missing 424915"; exit 1; }
           fi
-          echo "OK: assets/data/datacards.json includes legacy IDs."
+
+          echo "OK: Live JSON verified."
