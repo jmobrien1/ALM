@@ -16,7 +16,7 @@ function firstLine(s){ return (s||'').split(/\n+/).map(x=>x.trim()).filter(Boole
   if(!files.length){ console.error('No PDFs in', SRC); process.exit(0); }
 
   const existing = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT,'utf8')) : [];
-  const byId = new Map(existing.map(c => [String(c.card_id ??   con?? slugify(c.title||'')), c]));
+  const byId = new Map(existing.map(c => [String(c.card_id ?? c.id ?? slugify(c.title||'')), c]));
 
   for (const f of files){
     const buf = fs.readFileSync(path.join(SRC,f));
