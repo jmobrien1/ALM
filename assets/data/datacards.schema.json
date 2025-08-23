@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ALM DataCards",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "required": ["title"],
+    "properties": {
+      "card_id": { "type": ["integer", "string"], "pattern": "^[0-9]+$" },
+      "id":      { "type": ["integer", "string"] },
+      "title":   { "type": "string", "minLength": 1 },
+      "markdown": { "type": "string" },
+      "pdf":      { "type": "string" },
+      "universe_size": { "type": ["integer","string"] },
+      "universe":      { "type": ["integer","string"] },
+      "base_rate_per_thousand": { "type": ["number","integer","string"] },
+      "last_updated": { "type": "string" }
+    },
+    "anyOf": [
+      { "required": ["card_id"] },
+      { "required": ["id"] }
+    ],
+    "additionalProperties": true
+  }
+}
