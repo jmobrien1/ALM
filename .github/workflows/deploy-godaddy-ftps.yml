@@ -82,6 +82,59 @@ jobs:
             bye"
 
       - name: Post-upload FTPS probe (list + head)
+      - name: Post-upload FTPS probe (list + head)
+      - name: Verify LIVE JSON (contains legacy IDs) and self-heal if needed
+        env:
+          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_DIR:      ${{ secrets.FTP_DIR }}
+        run: |
+          set -e
+          : "${FTP_DIR:=public_html}"
+
+          check_json () {
+            local url="$1"
+            curl -fsS "$url" | jq -e '.[0]' >/dev/null 2>&1
+          }
+
+          has_id () {
+            local url="$1" id="$2"
+            curl -fsS "$url" | jq -e ".[] | select((.card_id|tostring==\"$id\"))" >/dev/null 2>&1
+          }
+
+          ASSETS_URL="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
+          LEGACY_URL="https://www.allegiancelistmarketing.com/data/datacards.json?v=$(date +%s)"
+
+          need_fix=0
+          if ! check_json "$ASSETS_URL"; then
+            echo "assets/data/datacards.json is not JSON (or missing)"; need_fix=1
+          else
+            has_id "$ASSETS_URL" "580140" || need_fix=1
+            has_id "$ASSETS_URL" "424915" || need_fix=1
+          fi
+
+          if [ "$need_fix" -ne 0 ]; then
+            echo "Re-uploading datacards.json to BOTH paths…"
+            for P in "assets/data/datacards.json" "data/datacards.json"; do
+              curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
+                --user "$FTP_USERNAME:$FTP_PASSWORD" \
+                -T out/assets/data/datacards.json \
+                "ftp://$FTP_SERVER/$FTP_DIR/$P"
+            done
+            # quick lftp head for visibility
+            lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
+              set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
+              cd $FTP_DIR; echo '--- head assets/data/datacards.json ---'; \
+              cat -n assets/data/datacards.json | head -n 15 || true; bye"
+          fi
+
+          # Final assert (on the canonical assets path)
+          for id in 580140 424915; do
+            curl -fsS "$ASSETS_URL" | jq -e ".[] | select((.card_id|tostring==\"$id\"))" >/dev/null \
+              || { echo "ERROR: still missing $id in assets/data/datacards.json"; exit 1; }
+          done
+          echo "OK: Live JSON includes legacy IDs."
         if: always()
         env:
           FTP_SERVER:   ${{ secrets.FTP_SERVER }}
@@ -108,32 +161,3 @@ jobs:
           test "$live_sha" = "${GITHUB_SHA}" || { echo "Docroot not updated (got $live_sha)"; exit 1; }
           echo "Docroot updated: $live_sha"
 
-      - name: Verify LIVE JSON (contains legacy IDs) and self-heal if needed
-        env:
-          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_DIR:      ${{ secrets.FTP_DIR }}
-        run: |
-          set -e
-          : "${FTP_DIR:=public_html}"
-          ad="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
-          body=$(curl -fsS "$ad" || true)
-          ok_json=0
-          echo "$body" | jq -e '.[0]' >/dev/null 2>&1 && ok_json=1
-          if [ "$ok_json" -ne 1 ]; then
-            echo "assets/data is not JSON; uploading local copy"
-            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
-              --user "$FTP_USERNAME:$FTP_PASSWORD" \
-              -T out/assets/data/datacards.json \
-              "ftp://$FTP_SERVER/$FTP_DIR/assets/data/datacards.json"
-            # also legacy path for older pages
-            curl --ssl-reqd --insecure --ftp-create-dirs --ftp-pasv --disable-epsv \
-              --user "$FTP_USERNAME:$FTP_PASSWORD" \
-              -T out/assets/data/datacards.json \
-              "ftp://$FTP_SERVER/$FTP_DIR/data/datacards.json"
-            body=$(curl -fsS "$ad")
-          fi
-          echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.title|test("America First Patriot Donors";"i")) )' >/dev/null || { echo "Missing 580140"; exit 1; }
-          echo "$body" | jq -e '.[] | select((.card_id|tostring=="424915") or (.title|test("Catholic Action Donors";"i")) )' >/dev/null || { echo "Missing 424915"; exit 1; }
-          echo "OK: Live JSON includes legacy IDs."
