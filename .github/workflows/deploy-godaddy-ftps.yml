@@ -102,7 +102,7 @@ jobs:
             set cmd:fail-exit true; \
             set net:max-retries 10; set net:persist-retries 3; set net:timeout 60; \
             set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
-            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ftp:use-epsv false; \
+            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
             set xfer:clobber on; set ssl:verify-certificate false; \
             mkdir -f -p $FTP_DIR; cd $FTP_DIR; \
             mirror -R --ignore-time --delete --verbose=3 out/ ./; \
