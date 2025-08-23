@@ -56,7 +56,7 @@ jobs:
             set ftp:ssl-force true
             set ftp:ssl-protect-data true
             set ssl:verify-certificate false
-            mkdir -p $DEST_DIR
+            mkdir -f -p $DEST_DIR
             cd $DEST_DIR
             mirror -R --ignore-time --delete --verbose=2 out/ ./
             bye
