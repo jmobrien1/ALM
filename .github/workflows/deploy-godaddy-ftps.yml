@@ -1,4 +1,4 @@
-name: Deploy to GoDaddy (FTPS, robust)
+name: Deploy to GoDaddy (FTPS, robust & verbose)
 
 on:
   push:
@@ -15,11 +15,12 @@ jobs:
       # Install CLI deps BEFORE any step that uses them
       - name: Install lftp + curl + jq
         run: |
+          set -Eeuxo pipefail
           sudo apt-get update -y
           sudo apt-get install -y lftp curl jq
-
-      - name: Confirm lftp install
-        run: lftp --version
+          lftp --version
+          curl --version
+          jq --version
 
       # --- Build (optional) ---
       - name: Setup Node
@@ -28,32 +29,50 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Node info
+        run: |
+          set -Eeuxo pipefail
+          which node
+          node -v
+          node -p "process.versions"
+
       - name: Install deps (if package.json exists)
         run: |
-          set -e
+          set -Eeuxo pipefail
           if [ -f package.json ]; then
             if [ -f package-lock.json ]; then
               npm ci --no-audit --no-fund
             else
               npm i --no-audit --no-fund
             fi
+            npm -v
           else
             echo "No package.json; skipping npm install"
           fi
 
-      - name: Build datacards from PDFs (optional)
+      - name: Build datacards from PDFs (optional, verbose)
         run: |
-          set -e
+          set -Eeuxo pipefail
+          echo "::group::Workspace tree (top-level)"
+          ls -la
+          echo "::endgroup::"
           if [ -f tools/ingest_legacy_pdfs.js ]; then
-            node tools/ingest_legacy_pdfs.js
+            echo "::group::Run ingest_legacy_pdfs.js"
+            node --trace-uncaught --unhandled-rejections=strict tools/ingest_legacy_pdfs.js
+            echo "::endgroup::"
+            echo "::group::Post-ingest assets snapshot"
+            ls -la assets || true
+            ls -la assets/data || true
+            test -f assets/data/datacards.json && jq 'length' assets/data/datacards.json || echo "No datacards.json yet"
+            echo "::endgroup::"
           else
-            echo "No ingest_legacy_pdfs.js; skipping ingest"
+            echo "No tools/ingest_legacy_pdfs.js; skipping ingest"
           fi
 
       # --- Prepare artifact ---
       - name: Prepare artifact
         run: |
-          set -e
+          set -Eeuxo pipefail
           rm -rf out
           mkdir -p out/.well-known
           rsync -av --delete \
@@ -74,6 +93,9 @@ jobs:
           # ensure /marketplace/ alias
           mkdir -p out/marketplace
           cp -f out/marketplace.html out/marketplace/index.html || true
+          echo "::group::Artifact tree (depth 2)"
+          find out -maxdepth 2 -type f -printf "%p\t%k KB\n" | sort
+          echo "::endgroup::"
 
       # --- Upload ---
       - name: Upload via FTPS (verbose + tolerant mkdir)
@@ -83,7 +105,7 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          set -e
+          set -Eeuxo pipefail
           : "${FTP_DIR:=public_html}"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
             set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
@@ -102,7 +124,7 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          set -e
+          set -Eeuxo pipefail
           : "${FTP_DIR:=public_html}"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
             set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; set ssl:verify-certificate false; \
@@ -121,7 +143,7 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_DIR:      ${{ secrets.FTP_DIR }}
         run: |
-          set -e
+          set -Eeuxo pipefail
           : "${FTP_DIR:=public_html}"
           url="https://www.allegiancelistmarketing.com/deploy-check.txt?v=$(date +%s)"
           tries=3
@@ -146,11 +168,11 @@ jobs:
           echo "ERROR: deploy-check.txt still mismatched after retries."
           exit 1
 
-      # (Optional) JSON sanity — warn-only
+      # (Optional) JSON sanity — warn-only so deploy isn't blocked
       - name: Verify LIVE JSON has key IDs (warn-only)
         continue-on-error: true
         run: |
-          set -e
+          set -Eeuxo pipefail
           ad="https://www.allegiancelistmarketing.com/assets/data/datacards.json?v=$(date +%s)"
           body="$(curl -fsS "$ad" || true)"
           if [ -z "$body" ]; then echo "WARN: assets JSON not reachable"; exit 0; fi
@@ -158,3 +180,18 @@ jobs:
           echo "$body" | jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' >/dev/null 2>&1 \
             && echo "JSON OK (found legacy IDs)" \
             || echo "WARN: legacy IDs not found (but deploy succeeded)"
+
+      # If anything failed above, dump workspace to help debugging
+      - name: Debug dump (on failure)
+        if: failure()
+        run: |
+          set -Eeuxo pipefail
+          echo "::group::Workspace tree"
+          find . -maxdepth 3 -type f -printf "%p\t%k KB\n" | sort | sed -n '1,200p'
+          echo "::endgroup::"
+          echo "::group::Show out/ and assets/ data files"
+          ls -la out || true
+          ls -la out/assets || true
+          ls -la out/assets/data || true
+          test -f out/assets/data/datacards.json && jq 'length' out/assets/data/datacards.json || true
+          echo "::endgroup::"
