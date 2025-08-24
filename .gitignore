@@ -22,3 +22,5 @@ static,
 #
 ftp.allegiancelistmarketing.com
 node_modules/
+
+/generated/prisma

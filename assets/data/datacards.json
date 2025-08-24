@@ -1,5 +1,16 @@
 [
   {
+    "title": "Allegiance List Marketing",
+    "universe_size": 0,
+    "base_rate_per_thousand": 0,
+    "last_updated": "",
+    "short_description": "",
+    "source": "",
+    "geography": "",
+    "pdf": "assets/pdfs/legacy/Marketplace.pdf",
+    "markdown": "assets/md/allegiance-list-marketing.md"
+  },
+  {
     "id": "282876",
     "card_id": 282876,
     "title": "Allegiant Pro-Life Conservative Donors",
@@ -75,6 +86,17 @@
     "markdown": "assets/md/college-republican-national-committee.md"
   },
   {
+    "title": "Conservative political appeals.",
+    "universe_size": 16411,
+    "base_rate_per_thousand": 75,
+    "last_updated": "",
+    "short_description": "Catholic Action Donors is an ideal list for those looking to reach a",
+    "source": "Direct mail sold",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Catholic Action Donors .pdf",
+    "markdown": "assets/md/conservative-political-appeals.md"
+  },
+  {
     "id": "constitutional-rights-pac-dsg",
     "title": "CONSTITUTIONAL RIGHTS PAC — a DSG Property",
     "short_description": "A DSG donor file available via Allegiance List Marketing.",
@@ -122,6 +144,17 @@
     "markdown": "assets/md/great-america-masterfile-dsg.md"
   },
   {
+    "title": "Manager",
+    "universe_size": 397542,
+    "base_rate_per_thousand": 100,
+    "last_updated": "",
+    "short_description": "The Real America Donor audience is made up of patriotic Americans who are boldly",
+    "source": "Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Real America Donors .pdf",
+    "markdown": "assets/md/manager.md"
+  },
+  {
     "id": "305791",
     "card_id": 305791,
     "title": "Pro-Life America",
@@ -133,6 +166,17 @@
     "markdown": "assets/md/pro-life-america.md"
   },
   {
+    "title": "Reach these highly engaged conservative donors today!",
+    "universe_size": 110317,
+    "base_rate_per_thousand": 135,
+    "last_updated": "",
+    "short_description": "The College Republican National Committee is the largest, oldest",
+    "source": "Direct mail sold, Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/College Republican National Committee .pdf",
+    "markdown": "assets/md/reach-these-highly-engaged-conservative-donors-today.md"
+  },
+  {
     "id": "479597",
     "card_id": 479597,
     "title": "Real America Donors",
@@ -142,5 +186,16 @@
     "short_description": "Patriotic Americans opposing the progressive agenda; America First values.",
     "pdf": "assets/pdfs/legacy/Real America Donors .pdf",
     "markdown": "assets/md/real-america-donors.md"
+  },
+  {
+    "title": "Religious liberty advocate groups",
+    "universe_size": 82949,
+    "base_rate_per_thousand": 100,
+    "last_updated": "",
+    "short_description": "Americans Against the Biden Agenda is compounded of patriotic",
+    "source": "Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Americans Against the Biden Agenda.pdf",
+    "markdown": "assets/md/religious-liberty-advocate-groups.md"
   }
 ]

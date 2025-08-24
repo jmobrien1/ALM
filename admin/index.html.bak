@@ -151,7 +151,7 @@ function adminApp(){
 
   async function load(){
     try{
-      const r=await fetch('../assets/data/datacards.json',{cache:'no-store'});
+      const r=await fetch('data/datacards.json',{cache:'no-store'});
       cards = await r.json();
     }catch(e){ cards=[]; }
     renderTable(); if(cards.length) select(cards[0].id);
