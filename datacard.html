@@ -33,27 +33,33 @@
     if(!id){ titleEl.textContent = "Data card not found"; return; }
 
     const bust = '?v=' + Date.now();
+    const dataUrl = 'assets/data/datacards.json' + bust;
+
     async function getJSON(u){
-      try{
-        const r = await fetch(u,{cache:'no-store'});
+      try {
+        const r = await fetch(u, {cache: 'no-store'});
         if(!r.ok) return null;
         return await r.json();
-      }catch(e){ return null; }
+      } catch(e) { return null; }
     }
 
-    // Load the single, authoritative data file. No more broken fallback.
-    const data = await getJSON('assets/data/datacards.json'+bust) || [];
-    const card = data.find(c => String(c.card_id ?? c.id) === String(id));
+    const data = await getJSON(dataUrl) || [];
+    const card = data.find(c => String(c.id || c.card_id) === String(id));
 
-    if(!card){ titleEl.textContent = "Data card not found"; return; }
+    if(!card){
+      titleEl.textContent = "Data card not found";
+      document.getElementById('fallback').textContent = `Could not find a card with ID: ${id} in ${dataUrl}`;
+      document.getElementById('fallback').style.display = "block";
+      return;
+    }
 
     // Render header/meta
     titleEl.textContent = card.title || "Untitled";
-    const u = Number(card.universe_size ?? card.universe ?? 0);
-    const r = Number(card.base_rate_per_thousand ?? card.baseRate ?? 0);
+    const u = Number(card.universe_size || card.universe || 0);
+    const r = Number(card.base_rate_per_thousand || card.baseRate || 0);
     const pills = [];
-    pills.push(`<span class="pill">Universe: ${u>0?u.toLocaleString():"n/a"}</span>`);
-    pills.push(`<span class="pill">Base: ${r>0?("$"+r.toFixed(2)+"/M"):"call"}</span>`);
+    pills.push(`<span class="pill">Universe: ${u > 0 ? u.toLocaleString() : "n/a"}</span>`);
+    pills.push(`<span class="pill">Base: ${r > 0 ? ("$"+r.toFixed(2)+"/M"):"call"}</span>`);
     if(card.last_updated || card.lastUpdate) pills.push(`<span class="pill">Updated: ${card.last_updated || card.lastUpdate}</span>`);
     document.getElementById('meta').innerHTML = pills.join(" ");
 
@@ -63,12 +69,15 @@
     if(card.pdf) actions.push(`<a class="btn" target="_blank" href="${card.pdf}">Download PDF</a>`);
     document.getElementById('actions').innerHTML = actions.join(" ");
 
-    // Markdown render (if present)
+    // Markdown render
     if(card.markdown && card.markdown.endsWith('.md')){
       try{
-        const md = await fetch(card.markdown + bust, {cache:'no-store'}).then(r=>r.text());
+        const md = await fetch(card.markdown + bust, {cache:'no-store'}).then(r => r.ok ? r.text() : Promise.reject(`File not found: ${r.status}`));
         document.getElementById('md-content').innerHTML = marked.parse(md);
-      }catch(e){ document.getElementById('fallback').style.display = "block"; }
+      }catch(e){
+        document.getElementById('fallback').textContent = `Error loading markdown file: ${card.markdown}. ${e}`;
+        document.getElementById('fallback').style.display = "block";
+      }
     }else{
       document.getElementById('fallback').style.display = "block";
     }
