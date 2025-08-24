@@ -13,12 +13,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install Tools
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
       - name: Prepare Artifact
         run: |
           rsync -av --delete \
             --exclude ".git" --exclude ".github" \
             ./ out/
-      - name: Upload and Set Permissions via FTPS
+
+      - name: Upload via FTPS
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
