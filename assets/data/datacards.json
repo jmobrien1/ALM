@@ -1,68 +1,58 @@
 [
   {
+    "id": "282876",
     "card_id": 282876,
     "title": "Allegiant Pro-Life Conservative Donors",
     "universe_size": 161746,
     "base_rate_per_thousand": 75,
     "last_updated": "2018-10-02",
-    "short_description": "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom.",
-    "source": "Direct response",
-    "geography": "USA",
+    "short_description": "Active conservative Christian donors defending the right to life and freedom.",
     "pdf": "assets/pdfs/legacy/Allegiant Pro-Life Conservative Donors.pdf",
-    "markdown": "assets/md/allegiant-pro-life-conservative-donors.md",
-    "id": "282876"
+    "markdown": "assets/md/allegiant-pro-life-conservative-donors.md"
   },
   {
+    "id": "580140",
     "card_id": 580140,
     "title": "America First Patriot Donors",
     "universe_size": 13394,
     "base_rate_per_thousand": 125,
     "last_updated": "2021-08-26",
-    "short_description": "Reach an audience of freedom-loving America First donors!",
-    "source": "Direct mail sold",
-    "geography": "USA",
+    "short_description": "Freedom-loving donors unwilling to see the country destroyed by socialist policies.",
     "pdf": "assets/pdfs/legacy/America First Patriot Donors .pdf",
-    "markdown": "assets/md/america-first-patriot-donors.md",
-    "id": "580140"
+    "markdown": "assets/md/america-first-patriot-donors.md"
   },
   {
+    "id": "586316",
     "card_id": 586316,
     "title": "Americans Against the Biden Agenda",
     "universe_size": 82949,
     "base_rate_per_thousand": 100,
     "last_updated": "2021-09-17",
-    "short_description": "Americans Against the Biden Agenda is compounded of patriotic Americans who stand against bureaucracy and progressive doctrine.",
-    "source": "Direct response",
-    "geography": "USA",
+    "short_description": "Patriotic Americans who stand against bureaucracy and progressive doctrine.",
     "pdf": "assets/pdfs/legacy/Americans Against the Biden Agenda.pdf",
-    "markdown": "assets/md/americans-against-the-biden-agenda.md",
-    "id": "586316"
+    "markdown": "assets/md/americans-against-the-biden-agenda.md"
   },
   {
+    "id": "486336",
     "card_id": 486336,
     "title": "Build The Wall Donors",
     "universe_size": 53587,
     "base_rate_per_thousand": 100,
     "last_updated": "2019-05-17",
     "short_description": "Engaged citizens supporting strong borders and reduced illegal immigration.",
-    "source": "Direct response",
-    "geography": "USA",
     "pdf": "assets/pdfs/legacy/Build The Wall Donors.pdf",
-    "markdown": "assets/md/build-the-wall-donors.md",
-    "id": "486336"
+    "markdown": "assets/md/build-the-wall-donors.md"
   },
   {
+    "id": "424915",
     "card_id": 424915,
     "title": "Catholic Action Donors",
     "universe_size": 16411,
     "base_rate_per_thousand": 75,
     "last_updated": "2018-07-10",
     "short_description": "Nationwide Catholic donors passionate about advancing the faith and ending abortion.",
-    "source": "Direct mail sold",
-    "geography": "USA",
     "pdf": "assets/pdfs/legacy/Catholic Action Donors .pdf",
-    "markdown": "assets/md/catholic-action-donors.md",
-    "id": "424915"
+    "markdown": "assets/md/catholic-action-donors.md"
   },
   {
     "id": "citizen-ag-dsg",
@@ -74,17 +64,15 @@
     "markdown": "assets/md/citizen-ag-dsg.md"
   },
   {
+    "id": "401792",
     "card_id": 401792,
     "title": "College Republican National Committee",
     "universe_size": 110317,
     "base_rate_per_thousand": 135,
     "last_updated": "2022-03-30",
     "short_description": "Donors supporting programs to engage young voters on campuses nationwide.",
-    "source": "Direct mail sold, Direct response",
-    "geography": "USA",
     "pdf": "assets/pdfs/legacy/College Republican National Committee .pdf",
-    "markdown": "assets/md/college-republican-national-committee.md",
-    "id": "401792"
+    "markdown": "assets/md/college-republican-national-committee.md"
   },
   {
     "id": "constitutional-rights-pac-dsg",
@@ -96,17 +84,15 @@
     "markdown": "assets/md/constitutional-rights-pac-dsg.md"
   },
   {
+    "id": "481240",
     "card_id": 481240,
     "title": "Donors to Veteran Causes",
     "universe_size": 27354,
     "base_rate_per_thousand": 100,
     "last_updated": "2018-05-29",
     "short_description": "Patriotic Americans supporting organizations that help our Veterans.",
-    "source": "Direct response",
-    "geography": "USA",
     "pdf": "assets/pdfs/legacy/Donors to Veteran Causes .pdf",
-    "markdown": "assets/md/donors-to-veteran-causes.md",
-    "id": "481240"
+    "markdown": "assets/md/donors-to-veteran-causes.md"
   },
   {
     "id": "friends-ww2-memorial-dsg",
@@ -136,29 +122,25 @@
     "markdown": "assets/md/great-america-masterfile-dsg.md"
   },
   {
+    "id": "305791",
     "card_id": 305791,
     "title": "Pro-Life America",
     "universe_size": 73761,
     "base_rate_per_thousand": 100,
     "last_updated": "2019-05-28",
     "short_description": "Staunch pro-life donors committed to advancing the pro-life movement.",
-    "source": "Direct response",
-    "geography": "USA",
     "pdf": "assets/pdfs/legacy/Pro-Life America .pdf",
-    "markdown": "assets/md/pro-life-america.md",
-    "id": "305791"
+    "markdown": "assets/md/pro-life-america.md"
   },
   {
+    "id": "479597",
     "card_id": 479597,
     "title": "Real America Donors",
     "universe_size": 397542,
     "base_rate_per_thousand": 100,
     "last_updated": "2023-10-24",
     "short_description": "Patriotic Americans opposing the progressive agenda; America First values.",
-    "source": "Direct response",
-    "geography": "USA",
     "pdf": "assets/pdfs/legacy/Real America Donors .pdf",
-    "markdown": "assets/md/real-america-donors.md",
-    "id": "479597"
+    "markdown": "assets/md/real-america-donors.md"
   }
 ]
