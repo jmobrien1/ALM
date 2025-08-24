@@ -4,9 +4,11 @@
   Require all granted
 </FilesMatch>
 
-# Allow ACME HTTP validation (keeps cert issuance/renewal working)
-RewriteEngine On
-RewriteRule ^\\.well-known/acme-challenge/ - [L]
+# Standard GoDaddy Security Directive
+<IfModule mod_security.c>
+SecFilterEngine Off
+SecFilterScanPOST Off
+</IfModule>
 
 # Protect admin page with server-side Basic Auth
 <Files "admin/">
