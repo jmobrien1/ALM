@@ -1,6 +1,12 @@
+
+# Allow Markdown files to be served
+<FilesMatch "\\.md$">
+  Require all granted
+</FilesMatch>
+
 # Allow ACME HTTP validation (keeps cert issuance/renewal working)
 RewriteEngine On
-RewriteRule ^\.well-known/acme-challenge/ - [L]
+RewriteRule ^\\.well-known/acme-challenge/ - [L]
 
 # Protect admin page with server-side Basic Auth
 <Files "admin/">
@@ -10,30 +16,3 @@ RewriteRule ^\.well-known/acme-challenge/ - [L]
   Require valid-user
 </Files>
 
-# --- When your SSL is live, uncomment ONE of the two canonical redirects below ---
-
-## Force https + non-www
-#RewriteCond %{HTTPS} !=on
-#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-#RewriteCond %{HTTP_HOST} ^www\.allegiancelistmarketing\.com$ [NC]
-#RewriteRule ^ https://allegiancelistmarketing.com%{REQUEST_URI} [L,R=301]
-
-## (OR) Force https + www
-#RewriteCond %{HTTPS} !=on
-#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-#RewriteCond %{HTTP_HOST} ^allegiancelistmarketing\.com$ [NC]
-#RewriteRule ^ https://www.allegiancelistmarketing.com%{REQUEST_URI} [L,R=301]
-<IfModule mod_headers.c>
-  <FilesMatch "\.(json|md)$">
-    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-    Header set Pragma "no-cache"
-    Header set Expires "0"
-  </FilesMatch>
-</IfModule>
-
-# Disable cache for deployment verification file
-<Files "deploy-check.txt">
-  Header set Cache-Control "no-cache, no-store, must-revalidate"
-  Header set Pragma "no-cache"
-  Header set Expires 0
-</Files>
