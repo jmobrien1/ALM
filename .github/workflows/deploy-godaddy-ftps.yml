@@ -1,4 +1,4 @@
-name: Deploy to GoDaddy (FTPS)
+name: Deploy to GoDaddy (FTPS) - Final
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           npx -y ajv-cli@5 validate -s assets/data/datacards.schema.json -d assets/data/datacards.json
           jq -e 'type=="array"' assets/data/datacards.json >/dev/null
 
-      - name: Prepare Artifact
+      - name: Prepare Artifact with Cache-Proof Marker
         run: |
           set -euxo pipefail
           rm -rf out
@@ -38,9 +38,9 @@ jobs:
             --exclude ".git" --exclude ".github" --exclude "out" \
             --exclude "*.bak.*" --exclude ".DS_Store" \
             ./ out/
-          mkdir -p out/.well-known
-          echo "${GITHUB_SHA}" > out/deploy-check.txt
-          echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
+          # Create a verification file with a UNIQUE name for this specific commit
+          echo "Verified: ${GITHUB_SHA}" > "out/deploy-${GITHUB_SHA}.txt"
+          echo "--> Created unique verification file: out/deploy-${GITHUB_SHA}.txt"
 
       - name: Upload via FTPS
         env:
@@ -50,35 +50,41 @@ jobs:
           FTP_DIR: ${{ secrets.FTP_DIR }}
         run: |
           set -euxo pipefail
-          # Default to "." if FTP_DIR is not set, which we confirmed is correct.
+          # FTP_DIR secret must be set to "." for this to work
           : "${FTP_DIR:=.}"
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "
-            set ftp:passive-mode true
-            set ftp:ssl-force true
-            set ftp:ssl-protect-data true
-            set ssl:verify-certificate false
-            set xfer:clobber on
-            set net:max-retries 3
-            set net:timeout 30
-            cd '$FTP_DIR'
-            mirror -R --ignore-time --delete --verbose=3 out/ ./
-            bye
+            set ftp:passive-mode true;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate false;
+            set xfer:clobber on;
+            set net:max-retries 3;
+            set net:timeout 45;
+            cd '$FTP_DIR';
+            mirror -R --ignore-time --delete --verbose=3 out/ ./;
+            bye;
           "
 
-      - name: Wait for Server Cache Propagation
-        run: sleep 30
+      - name: Wait for Server File Propagation
+        run: sleep 15
 
-      - name: Verify Live Deployment via HTTP
+      - name: Verify Live Deployment via Unique URL
         run: |
           set -euxo pipefail
-          for i in {1..8}; do
-            live_sha=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "https://${SITE_HOST}/deploy-check.txt?v=$(date +%s)")
-            if [ "$live_sha" = "${GITHUB_SHA}" ]; then
-              echo "✅ SUCCESS: Live site is updated to commit ${GITHUB_SHA}"
-              exit 0
+          VERIFY_URL="https://${SITE_HOST}/deploy-${GITHUB_SHA}.txt"
+          echo "--> Verifying URL: ${VERIFY_URL}"
+          
+          # Retry loop in case of minor propagation delay
+          for i in {1..5}; do
+            # We use '--fail' to exit with an error on 404s
+            http_status=$(curl --silent --output /dev/null --write-out "%{http_code}" "${VERIFY_URL}?v=$(date +%s)")
+            if [ "$http_status" -eq 200 ]; then
+               echo "✅ SUCCESS: Verification file found. Deployment is live."
+               exit 0
             fi
-            echo "Attempt $i: Mismatch found (Live: $live_sha, Expected: ${GITHUB_SHA}). Retrying in $((i*5))s..."
-            sleep $((i*5))
+            echo "Attempt $i: Verification file not found (HTTP $http_status). Retrying in 10s..."
+            sleep 10
           done
-          echo "❌ FAILURE: Live site did not update after multiple retries."
+          
+          echo "❌ FAILURE: Could not find verification file at ${VERIFY_URL} after multiple attempts."
           exit 1
