@@ -94,7 +94,6 @@ ${male?`Male: ${male}%  `:''}${female?`Female: ${female}%`:''}
 
     const entry = {
       card_id: nextmark? +nextmark : undefined,
-      id: slugify(title),
       title,
       universe_size: toNum(universe),
       base_rate_per_thousand: base? +base : 0,
