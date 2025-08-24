@@ -8,7 +8,8 @@
     "source": "",
     "geography": "",
     "pdf": "assets/pdfs/legacy/Marketplace.pdf",
-    "markdown": "assets/md/allegiance-list-marketing.md"
+    "markdown": "assets/md/allegiance-list-marketing.md",
+    "id": "allegiance-list-marketing"
   },
   {
     "id": "282876",
@@ -94,7 +95,8 @@
     "source": "Direct mail sold",
     "geography": "USA",
     "pdf": "assets/pdfs/legacy/Catholic Action Donors .pdf",
-    "markdown": "assets/md/conservative-political-appeals.md"
+    "markdown": "assets/md/conservative-political-appeals.md",
+    "id": "conservative-political-appeals"
   },
   {
     "id": "constitutional-rights-pac-dsg",
@@ -152,7 +154,8 @@
     "source": "Direct response",
     "geography": "USA",
     "pdf": "assets/pdfs/legacy/Real America Donors .pdf",
-    "markdown": "assets/md/manager.md"
+    "markdown": "assets/md/manager.md",
+    "id": "manager"
   },
   {
     "id": "305791",
@@ -174,7 +177,8 @@
     "source": "Direct mail sold, Direct response",
     "geography": "USA",
     "pdf": "assets/pdfs/legacy/College Republican National Committee .pdf",
-    "markdown": "assets/md/reach-these-highly-engaged-conservative-donors-today.md"
+    "markdown": "assets/md/reach-these-highly-engaged-conservative-donors-today.md",
+    "id": "reach-these-highly-engaged-conservative-donors-today"
   },
   {
     "id": "479597",
@@ -196,6 +200,7 @@
     "source": "Direct response",
     "geography": "USA",
     "pdf": "assets/pdfs/legacy/Americans Against the Biden Agenda.pdf",
-    "markdown": "assets/md/religious-liberty-advocate-groups.md"
+    "markdown": "assets/md/religious-liberty-advocate-groups.md",
+    "id": "religious-liberty-advocate-groups"
   }
 ]
