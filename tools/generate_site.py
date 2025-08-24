@@ -47,7 +47,11 @@ def main():
             page_filename = f"datacard-{page_slug}.html"
             (root / page_filename).write_text(page_content, encoding="utf-8")
 
-            card_metadata = { "id": page_slug, "title": title, "url": page_filename }
+            card_metadata = {
+                "id": page_slug,
+                "title": title,
+                "url": page_filename
+            }
             all_cards_metadata.append(card_metadata)
 
         except Exception as e:
