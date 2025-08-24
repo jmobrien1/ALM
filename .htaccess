@@ -18,3 +18,7 @@ SecFilterScanPOST Off
   Require valid-user
 </Files>
 
+
+<FilesMatch "\.md$">
+  Require all granted
+</FilesMatch>
