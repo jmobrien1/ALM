@@ -30,35 +30,25 @@ jobs:
           npx -y ajv-cli@5 validate -s assets/data/datacards.schema.json -d assets/data/datacards.json
           jq -e "type==\"array\"" assets/data/datacards.json >/dev/null
 
-      - name: Prepare Artifact with Cache-Proof Marker
+      - name: Prepare Artifact
         run: |
           set -euxo pipefail
-          rm -rf out
           rsync -av --delete \
-            --exclude ".git" --exclude ".github" --exclude "out" \
-            --exclude "*.bak.*" --exclude ".DS_Store" \
+            --exclude ".git" --exclude ".github" \
             ./ out/
-          echo "Verified: ${GITHUB_SHA}" > "out/deploy-${GITHUB_SHA}.txt"
-          echo "--> Created unique verification file: out/deploy-${GITHUB_SHA}.txt"
 
       - name: Upload via FTPS
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_DIR: ${{ secrets.FTP_DIR }}
         run: |
           set -euxo pipefail
-          : "${FTP_DIR:=.}"
           lftp -c "
             set ftp:passive-mode true;
             set ftp:ssl-force true;
-            set ftp:ssl-protect-data true;
             set ssl:verify-certificate false;
-            set net:max-retries 3;
-            set net:timeout 45;
             open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
-            lcd out;
-            mirror --reverse --delete --verbose=3 . .;
+            mirror --reverse --delete --verbose=3 out/ public_html/;
           "
 
