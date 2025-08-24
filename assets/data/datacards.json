@@ -1,196 +1,68 @@
 [
   {
-    "title": "Allegiance List Marketing",
-    "universe_size": 0,
-    "base_rate_per_thousand": 0,
-    "last_updated": "",
-    "short_description": "",
-    "source": "",
-    "geography": "",
-    "pdf": "assets/pdfs/legacy/Marketplace.pdf",
-    "markdown": "assets/md/allegiance-list-marketing.md",
-    "id": "allegiance-list-marketing"
-  },
-  {
-    "id": "282876",
+    "card_id": 282876,
     "title": "Allegiant Pro-Life Conservative Donors",
-    "shortDescription": "Active conservative Christian donors defending the right to life and freedom.",
-    "description": "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom. This group works to support candidates who steadfastly believe that life begins at conception.",
-    "universe": 161746,
-    "baseRate": 75,
-    "lastUpdate": "2018-10-02",
+    "universe_size": 161746,
+    "base_rate_per_thousand": 75,
+    "last_updated": "2018-10-02",
+    "short_description": "Reach active conservative Christian donors who have made donations to a political PAC defending the right to life and freedom.",
     "source": "Direct response",
     "geography": "USA",
-    "genderMale": "60%",
-    "genderFemale": "40%",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 161746,
-        "price": 75
-      },
-      {
-        "segment": "$5+ Donors",
-        "count": 120804,
-        "price": 75
-      }
-    ],
-    "selects": [
-      {
-        "name": "12 Month Hotline",
-        "price": 5
-      },
-      {
-        "name": "Bible Lifestyle",
-        "price": 10
-      }
-    ],
-    "pdf": "",
-    "card_id": 282876
+    "pdf": "assets/pdfs/legacy/Allegiant Pro-Life Conservative Donors.pdf",
+    "markdown": "assets/md/allegiant-pro-life-conservative-donors.md",
+    "id": 282876
   },
   {
-    "id": "580140",
+    "card_id": 580140,
     "title": "America First Patriot Donors",
-    "shortDescription": "Freedom-loving donors unwilling to see the country destroyed by socialist policies.",
-    "description": "Reach an audience of freedom-loving America First donors! These patriotic Americans love their country and are unwilling to stand on the sidelines and watch it be destroyed by the socialist policies of the Biden Harris Administration.",
-    "universe": 13394,
-    "baseRate": 125,
-    "lastUpdate": "2021-08-26",
+    "universe_size": 13394,
+    "base_rate_per_thousand": 125,
+    "last_updated": "2021-08-26",
+    "short_description": "Reach an audience of freedom-loving America First donors! These patriotic Americans love their country and are unwilling to stand on the sidelines and watch it be destroyed by the socialist policies of the Biden Harris Administration.",
     "source": "Direct mail sold",
     "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 13394,
-        "price": 125
-      },
-      {
-        "segment": "Last 12 month donors",
-        "count": 8843,
-        "price": 125
-      }
-    ],
-    "selects": [],
-    "pdf": "",
-    "card_id": 580140
+    "pdf": "assets/pdfs/legacy/America First Patriot Donors .pdf",
+    "markdown": "assets/md/america-first-patriot-donors.md",
+    "id": 580140
   },
   {
-    "id": "586316",
+    "card_id": 586316,
     "title": "Americans Against the Biden Agenda",
-    "shortDescription": "Patriotic Americans who stand against bureaucracy and progressive doctrine.",
-    "description": "Compounded of patriotic Americans who stand against bureaucracy and progressive doctrine. These donors are averse to tax hikes, federal mandates, reckless federal spending, gun control, abortion, and other progressive policy pushed by the Biden administration.",
-    "universe": 82949,
-    "baseRate": 100,
-    "lastUpdate": "2021-09-17",
+    "universe_size": 82949,
+    "base_rate_per_thousand": 100,
+    "last_updated": "2021-09-17",
+    "short_description": "Americans Against the Biden Agenda is compounded of patriotic Americans who stand against bureaucracy and progressive doctrine.",
     "source": "Direct response",
     "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 82949,
-        "price": 100
-      },
-      {
-        "segment": "Religious Donors",
-        "count": 18211,
-        "price": 100
-      }
-    ],
-    "selects": [
-      {
-        "name": "Dollar Amount",
-        "price": 5
-      },
-      {
-        "name": "Lifestyle select",
-        "price": 10
-      }
-    ],
-    "pdf": "",
-    "card_id": 586316
+    "pdf": "assets/pdfs/legacy/Americans Against the Biden Agenda.pdf",
+    "markdown": "assets/md/americans-against-the-biden-agenda.md",
+    "id": 586316
   },
   {
-    "id": "486336",
+    "card_id": 486336,
     "title": "Build The Wall Donors",
-    "shortDescription": "Engaged citizens supporting strong borders and reduced illegal immigration.",
-    "description": "Reach this active and engaged audience of American citizens who support efforts to reign in out-of-control illegal immigration. These donors support Trump and his promises to strengthen our nation's borders, including the construction of a border wall.",
-    "universe": 53587,
-    "baseRate": 100,
-    "lastUpdate": "2019-05-17",
+    "universe_size": 53587,
+    "base_rate_per_thousand": 100,
+    "last_updated": "2019-05-17",
+    "short_description": "Reach engaged and concerned American citizens who support efforts to reign in out-of-control illegal immigration.",
     "source": "Direct response",
     "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 53587,
-        "price": 100
-      },
-      {
-        "segment": "$5+, last 12 month donors",
-        "count": 42930,
-        "price": 100
-      },
-      {
-        "segment": "Charitable Rate",
-        "count": 53587,
-        "price": 85
-      }
-    ],
-    "selects": [
-      {
-        "name": "Dollar Amount",
-        "price": 5
-      },
-      {
-        "name": "SCF/Zip Code/State",
-        "price": 5
-      }
-    ],
-    "pdf": "",
-    "card_id": 486336
+    "pdf": "assets/pdfs/legacy/Build The Wall Donors.pdf",
+    "markdown": "assets/md/build-the-wall-donors.md",
+    "id": 486336
   },
   {
-    "id": "424915",
+    "card_id": 424915,
     "title": "Catholic Action Donors",
-    "shortDescription": "Nationwide Catholic donors passionate about advancing the faith and ending abortion.",
-    "description": "An ideal list for those looking to reach a nationwide audience of Catholic Americans. These highly active donors are incredibly passionate about advancing the Roman Catholic way of life, sharing the Gospel and ending abortion.",
-    "universe": 16411,
-    "baseRate": 75,
-    "lastUpdate": "2018-07-10",
+    "universe_size": 16411,
+    "base_rate_per_thousand": 75,
+    "last_updated": "2018-07-10",
+    "short_description": "Catholic Action Donors is an ideal list for those looking to reach a nationwide audience of Catholic Americans.",
     "source": "Direct mail sold",
     "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 16411,
-        "price": 75
-      },
-      {
-        "segment": "$5+ Donors",
-        "count": 12390,
-        "price": 75
-      }
-    ],
-    "selects": [
-      {
-        "name": "$25+",
-        "price": 10
-      },
-      {
-        "name": "Telemarketing",
-        "price": 25
-      }
-    ],
-    "pdf": "",
-    "card_id": 424915
+    "pdf": "assets/pdfs/legacy/Catholic Action Donors .pdf",
+    "markdown": "assets/md/catholic-action-donors.md",
+    "id": 424915
   },
   {
     "id": "citizen-ag-dsg",
@@ -199,40 +71,9 @@
     "baseRate": 130,
     "lastUpdate": "2025-05-29",
     "description": "Nonprofit advocating for Americans in the courts; pro-Constitution donors focused on ballot integrity.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 6759,
-        "price": 130
-      },
-      {
-        "segment": "Activists",
-        "count": 8822,
-        "price": 65
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "Geography",
-        "price": 0
-      }
-    ],
     "source": "Direct mail",
     "geography": "National",
-    "pdf": "",
-    "card_id": 2,
+    "card_id": "citizen-ag-dsg",
     "universe_size": 6759,
     "base_rate_per_thousand": 130,
     "last_updated": "2025-05-29",
@@ -240,53 +81,17 @@
     "markdown": "assets/md/citizen-ag-dsg.md"
   },
   {
-    "id": "401792",
+    "card_id": 401792,
     "title": "College Republican National Committee",
-    "shortDescription": "Donors supporting programs to engage young voters on campuses nationwide.",
-    "description": "The College Republican National Committee is the largest, oldest and most active Republican youth organization in the country today. Donors on this list are dedicated to CRNC's mission to engage young voters on campuses across our nation.",
-    "universe": 110317,
-    "baseRate": 135,
-    "lastUpdate": "2022-03-30",
+    "universe_size": 110317,
+    "base_rate_per_thousand": 135,
+    "last_updated": "2022-03-30",
+    "short_description": "Donors to CRNC have given to help support the organizations many programs that engage young voters on campuses across our nation.",
     "source": "Direct mail sold, Direct response",
     "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 110317,
-        "price": 135
-      },
-      {
-        "segment": "$5+ L12",
-        "count": 12850,
-        "price": 135
-      }
-    ],
-    "selects": [
-      {
-        "name": "Dollar Amount",
-        "price": 5
-      },
-      {
-        "name": "Telemarketing",
-        "price": 25
-      }
-    ],
-    "pdf": "",
-    "card_id": 401792
-  },
-  {
-    "title": "Conservative political appeals.",
-    "universe_size": 16411,
-    "base_rate_per_thousand": 75,
-    "last_updated": "",
-    "short_description": "Catholic Action Donors is an ideal list for those looking to reach a",
-    "source": "Direct mail sold",
-    "geography": "USA",
-    "pdf": "assets/pdfs/legacy/Catholic Action Donors .pdf",
-    "markdown": "assets/md/conservative-political-appeals.md",
-    "id": "conservative-political-appeals"
+    "pdf": "assets/pdfs/legacy/College Republican National Committee .pdf",
+    "markdown": "assets/md/college-republican-national-committee.md",
+    "id": 401792
   },
   {
     "id": "constitutional-rights-pac-dsg",
@@ -295,35 +100,9 @@
     "baseRate": 130,
     "lastUpdate": "2025-03-26",
     "description": "Hard-hitting, pro-America, pro-Trump donor file with high average gift; strong for conservative candidates and PACs.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 20373,
-        "price": 130
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "State/SCF/County/Zip/District",
-        "price": 10
-      }
-    ],
     "source": "Direct mail",
     "geography": "National",
-    "pdf": "",
-    "card_id": 3,
+    "card_id": "constitutional-rights-pac-dsg",
     "universe_size": 20373,
     "base_rate_per_thousand": 130,
     "last_updated": "2025-03-26",
@@ -331,41 +110,17 @@
     "markdown": "assets/md/constitutional-rights-pac-dsg.md"
   },
   {
-    "id": "481240",
+    "card_id": 481240,
     "title": "Donors to Veteran Causes",
-    "shortDescription": "Patriotic Americans supporting organizations that help our Veterans.",
-    "description": "Target a donor audience of patriotic Americans who support organizations and missions invested in helping our Veterans. These generous individuals respect and honor the sacrifice that the men and women who served our great country made.",
-    "universe": 27354,
-    "baseRate": 100,
-    "lastUpdate": "2018-05-29",
+    "universe_size": 27354,
+    "base_rate_per_thousand": 100,
+    "last_updated": "2018-05-29",
+    "short_description": "Target a donor audience of patriotic Americans who support organizations and missions invested in helping our Veterans.",
     "source": "Direct response",
     "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 27354,
-        "price": 100
-      },
-      {
-        "segment": "Charitable rate",
-        "count": 27354,
-        "price": 85
-      }
-    ],
-    "selects": [
-      {
-        "name": "Phone numbers",
-        "price": 15
-      },
-      {
-        "name": "SCF/Zip Code/State",
-        "price": 5
-      }
-    ],
-    "pdf": "",
-    "card_id": 481240
+    "pdf": "assets/pdfs/legacy/Donors to Veteran Causes .pdf",
+    "markdown": "assets/md/donors-to-veteran-causes.md",
+    "id": 481240
   },
   {
     "id": "friends-ww2-memorial-dsg",
@@ -374,81 +129,14 @@
     "baseRate": 125,
     "lastUpdate": "2025-07-11",
     "description": "Donors supporting the legacy of WWII veterans through education, commemoration, and patriotic programs.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 48586,
-        "price": 125
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "State/SCF/County/Zip/District",
-        "price": 10
-      }
-    ],
     "source": "Direct mail",
     "geography": "National",
-    "pdf": "",
-    "card_id": 4,
+    "card_id": "friends-ww2-memorial-dsg",
     "universe_size": 48586,
     "base_rate_per_thousand": 125,
     "last_updated": "2025-07-11",
     "short_description": "A DSG donor file available via Allegiance List Marketing.",
     "markdown": "assets/md/friends-ww2-memorial-dsg.md"
-  },
-  {
-    "id": "gator-pac-dsg",
-    "title": "Gator PAC — a DSG Property",
-    "universe": 13788,
-    "baseRate": 125,
-    "lastUpdate": "2025-07-16",
-    "description": "Right-of-center donors backing President Trump’s America First agenda; premium-offer responders focused on election integrity.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 13788,
-        "price": 125
-      },
-      {
-        "segment": "Activists",
-        "count": 9138,
-        "price": 50
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "State/SCF/County/Zip/District",
-        "price": 10
-      }
-    ],
-    "source": "100% Direct Mail Generated",
-    "geography": "National",
-    "pdf": "assets/pdfs/gator-pac-direct-dsg.pdf"
   },
   {
     "id": "gator-pac-direct-dsg",
@@ -457,40 +145,9 @@
     "baseRate": 125,
     "lastUpdate": "2025-07-16",
     "description": "Right-of-center, pro–America First donors and activists; strong response to premium offers and election-integrity messaging.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 13788,
-        "price": 125
-      },
-      {
-        "segment": "Activists",
-        "count": 9138,
-        "price": 50
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "State/SCF/County/Zip/District",
-        "price": 10
-      }
-    ],
     "source": "Direct mail",
     "geography": "National",
-    "pdf": "",
-    "card_id": 1,
+    "card_id": "gator-pac-direct-dsg",
     "universe_size": 13788,
     "base_rate_per_thousand": 125,
     "last_updated": "2025-07-16",
@@ -504,35 +161,9 @@
     "baseRate": 125,
     "lastUpdate": "2024-06-30",
     "description": "High-gift pro-Trump donor masterfile; rental only; strong for America First campaigns, candidates, and PACs.",
-    "pricing": [
-      {
-        "segment": "Donors",
-        "count": 231942,
-        "price": 125
-      }
-    ],
-    "selects": [
-      {
-        "name": "Donation Amount",
-        "price": 5
-      },
-      {
-        "name": "Donation Recency",
-        "price": 5
-      },
-      {
-        "name": "Donation Frequency",
-        "price": 5
-      },
-      {
-        "name": "State/SCF/County/Zip/District",
-        "price": 10
-      }
-    ],
     "source": "Direct mail",
     "geography": "National",
-    "pdf": "",
-    "card_id": 5,
+    "card_id": "great-america-masterfile-dsg",
     "universe_size": 231942,
     "base_rate_per_thousand": 125,
     "last_updated": "2024-06-30",
@@ -540,122 +171,29 @@
     "markdown": "assets/md/great-america-masterfile-dsg.md"
   },
   {
-    "title": "Manager",
+    "card_id": 305791,
+    "title": "Pro-Life America",
+    "universe_size": 73761,
+    "base_rate_per_thousand": 100,
+    "last_updated": "2019-05-28",
+    "short_description": "NEW NAMES ADDED! These staunch pro-life donors are committed to supporting policy that advances the pro-life movement and electing officials who will always work to protect and defend the unborn.",
+    "source": "Direct response",
+    "geography": "USA",
+    "pdf": "assets/pdfs/legacy/Pro-Life America .pdf",
+    "markdown": "assets/md/pro-life-america.md",
+    "id": 305791
+  },
+  {
+    "card_id": 479597,
+    "title": "Real America Donors",
     "universe_size": 397542,
     "base_rate_per_thousand": 100,
-    "last_updated": "",
-    "short_description": "The Real America Donor audience is made up of patriotic Americans who are boldly",
+    "last_updated": "2023-10-24",
+    "short_description": "The Real America Donor audience is made up of patriotic Americans who are boldly in the fight to not only stop the progressive agenda of the Biden/Harris Administration, but to see a truly America First administration in the White House.",
     "source": "Direct response",
     "geography": "USA",
     "pdf": "assets/pdfs/legacy/Real America Donors .pdf",
-    "markdown": "assets/md/manager.md",
-    "id": "manager"
-  },
-  {
-    "id": "305791",
-    "title": "Pro-Life America",
-    "shortDescription": "Staunch pro-life donors committed to advancing the pro-life movement.",
-    "description": "These staunch pro-life donors are committed to supporting policy that advances the pro-life movement and electing officials who will always work to protect and defend the unborn.",
-    "universe": 73761,
-    "baseRate": 100,
-    "lastUpdate": "2019-05-28",
-    "source": "Direct response",
-    "geography": "USA",
-    "genderMale": "N/A",
-    "genderFemale": "N/A",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 73761,
-        "price": 100
-      },
-      {
-        "segment": "Last 12 month donors",
-        "count": 27190,
-        "price": 100
-      }
-    ],
-    "selects": [
-      {
-        "name": "Dollar Amount",
-        "price": 5
-      },
-      {
-        "name": "Phone Buyers",
-        "price": 20
-      }
-    ],
-    "pdf": "",
-    "card_id": 305791
-  },
-  {
-    "title": "Reach these highly engaged conservative donors today!",
-    "universe_size": 110317,
-    "base_rate_per_thousand": 135,
-    "last_updated": "",
-    "short_description": "The College Republican National Committee is the largest, oldest",
-    "source": "Direct mail sold, Direct response",
-    "geography": "USA",
-    "pdf": "assets/pdfs/legacy/College Republican National Committee .pdf",
-    "markdown": "assets/md/reach-these-highly-engaged-conservative-donors-today.md",
-    "id": "reach-these-highly-engaged-conservative-donors-today"
-  },
-  {
-    "id": "479597",
-    "title": "Real America Donors",
-    "shortDescription": "Patriotic Americans opposing the progressive agenda; America First values.",
-    "description": "The Real America Donor audience is made up of patriotic Americans who are boldly in the fight to not only stop the progressive agenda of the Biden/Harris Administration, but to see a truly America First administration in the White House. They support Constitutional issues including Second Amendment Rights, Freedom of Speech and Religion and limited government.",
-    "universe": 397542,
-    "baseRate": 100,
-    "lastUpdate": "2023-10-24",
-    "source": "Direct response",
-    "geography": "USA",
-    "genderMale": "60%",
-    "genderFemale": "40%",
-    "pricing": [
-      {
-        "segment": "TOTAL UNIVERSE",
-        "count": 397542,
-        "price": 100
-      },
-      {
-        "segment": "Charitable Base Rate",
-        "count": 397542,
-        "price": 85
-      },
-      {
-        "segment": "$100+ Donors",
-        "count": 76156,
-        "price": 120
-      }
-    ],
-    "selects": [
-      {
-        "name": "Age/Gender/Dollar",
-        "price": 5
-      },
-      {
-        "name": "Lifestyle Select",
-        "price": 10
-      },
-      {
-        "name": "Phone Numbers",
-        "price": 20
-      }
-    ],
-    "pdf": "",
-    "card_id": 479597
-  },
-  {
-    "title": "Religious liberty advocate groups",
-    "universe_size": 82949,
-    "base_rate_per_thousand": 100,
-    "last_updated": "",
-    "short_description": "Americans Against the Biden Agenda is compounded of patriotic",
-    "source": "Direct response",
-    "geography": "USA",
-    "pdf": "assets/pdfs/legacy/Americans Against the Biden Agenda.pdf",
-    "markdown": "assets/md/religious-liberty-advocate-groups.md",
-    "id": "religious-liberty-advocate-groups"
+    "markdown": "assets/md/real-america-donors.md",
+    "id": 479597
   }
 ]
