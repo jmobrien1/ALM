@@ -103,7 +103,8 @@ ${male?`Male: ${male}%  `:''}${female?`Female: ${female}%`:''}
       source: source||'',
       geography: geography||'',
       pdf: `assets/pdfs/legacy/${f}`,
-      markdown: mdPath
+      markdown: mdPath,
+      contentMarkdown: md
     };
     const key = String(entry.card_id||slug);
     const prev = byId.get(key);
