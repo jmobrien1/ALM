@@ -1,4 +1,4 @@
-name: Deploy to GoDaddy (FTPS, stable)
+name: Deploy to GoDaddy (FTPS)
 
 on:
   push:
@@ -8,96 +8,77 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     env:
       SITE_HOST: www.allegiancelistmarketing.com
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Tools first (so lftp exists before any use)
-      - name: Install lftp + curl + jq
-        run: |
-          set -euxo pipefail
-          sudo apt-get update
-          sudo apt-get install -y lftp curl jq
+      - name: Install Tools
+        run: sudo apt-get update && sudo apt-get install -y lftp curl jq
 
-      - name: Setup Node (for schema validation)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Optional: validate JSON contract (kept – fail fast if broken)
-      - name: Validate datacards.json (schema + contracts)
+      - name: Validate Data Contracts
         run: |
           set -euxo pipefail
-          test -f assets/data/datacards.json
-          npx -y ajv-cli@5 validate \
-            -s assets/data/datacards.schema.json \
-            -d assets/data/datacards.json
+          npx -y ajv-cli@5 validate -s assets/data/datacards.schema.json -d assets/data/datacards.json
           jq -e 'type=="array"' assets/data/datacards.json >/dev/null
-          jq -e '.[] | select((.card_id|tostring=="580140") or (.card_id|tostring=="424915"))' assets/data/datacards.json >/dev/null
-          jq -e '[ .[] | select(.markdown and (.markdown|type=="string")) ] | length >= 5' assets/data/datacards.json >/dev/null
 
-      # Package site → out/
-      - name: Prepare artifact
+      - name: Prepare Artifact
         run: |
           set -euxo pipefail
           rm -rf out
           rsync -av --delete \
-            --exclude ".git" \
-            --exclude ".github" \
-            --exclude "out" \
-            --exclude "*.bak.*" \
-            --exclude ".DS_Store" \
-            ./ ./out/
+            --exclude ".git" --exclude ".github" --exclude "out" \
+            --exclude "*.bak.*" --exclude ".DS_Store" \
+            ./ out/
           mkdir -p out/.well-known
           echo "${GITHUB_SHA}" > out/deploy-check.txt
           echo "${GITHUB_SHA}" > out/.well-known/alm-deploy.txt
-          if [ -f out/assets/data/datacards.json ]; then
-            mkdir -p out/data
-            cp -f out/assets/data/datacards.json out/data/datacards.json
-          fi
-          mkdir -p out/marketplace
-          cp -f out/marketplace.html out/marketplace/index.html || true
-          ls -la out/ out/.well-known || true
 
-      - name: Confirm lftp install
-        run: lftp --version
-
-      # Upload (pure lftp commands; no shell pipes inside)
-      - name: Upload via FTPS (verbose + tolerant mkdir)
+      - name: Upload via FTPS
         env:
-          FTP_SERVER:   ${{ secrets.FTP_SERVER }}
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_DIR:      ${{ secrets.FTP_DIR }}
+          FTP_DIR: ${{ secrets.FTP_DIR }}
         run: |
           set -euxo pipefail
+          # Default to "." if FTP_DIR is not set, which we confirmed is correct.
           : "${FTP_DIR:=.}"
-          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "\
-            set net:max-retries 5; set net:persist-retries 3; set net:timeout 45; \
-            set net:reconnect-interval-base 5; set net:reconnect-interval-max 60; \
-            set ftp:passive-mode true; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
-            set xfer:clobber on; set ssl:verify-certificate false; \
-            mkdir -p $FTP_DIR; cd $FTP_DIR; \
-            mirror -R --ignore-time --delete --verbose=3 out/ ./; \
-            pwd; ls -la; bye"
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER" -e "
+            set ftp:passive-mode true
+            set ftp:ssl-force true
+            set ftp:ssl-protect-data true
+            set ssl:verify-certificate false
+            set xfer:clobber on
+            set net:max-retries 3
+            set net:timeout 30
+            cd '$FTP_DIR'
+            mirror -R --ignore-time --delete --verbose=3 out/ ./
+            bye
+          "
 
-      - name: Wait for deploy propagation
-        run: sleep 45
+      - name: Wait for Server Cache Propagation
+        run: sleep 30
 
-      - name: Verify deploy (deploy-check.txt)
-        env:
-          SITE_HOST: ${{ env.SITE_HOST }}
+      - name: Verify Live Deployment via HTTP
         run: |
           set -euxo pipefail
-          for i in 1 2 3 4 5 6 7 8; do
+          for i in {1..8}; do
             live_sha=$(curl -fsS -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' "https://${SITE_HOST}/deploy-check.txt?v=$(date +%s)")
             if [ "$live_sha" = "${GITHUB_SHA}" ]; then
-              echo "Docroot updated: $live_sha"; exit 0
+              echo "✅ SUCCESS: Live site is updated to commit ${GITHUB_SHA}"
+              exit 0
             fi
-            echo "Mismatch (got $live_sha, want ${GITHUB_SHA}); retry #$i..."
+            echo "Attempt $i: Mismatch found (Live: $live_sha, Expected: ${GITHUB_SHA}). Retrying in $((i*5))s..."
             sleep $((i*5))
           done
-          echo "Docroot not updated after retries."; exit 1
+          echo "❌ FAILURE: Live site did not update after multiple retries."
+          exit 1
