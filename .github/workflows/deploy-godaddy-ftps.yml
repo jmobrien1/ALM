@@ -61,7 +61,7 @@ jobs:
             set net:max-retries 3;
             set net:timeout 45;
             cd '$FTP_DIR';
-            mirror -R --ignore-time --delete --verbose=3 out/ ./;
+            glob -a mkdir -p assets/md; mirror -R --ignore-time --delete --verbose=3 out/ ./;
             bye;
           "
 
