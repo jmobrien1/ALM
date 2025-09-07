@@ -27,14 +27,22 @@ def html_escape(s):
 def is_dsg(owner: str) -> bool:
     return (owner or "").strip().lower() == "dominion strategy group"
 
+
 def card_tile(card) -> str:
     badge = '<span class="badge badge-dsg">A DSG Property</span>' if is_dsg(card.get("owner","")) else ""
     title = html_escape(card.get("title","Untitled"))
     universe = html_escape(card.get("universe","n/a"))
     base = html_escape(card.get("baseRate","call"))
     updated = html_escape(card.get("lastUpdate","n/a"))
-    cid = card.get("id") or slugify(title)
-    href = f"datacard-{cid}.html"
+    pdf = html_escape(card.get("pdf",""))
+    # "View" opens the PDF in-browser (new tab). If no PDF, disable link.
+    if pdf:
+        view_btn = f'<a class="btn" href="{pdf}" target="_blank" rel="noopener">View</a>'
+        # Force download using the HTML5 "download" attribute
+        dl_btn = f'<a class="btn btn-secondary" href="{pdf}" download>Download PDF</a>'
+    else:
+        view_btn = '<span class="btn" style="opacity:.5;pointer-events:none;">View</span>'
+        dl_btn = '<span class="btn btn-secondary" style="opacity:.5;pointer-events:none;">Download PDF</span>'
     return f"""
     <article class="card">
       <div class="card-head">
@@ -47,13 +55,14 @@ def card_tile(card) -> str:
         <div><dt>Updated</dt><dd>{updated}</dd></div>
       </dl>
       <div class="card-actions">
-        <a class="btn" href="{href}">View</a>
-        <a class="btn btn-secondary" href="{html_escape(card.get('pdf',''))}" target="_blank" rel="noopener">Download PDF</a>
+        {view_btn}
+        {dl_btn}
       </div>
     </article>
     """.strip()
 
-def marketplace_template(cards_html: str) -> str:
+
+def marketplace_templatedef marketplace_template(cards_html: str) -> str:
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -190,6 +199,7 @@ def main():
         f.write(marketplace_template(tiles))
 
     # per-card pages
+if False:
     for c in clean:
         cid = c["id"]
         md_text = read_md(c.get("md","").strip())
