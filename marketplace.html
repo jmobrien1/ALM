@@ -3,81 +3,72 @@
 <head>
   <meta charset="utf-8" />
   <title>Marketplace | Allegiance List Marketing</title>
-  <meta name="description" content="Browse and order targeted mailing lists via NextMark’s search — curated by Allegiance List Marketing." />
+  <meta name="description" content="Browse direct mail lists from ALM and Dominion Strategy Group. Download the PDF for each data card." />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="canonical" href="https://www.allegiancelistmarketing.com/marketplace.html" />
   <style>
-    body {font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin:0; color:#0f172a;}
-    .wrap {max-width: 960px; margin: 0 auto; padding: 40px 20px;}
-    .hero {margin-bottom: 24px;}
-    h1 {font-size: 2rem; margin: 0 0 8px;}
-    p.lead {margin: 0 0 16px; line-height: 1.6;}
-    .card {background: #fff; border:1px solid #e2e8f0; border-radius: 14px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,.04);}
-    .hint {font-size: .9rem; color: #475569; margin-top: 10px;}
-    .grid {display:grid; grid-template-columns: 1fr; gap: 16px; margin-top: 20px;}
-    @media (min-width: 720px){ .grid{ grid-template-columns: 2fr 1fr; } }
-    .tiles {display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px;}
-    .tile a {display:block; padding:12px 14px; border-radius:12px; border:1px solid #e2e8f0; text-decoration:none; color:#0f172a;}
-    .tile a:hover {background:#f8fafc;}
-    footer {margin-top: 40px; font-size:.9rem; color:#64748b;}
+    :root {
+      --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#ffffff; --accent:#111827;
+      --badge:#0ea5e9; --badge-ink:#fff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    .wrap{max-width:1100px;margin:0 auto;padding:40px 20px}
+    h1{margin:0 0 6px;font-size:2rem}
+    p.lead{margin:0 0 20px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+    .card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;display:flex;flex-direction:column;gap:12px}
+    .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .card-title{margin:0;font-size:1.05rem;line-height:1.3}
+    .badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:.75rem}
+    .badge-dsg{background:var(--badge);color:var(--badge-ink)}
+    dl.meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0}
+    dl.meta dt{font-size:.75rem;color:var(--muted)}
+    dl.meta dd{margin:0}
+    .card-actions{display:flex;gap:8px;margin-top:auto}
+    .btn{display:inline-block;text-decoration:none;background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px}
+    .btn-secondary{background:#fff;border:1px solid var(--accent);color:var(--accent)}
+    footer{margin-top:30px;color:var(--muted);font-size:.9rem}
   </style>
 </head>
 <body>
   <main class="wrap">
-    <section class="hero">
+    <header>
       <h1>Marketplace</h1>
-      <p class="lead">Search <strong>NextMark</strong> for 100k+ postal, email, and phone lists — powered by ALM guidance.</p>
-    </section>
-
+      <p class="lead">Direct mail data cards from Allegiance List Marketing and Dominion Strategy Group. Click a card to view details or download the PDF.</p>
+    </header>
     <section class="grid">
-      <!-- Left: Embedded NextMark search (official widget) -->
-      <div class="card">
-        <h2 style="margin-top:0;">Find Lists</h2>
-        <!-- NextMark Search Widget -->
-        <form target="_blank" method="post" action="https://lists.nextmark.com/market?page=order/online/search_results">
-          <input type="hidden" name="selection" value="0">
-          <input type="hidden" name="searchMode" value="1">
-          <input type="hidden" name="prevSearchMode" value="1">
-          <input type="hidden" name="listStatus" value="ACTV">
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <label>
-              <span style="display:block; font-size:.9rem; color:#475569;">Channel</span>
-              <select name="listType" style="height:36px; min-width:180px;">
-                <option value="ALL" selected>All Mailing Lists</option>
-                <option value="POSTL">Postal Lists</option>
-                <option value="EMAIL">Email Lists</option>
-                <option value="TELPHN">Telemarketing Lists</option>
-                <option value="INSERT">Package Inserts</option>
-                <option value="STUFFR">Statement Stuffers</option>
-              </select>
-            </label>
-            <label style="flex:1 1 260px;">
-              <span style="display:block; font-size:.9rem; color:#475569;">Keywords</span>
-              <input type="text" size="20" name="searchText" placeholder="e.g., veterans donors, homeowners, B2B tech" style="height:36px; width:100%; padding:0 10px;">
-            </label>
-            <button type="submit" style="height:36px; padding:0 16px; border-radius:10px; border:1px solid #0f172a; background:#0f172a; color:#fff; cursor:pointer;">Search</button>
-          </div>
-          <div class="hint">Opens results on NextMark in a new tab.</div>
-        </form>
+      <article class="card">
+      <div class="card-head">
+        <h3 class="card-title">Example ALM Card</h3>
+        
       </div>
-
-      <!-- Right: Curated jump-start tiles (deep-links) -->
-      <div class="card">
-        <h3 style="margin-top:0;">Quick Starts</h3>
-        <div class="tiles tile">
-          <a href="https://lists.nextmark.com/market?listType=POSTL&page=order/online/search_results&searchText=veteran&utm_source=alm&utm_medium=site&utm_campaign=marketplace" target="_blank">Veteran Donors</a>
-          <a href="https://lists.nextmark.com/market?listType=POSTL&page=order/online/search_results&searchText=conservative&utm_source=alm&utm_medium=site&utm_campaign=marketplace" target="_blank">Conservative / Issue Advocacy</a>
-          <a href="https://lists.nextmark.com/market?listType=POSTL&page=order/online/search_results&searchText=homeowner&utm_source=alm&utm_medium=site&utm_campaign=marketplace" target="_blank">Homeowners</a>
-          <a href="https://lists.nextmark.com/market?listType=EMAIL&page=order/online/search_results&searchText=nonprofit&utm_source=alm&utm_medium=site&utm_campaign=marketplace" target="_blank">Nonprofit Emails</a>
-        </div>
-        <div class="hint">These links pass your search query to NextMark’s results.</div>
+      <dl class="meta">
+        <div><dt>Universe</dt><dd>100000</dd></div>
+        <div><dt>Base</dt><dd>100.00/M</dd></div>
+        <div><dt>Updated</dt><dd>2025-09-01</dd></div>
+      </dl>
+      <div class="card-actions">
+        <a class="btn" href="datacard-example-alm-card.html">View</a>
+        <a class="btn btn-secondary" href="assets/pdfs/Example ALM Card.pdf" target="_blank" rel="noopener">Download PDF</a>
       </div>
+    </article>
+<article class="card">
+      <div class="card-head">
+        <h3 class="card-title">Example DSG Card</h3>
+        <span class="badge badge-dsg">A DSG Property</span>
+      </div>
+      <dl class="meta">
+        <div><dt>Universe</dt><dd>25000</dd></div>
+        <div><dt>Base</dt><dd>125.00/M</dd></div>
+        <div><dt>Updated</dt><dd>2025-09-01</dd></div>
+      </dl>
+      <div class="card-actions">
+        <a class="btn" href="datacard-example-dsg-card.html">View</a>
+        <a class="btn btn-secondary" href="assets/pdfs/Example DSG Card.pdf" target="_blank" rel="noopener">Download PDF</a>
+      </div>
+    </article>
     </section>
-
-    <footer>
-      Powered by <a href="https://lists.nextmark.com/" target="_blank" rel="noopener">NextMark</a>. For help selecting lists, contact Allegiance List Marketing.
-    </footer>
+    <footer>Cards labeled <strong>A DSG Property</strong> are owned by Dominion Strategy Group.</footer>
   </main>
-<footer style="text-align:center;margin:40px 0;"><a href="https://lists.allegiancelistmarketing.com/?utm_source=alm&utm_medium=site&utm_campaign=footer" rel="noopener">Marketplace (NextMark)</a></footer>
 </body>
 </html>

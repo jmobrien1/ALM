@@ -1,52 +1,22 @@
 [
   {
-    "id": "allegiantpro-lifecon-ervativedonor-",
-    "title": "Allegiant Pro-Life Conservative Donors",
-    "url": "datacard-allegiantpro-lifecon-ervativedonor-.html"
+    "id": "example-alm-card",
+    "title": "Example ALM Card",
+    "owner": "Allegiance List Marketing",
+    "universe": 100000,
+    "baseRate": "100.00/M",
+    "lastUpdate": "2025-09-01",
+    "pdf": "assets/pdfs/Example ALM Card.pdf",
+    "md": "assets/md/example-alm-card.md"
   },
   {
-    "id": "americafir-tpatriotdonor-",
-    "title": "America First Patriot Donors ",
-    "url": "datacard-americafir-tpatriotdonor-.html"
-  },
-  {
-    "id": "american-again-tthebidenagenda",
-    "title": "Americans Against the Biden Agenda",
-    "url": "datacard-american-again-tthebidenagenda.html"
-  },
-  {
-    "id": "buildthewalldonor-",
-    "title": "Build The Wall Donors",
-    "url": "datacard-buildthewalldonor-.html"
-  },
-  {
-    "id": "catholicactiondonor-",
-    "title": "Catholic Action Donors ",
-    "url": "datacard-catholicactiondonor-.html"
-  },
-  {
-    "id": "collegerepublicannationalcommittee",
-    "title": "College Republican National Committee ",
-    "url": "datacard-collegerepublicannationalcommittee.html"
-  },
-  {
-    "id": "donor-toveterancau-e-",
-    "title": "Donors to Veteran Causes ",
-    "url": "datacard-donor-toveterancau-e-.html"
-  },
-  {
-    "id": "marketplace",
-    "title": "Marketplace",
-    "url": "datacard-marketplace.html"
-  },
-  {
-    "id": "pro-lifeamerica",
-    "title": "Pro-Life America ",
-    "url": "datacard-pro-lifeamerica.html"
-  },
-  {
-    "id": "realamericadonor-",
-    "title": "Real America Donors ",
-    "url": "datacard-realamericadonor-.html"
+    "id": "example-dsg-card",
+    "title": "Example DSG Card",
+    "owner": "Dominion Strategy Group",
+    "universe": 25000,
+    "baseRate": "125.00/M",
+    "lastUpdate": "2025-09-01",
+    "pdf": "assets/pdfs/Example DSG Card.pdf",
+    "md": "assets/md/example-dsg-card.md"
   }
 ]
