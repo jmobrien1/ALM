@@ -31,18 +31,21 @@ def is_dsg(owner: str) -> bool:
 def card_tile(card) -> str:
     badge = '<span class="badge badge-dsg">A DSG Property</span>' if is_dsg(card.get("owner","")) else ""
     title = html_escape(card.get("title","Untitled"))
-    universe = html_escape(card.get("universe","n/a"))
-    base = html_escape(card.get("baseRate","call"))
-    updated = html_escape(card.get("lastUpdate","n/a"))
-    pdf = html_escape(card.get("pdf",""))
-    # "View" opens the PDF in-browser (new tab). If no PDF, disable link.
+    # Normalize 'nan' from sheet
+    def norm(v, default):
+        t = "" if v is None else str(v).strip()
+        return default if not t or t.lower()=="nan" else t
+    universe = norm(card.get("universe"), "n/a")
+    base = norm(card.get("baseRate"), "call")
+    updated = norm(card.get("lastUpdate"), "n/a")
+    pdf = norm(card.get("pdf"), "")
+    # View -> open PDF in new tab; Download -> force download
     if pdf:
         view_btn = f'<a class="btn" href="{pdf}" target="_blank" rel="noopener">View</a>'
-        # Force download using the HTML5 "download" attribute
-        dl_btn = f'<a class="btn btn-secondary" href="{pdf}" download>Download PDF</a>'
+        dl_btn   = f'<a class="btn btn-secondary" href="{pdf}" download>Download PDF</a>'
     else:
         view_btn = '<span class="btn" style="opacity:.5;pointer-events:none;">View</span>'
-        dl_btn = '<span class="btn btn-secondary" style="opacity:.5;pointer-events:none;">Download PDF</span>'
+        dl_btn   = '<span class="btn btn-secondary" style="opacity:.5;pointer-events:none;">Download PDF</span>'
     return f"""
     <article class="card">
       <div class="card-head">
@@ -60,8 +63,6 @@ def card_tile(card) -> str:
       </div>
     </article>
     """.strip()
-
-
 def marketplace_templatedef marketplace_template(cards_html: str) -> str:
     return f"""<!doctype html>
 <html lang="en">

@@ -39,7 +39,7 @@
     "id": "citizen-ag-data-card-a-dsg-property",
     "title": "CITIZEN AG - Data Card - a DSG Property",
     "owner": "Dominion Strategy Group",
-    "universe": NaN,
+    "universe": "n/a",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/CITIZEN AG - Data Card - a DSG Property.pdf"
@@ -48,7 +48,7 @@
     "id": "constitutional-rights-pac-data-card-a-dsg-property",
     "title": "CONSTITUTIONAL RIGHTS PAC - Data Card - a DSG Property",
     "owner": "Dominion Strategy Group",
-    "universe": NaN,
+    "universe": "n/a",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/CONSTITUTIONAL RIGHTS PAC - Data Card - a DSG Property.pdf"
@@ -84,7 +84,7 @@
     "id": "friends-data-card-a-dsg-property",
     "title": "FRIENDS - Data Card - a DSG Property",
     "owner": "Dominion Strategy Group",
-    "universe": NaN,
+    "universe": "n/a",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/FRIENDS - Data Card - a DSG Property.pdf"
@@ -93,7 +93,7 @@
     "id": "gator-pac-data-card-a-dsg-property",
     "title": "GATOR PAC - Data Card - a DSG Property",
     "owner": "Dominion Strategy Group",
-    "universe": NaN,
+    "universe": "n/a",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/GATOR PAC - Data Card - a DSG Property.pdf"
@@ -102,7 +102,7 @@
     "id": "great-america-masterfile-data-card-a-dsg-property",
     "title": "GREAT AMERICA MASTERFILE - Data Card - a DSG Property",
     "owner": "Dominion Strategy Group",
-    "universe": NaN,
+    "universe": "n/a",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/GREAT AMERICA MASTERFILE - Data Card - a DSG Property.pdf"
