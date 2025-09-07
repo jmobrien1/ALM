@@ -3,7 +3,7 @@ name: Build Data from PDFs
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["**"]
   workflow_dispatch:
 
 permissions:

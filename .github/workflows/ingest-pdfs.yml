@@ -1,7 +1,7 @@
 name: Ingest PDFs to Markdown + JSON
 on:
   push:
-    branches: [ "main" ]
+    branches: ["**"]
     paths:
       - "incoming/**/*.pdf"
   workflow_dispatch:
