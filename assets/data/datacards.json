@@ -1,29 +1,128 @@
 [
   {
-    "id": "americans-against-biden",
+    "id": "allegiant-pro-life-conservative-donors",
+    "title": "Allegiant Pro-Life Conservative Donors",
+    "owner": "Allegiance List Marketing",
+    "universe": "161,746",
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Allegiant Pro-Life Conservative Donors.pdf"
+  },
+  {
+    "id": "america-first-patriot-donors",
+    "title": "America First Patriot Donors",
+    "owner": "Allegiance List Marketing",
+    "universe": "13,394",
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/America First Patriot Donors .pdf"
+  },
+  {
+    "id": "americans-against-the-biden-agenda",
     "title": "Americans Against the Biden Agenda",
     "owner": "Allegiance List Marketing",
-    "universe": 82949,
+    "universe": "82,949",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/Americans Against the Biden Agenda.pdf"
   },
   {
+    "id": "build-the-wall-donors",
+    "title": "Build The Wall Donors",
+    "owner": "Allegiance List Marketing",
+    "universe": "53,587",
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Build The Wall Donors.pdf"
+  },
+  {
+    "id": "citizen-ag-data-card-a-dsg-property",
+    "title": "CITIZEN AG - Data Card - a DSG Property",
+    "owner": "Dominion Strategy Group",
+    "universe": NaN,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/CITIZEN AG - Data Card - a DSG Property.pdf"
+  },
+  {
+    "id": "constitutional-rights-pac-data-card-a-dsg-property",
+    "title": "CONSTITUTIONAL RIGHTS PAC - Data Card - a DSG Property",
+    "owner": "Dominion Strategy Group",
+    "universe": NaN,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/CONSTITUTIONAL RIGHTS PAC - Data Card - a DSG Property.pdf"
+  },
+  {
+    "id": "catholic-action-donors",
+    "title": "Catholic Action Donors",
+    "owner": "Allegiance List Marketing",
+    "universe": "16,411",
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Catholic Action Donors .pdf"
+  },
+  {
+    "id": "college-republican-national-committee",
+    "title": "College Republican National Committee",
+    "owner": "Allegiance List Marketing",
+    "universe": "110,317",
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/College Republican National Committee .pdf"
+  },
+  {
     "id": "donors-to-veteran-causes",
     "title": "Donors to Veteran Causes",
     "owner": "Allegiance List Marketing",
-    "universe": 120345,
+    "universe": "27,354",
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/Donors to Veteran Causes .pdf"
   },
   {
-    "id": "great-american-master-file",
-    "title": "Great America Masterfile",
+    "id": "friends-data-card-a-dsg-property",
+    "title": "FRIENDS - Data Card - a DSG Property",
     "owner": "Dominion Strategy Group",
-    "universe": 231942,
+    "universe": NaN,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/FRIENDS - Data Card - a DSG Property.pdf"
+  },
+  {
+    "id": "gator-pac-data-card-a-dsg-property",
+    "title": "GATOR PAC - Data Card - a DSG Property",
+    "owner": "Dominion Strategy Group",
+    "universe": NaN,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/GATOR PAC - Data Card - a DSG Property.pdf"
+  },
+  {
+    "id": "great-america-masterfile-data-card-a-dsg-property",
+    "title": "GREAT AMERICA MASTERFILE - Data Card - a DSG Property",
+    "owner": "Dominion Strategy Group",
+    "universe": NaN,
     "baseRate": "call",
     "lastUpdate": "n/a",
     "pdf": "assets/pdfs/GREAT AMERICA MASTERFILE - Data Card - a DSG Property.pdf"
+  },
+  {
+    "id": "pro-life-america",
+    "title": "Pro-Life America",
+    "owner": "Allegiance List Marketing",
+    "universe": "73,761",
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Pro-Life America .pdf"
+  },
+  {
+    "id": "real-america-donors",
+    "title": "Real America Donors",
+    "owner": "Allegiance List Marketing",
+    "universe": "397,542",
+    "baseRate": "$85.00/M",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Real America Donors .pdf"
   }
 ]
