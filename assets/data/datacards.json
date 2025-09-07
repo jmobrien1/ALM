@@ -1,22 +1,29 @@
 [
   {
-    "id": "example-alm-card",
-    "title": "Example ALM Card",
+    "id": "americans-against-biden",
+    "title": "Americans Against the Biden Agenda",
     "owner": "Allegiance List Marketing",
-    "universe": 100000,
-    "baseRate": "100.00/M",
-    "lastUpdate": "2025-09-01",
-    "pdf": "assets/pdfs/Example ALM Card.pdf",
-    "md": "assets/md/example-alm-card.md"
+    "universe": 82949,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Americans Against the Biden Agenda.pdf"
   },
   {
-    "id": "example-dsg-card",
-    "title": "Example DSG Card",
+    "id": "donors-to-veteran-causes",
+    "title": "Donors to Veteran Causes",
+    "owner": "Allegiance List Marketing",
+    "universe": 120345,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/Donors to Veteran Causes .pdf"
+  },
+  {
+    "id": "great-american-master-file",
+    "title": "Great America Masterfile",
     "owner": "Dominion Strategy Group",
-    "universe": 25000,
-    "baseRate": "125.00/M",
-    "lastUpdate": "2025-09-01",
-    "pdf": "assets/pdfs/Example DSG Card.pdf",
-    "md": "assets/md/example-dsg-card.md"
+    "universe": 231942,
+    "baseRate": "call",
+    "lastUpdate": "n/a",
+    "pdf": "assets/pdfs/GREAT AMERICA MASTERFILE - Data Card - a DSG Property.pdf"
   }
 ]
