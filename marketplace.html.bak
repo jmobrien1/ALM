@@ -34,30 +34,24 @@
   </header>
 
   <main>
-    <section id="dynamic-market" style="padding:24px 16px;max-width:1100px;margin:0 auto">
-      <div id="cards-list" class="grid" aria-live="polite"></div>
-    </section>
-    <template id="card-tpl">
+    <main>
+  <div id="cards-list" class="grid"></div>
+</main>
+<script>
+(async function(){
+  const list = document.getElementById("cards-list");
+  try {
+    const items = await (await fetch("assets/data/datacards.json", {cache: "no-store"})).json();
+    list.innerHTML = items.map(x => `
       <article class="card">
         <div class="title"></div>
-        <div class="meta">
-          <span class="pill universe"></span>
-          <span class="pill base"></span>
-          <span class="pill updated"></span>
-        </div>
-        <div class="desc"></div>
-        <div class="cta">
-          <a class="btn view" target="_self">View</a>
-          <a class="btn primary" href="#" data-action="request">Request list</a>
-        </div>
-      </article>
-    </template>
-  </main>
-
-  <footer>Titles match provider PDFs. New cards come from your PDF ingests.</footer>
-
-  <!-- Fuse.js (fuzzy search) and runtime -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+        <div class="cta"><a class="btn view" href="">View Details</a></div>
+      </article>`).join("");
+  } catch (e) {
+    list.innerHTML = `<p style="color:#c00">Failed to load datacards.json: </p>`;
+  }
+})();
+</script>
   <script>
   (async function(){
     const cacheBust = `?v=${Date.now()}`;
@@ -115,5 +109,23 @@
     });
   })();
   </script>
+<main>
+  <div id="cards-list" class="grid"></div>
+</main>
+<script>
+(async function(){
+  const list = document.getElementById("cards-list");
+  try {
+    const items = await (await fetch("assets/data/datacards.json", {cache: "no-store"})).json();
+    list.innerHTML = items.map(x => `
+      <article class="card">
+        <div class="title"></div>
+        <div class="cta"><a class="btn view" href="">View Details</a></div>
+      </article>`).join("");
+  } catch (e) {
+    list.innerHTML = `<p style="color:#c00">Failed to load datacards.json: ${e}</p>`;
+  }
+})();
+</script>
 </body>
 </html>

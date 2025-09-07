@@ -3,7 +3,7 @@ name: Build Data from PDFs
 
 on:
   push:
-    branches: ["**"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -14,6 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install pdfminer.six
+      - name: Run PDF processing script
+        run: python tools/process_pdfs.py
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"

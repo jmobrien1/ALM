@@ -1,0 +1,8 @@
+name: deploy
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+# trigger redeploy Tue Sep  2 16:49:15 EDT 2025
