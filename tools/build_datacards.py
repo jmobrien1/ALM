@@ -31,21 +31,22 @@ def is_dsg(owner: str) -> bool:
 def card_tile(card) -> str:
     badge = '<span class="badge badge-dsg">A DSG Property</span>' if is_dsg(card.get("owner","")) else ""
     title = html_escape(card.get("title","Untitled"))
-    # Normalize 'nan' from sheet
+
     def norm(v, default):
         t = "" if v is None else str(v).strip()
         return default if not t or t.lower()=="nan" else t
+
     universe = norm(card.get("universe"), "n/a")
-    base = norm(card.get("baseRate"), "call")
-    updated = norm(card.get("lastUpdate"), "n/a")
-    pdf = norm(card.get("pdf"), "")
-    # View -> open PDF in new tab; Download -> force download
+    base     = norm(card.get("baseRate"), "call")
+    updated  = norm(card.get("lastUpdate"), "n/a")
+    pdf      = norm(card.get("pdf"), "")
+
+    # One button only: "View" → open PDF (same behavior as prior Download)
     if pdf:
-        view_btn = f'<a class="btn" href="{pdf}" target="_blank" rel="noopener">View</a>'
-        dl_btn   = f'<a class="btn btn-secondary" href="{pdf}" download>Download PDF</a>'
+        primary_btn = f'<a class="btn" href="{pdf}" target="_self">View</a>'
     else:
-        view_btn = '<span class="btn" style="opacity:.5;pointer-events:none;">View</span>'
-        dl_btn   = '<span class="btn btn-secondary" style="opacity:.5;pointer-events:none;">Download PDF</span>'
+        primary_btn = '<span class="btn" style="opacity:.5;pointer-events:none;">View</span>'
+
     return f"""
     <article class="card">
       <div class="card-head">
@@ -58,8 +59,7 @@ def card_tile(card) -> str:
         <div><dt>Updated</dt><dd>{updated}</dd></div>
       </dl>
       <div class="card-actions">
-        {view_btn}
-        {dl_btn}
+        {primary_btn}
       </div>
     </article>
     """.strip()
