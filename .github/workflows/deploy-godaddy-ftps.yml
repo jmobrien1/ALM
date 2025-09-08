@@ -35,6 +35,7 @@ jobs:
             set ssl:verify-certificate no;
             open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
             mirror --reverse --delete --verbose=3 out/ public_html/;
+            mirror --reverse --delete --verbose=3 out/ public_html/allegiancelistmarketing.com/;
             quit;
           "
 
