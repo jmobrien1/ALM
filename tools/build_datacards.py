@@ -31,22 +31,18 @@ def is_dsg(owner: str) -> bool:
 def card_tile(card) -> str:
     badge = '<span class="badge badge-dsg">A DSG Property</span>' if is_dsg(card.get("owner","")) else ""
     title = html_escape(card.get("title","Untitled"))
-
     def norm(v, default):
         t = "" if v is None else str(v).strip()
         return default if not t or t.lower()=="nan" else t
-
     universe = norm(card.get("universe"), "n/a")
     base     = norm(card.get("baseRate"), "call")
     updated  = norm(card.get("lastUpdate"), "n/a")
     pdf      = norm(card.get("pdf"), "")
-
-    # One button only: "View" → open PDF (same behavior as prior Download)
+    # One button only: View → open PDF
     if pdf:
         primary_btn = f'<a class="btn" href="{pdf}" target="_self">View</a>'
     else:
         primary_btn = '<span class="btn" style="opacity:.5;pointer-events:none;">View</span>'
-
     return f"""
     <article class="card">
       <div class="card-head">
@@ -68,6 +64,7 @@ def marketplace_templatedef marketplace_template(cards_html: str) -> str:
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <!-- BUILD SIG: 2025-09-08 08:46:08 EDT -->
   <title>Marketplace | Allegiance List Marketing</title>
   <meta name="description" content="Browse direct mail lists from ALM and Dominion Strategy Group. Download the PDF for each data card." />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
