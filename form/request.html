@@ -1,18 +1,55 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>Request a List</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Helvetica,Arial;padding:20px;max-width:680px;margin:0 auto}</style>
-<h1>Request a List</h1>
-<form method="post" action="submit.php">
-  <input type="hidden" name="card" id="card">
-  <label>Full Name<br><input name="name" required style="width:100%"></label><br><br>
-  <label>Email<br><input type="email" name="email" required style="width:100%"></label><br><br>
-  <label>Company<br><input name="company" style="width:100%"></label><br><br>
-  <label>Notes<br><textarea name="notes" rows="6" style="width:100%"></textarea></label><br><br>
-  <button type="submit">Send Request</button>
-</form>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:40px}
+  .box{max-width:700px}
+  a.btn{display:inline-block;margin-top:16px;padding:10px 14px;border-radius:10px;background:#C22B2B;color:#fff;text-decoration:none}
+</style>
+<div class="box">
+  <h1>Request a List</h1>
+  <p>Opening your email client… If nothing happens, click the button below.</p>
+  <a id="mailto" class="btn" href="#">Open Email</a>
+</div>
 <script>
-  const id = new URLSearchParams(location.search).get('card') || '';
-  document.getElementById('card').value = id;
+(async function(){
+  const params = new URLSearchParams(location.search);
+  const card = (params.get("card")||"").trim();
+  const bust = Date.now();
+  let title = card || "Direct Mail List";
+
+  try {
+    const r = await fetch("../assets/data/datacards.json?v="+bust, {cache:"no-store"});
+    if (r.ok) {
+      const data = await r.json();
+      const item = (Array.isArray(data)?data:[]).find(d=>{
+        const id   = String(d.id||"").trim();
+        const slug = String(d.slug||"").trim();
+        return card && (id===card || slug===card);
+      });
+      if (item && item.title) title = String(item.title).trim();
+    }
+  } catch(e){ /* ignore */ }
+
+  const subject = encodeURIComponent(`List Request: ${title}`);
+  const body = encodeURIComponent(
+`Hello,
+
+I'm interested in the following list:
+
+Title: ${title}
+ID/Slug: ${card}
+
+Please send counts, pricing, and next steps.
+
+Thanks,`
+  );
+
+  const link = `mailto:john@allegiancelists.com?subject=${subject}&body=${body}`;
+  const a = document.getElementById("mailto");
+  a.href = link;
+
+  // auto-launch after a tick (fallback button remains if pop-up blocked)
+  setTimeout(()=>{ location.href = link; }, 200);
+})();
 </script>
