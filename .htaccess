@@ -1,4 +1,4 @@
-# Disable caching for HTML/JSON (let PDFs cache normally)
+# No-cache for HTML/JSON; allow PDFs/CSS/JS to cache normally
 <IfModule mod_headers.c>
   <FilesMatch "\.(html?|json)$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
@@ -7,11 +7,9 @@
   </FilesMatch>
 </IfModule>
 
-# One-time cache-bust for marketplace.html (adds ?v=2 if missing)
+# Force old path to new path (bypass any stale asset)
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  # only add v=2 if no v= is present already
   RewriteCond %{REQUEST_URI} ^/marketplace\.html$ [NC]
-  RewriteCond %{QUERY_STRING} !(^|&)v=
-  RewriteRule ^marketplace\.html$ /marketplace.html?v=2 [R=302,L]
+  RewriteRule ^marketplace\.html$ /market.html?v=4 [R=301,L]
 </IfModule>
