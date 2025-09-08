@@ -98,7 +98,22 @@
         // Keep the existing datacard.html?id=… route (now redirects to the PDF)
         const id = d.id || d.slug || slugify(d.title);
         node.querySelector("a.view").href = `datacard.html?id=${encodeURIComponent(id)}`;
-        node.querySelector("a.request").href = `form/request.html?card=${encodeURIComponent(id)}`;
+        const subject = encodeURIComponent(`List Request: ${d.title}`);
+        const body = encodeURIComponent(
+`Hello,
+
+I'm interested in the following list:
+
+Title: ${d.title}
+ID: ${id}
+Owner: ${d.owner||""}
+
+Please send counts, pricing, and next steps.
+
+Thanks,`
+        );
+        node.querySelector("a.request").href =
+          `mailto:john@allegiancelists.com?subject=${subject}&body=${body}`;
         grid.appendChild(node);
       }
       document.getElementById("stats").textContent = `${list.length} items`;
