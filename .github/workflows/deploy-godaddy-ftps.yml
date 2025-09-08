@@ -1,4 +1,3 @@
-
 name: Deploy to GoDaddy (FTPS) - Final
 
 on:
@@ -9,33 +8,65 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Tools
+      - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Prepare Artifact
+      - name: Prepare artifact
         run: |
+          rm -rf out
           rsync -av --delete \
-            --exclude ".git" --exclude ".github" \
+            --exclude ".git" \
+            --exclude ".github" \
             ./ out/
+          echo "=== LOCAL ARTIFACT CONTENTS ==="
+          find out -maxdepth 2 -type f | sort
+          echo "=== LOCAL marketplace.html HEAD ==="
+          head -n 25 out/marketplace.html || true
+          echo "=== LOCAL DEPLOY_SIG ==="
+          cat out/DEPLOY_SIG.txt || true
 
-      - name: Upload via FTPS
+      - name: Upload via FTPS to multiple roots (with delete) + list dirs
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          lftp -c "
+          set -e
+          echo "Starting lftp session…"
+          lftp -e "
             set ftp:ssl-allow yes;
             set ftp:ssl-force true;
             set ssl:verify-certificate no;
-            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
-            mirror --reverse --delete --verbose=3 out/ public_html/;
-            mirror --reverse --delete --verbose=3 out/ public_html/allegiancelistmarketing.com/;
-            quit;
-          "
 
+            open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER;
+
+            echo '=== PWD & ROOT LIST ===';
+            pwd; ls -la;
+
+            # target 1: public_html
+            echo '=== TARGET: /public_html ===';
+            mkdir -p public_html; cd public_html || true; pwd; ls -la;
+            mirror -R --delete --verbose=3 ${GITHUB_WORKSPACE}/out/ . ;
+            ls -la | grep -E 'marketplace\.html|DEPLOY_SIG\.txt' || true;
+            cd /;
+
+            # target 2: /public_html/allegiancelistmarketing.com
+            echo '=== TARGET: /public_html/allegiancelistmarketing.com ===';
+            mkdir -p public_html/allegiancelistmarketing.com; cd public_html/allegiancelistmarketing.com || true; pwd; ls -la;
+            mirror -R --delete --verbose=3 ${GITHUB_WORKSPACE}/out/ . ;
+            ls -la | grep -E 'marketplace\.html|DEPLOY_SIG\.txt' || true;
+            cd /;
+
+            # target 3: root /
+            echo '=== TARGET: / (root) ===';
+            pwd; ls -la;
+            mirror -R --delete --verbose=3 ${GITHUB_WORKSPACE}/out/ . ;
+            ls -la | grep -E 'marketplace\.html|DEPLOY_SIG\.txt' || true;
+
+            bye;
+          "
