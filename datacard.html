@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Opening data card…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{font:16px system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:40px;}
+    .muted{color:#555}
+    code{background:#f4f4f8;padding:2px 6px;border-radius:6px}
+    a.btn{display:inline-block;margin-top:14px;padding:8px 12px;border-radius:10px;
+          text-decoration:none;background:#111827;color:#fff}
+  </style>
+</head>
+<body>
+  <h1>Opening PDF…</h1>
+  <p id="status" class="muted">Please wait.</p>
+  <div id="fallback"></div>
+  <p><a href="marketplace.html" class="btn">Back to Marketplace</a></p>
+<script>
+(function(){
+  const qs = new URLSearchParams(location.search);
+  const qid = (qs.get('id')||'').toLowerCase().trim();
+  const slugify = s => (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  function showError(msg, href){
+    document.getElementById('status').textContent = msg;
+    if (href) document.getElementById('fallback').innerHTML = '<p><a class="btn" href="'+href+'">Open PDF</a></p>';
+  }
+  fetch('assets/data/datacards.json?v='+Date.now(), {cache:'no-store'})
+    .then(r => r.json())
+    .then(arr => {
+      const items = Array.isArray(arr)?arr:[];
+      const hit = items.find(c=>{
+        const id   = String(c.id||'').toLowerCase();
+        const slug = String(c.slug||'').toLowerCase();
+        const t    = slugify(c.title||'');
+        return qid && (qid===id || qid===slug || qid===t);
+      });
+      if (hit && hit.pdf){
+        document.getElementById('status').textContent = 'Redirecting to PDF…';
+        location.replace(hit.pdf);
+      } else if (hit) {
+        showError('No PDF configured for this card.', hit.pdf||'');
+      } else {
+        showError('Could not find that data card id: '+qid);
+      }
+    })
+    .catch(e=>{
+      console.error(e);
+      showError('Failed to load datacards.json.');
+    });
+})();
+</script>
+</body>
+</html>
