@@ -1,24 +1,17 @@
-
-# Allow Markdown files to be served
-<FilesMatch "\\.md$">
-  Require all granted
-</FilesMatch>
-
-# Standard GoDaddy Security Directive
-<IfModule mod_security.c>
-SecFilterEngine Off
-SecFilterScanPOST Off
+# Disable caching for HTML/JSON (let PDFs cache normally)
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html?|json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
 </IfModule>
 
-# Protect admin page with server-side Basic Auth
-<Files "admin/">
-  AuthType Basic
-  AuthName "ALM Admin"
-  AuthUserFile /home/r3ey5e1cozl4/.htpasswd
-  Require valid-user
-</Files>
-
-
-<FilesMatch "\.md$">
-  Require all granted
-</FilesMatch>
+# One-time cache-bust for marketplace.html (adds ?v=2 if missing)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # only add v=2 if no v= is present already
+  RewriteCond %{REQUEST_URI} ^/marketplace\.html$ [NC]
+  RewriteCond %{QUERY_STRING} !(^|&)v=
+  RewriteRule ^marketplace\.html$ /marketplace.html?v=2 [R=302,L]
+</IfModule>
